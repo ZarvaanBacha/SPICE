@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Spice } from '../spice';
 import { SpiceButtonComponent } from '../spice-button/spice-button.component';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-spice-select',
@@ -13,7 +14,7 @@ import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 })
 export class SpiceSelectComponent {
 
-        
+      
 
   // url = 'http://localhost:3000/spice';  
   selectSpice : FormControl = new FormControl('');
@@ -40,6 +41,16 @@ export class SpiceSelectComponent {
           quantity: 10 
         },
         ];
+
+        constructor(private router: Router) {}
+
+        goToDispense() {
+          this.router.navigate(['/dispense']); // Navigate to the spice dispenser page
+        } 
+        ngOnInit() {
+          console.log('SpiceSelectComponent initialized'); // Log to confirm initialization
+        }
+    
 
 
 

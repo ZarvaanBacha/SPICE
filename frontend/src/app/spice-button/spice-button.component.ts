@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class SpiceButtonComponent implements ControlValueAccessor {
     @Input() spice!: Spice;
+    
 
     onChange: OnChangeFn<string> = () => {this.spice.name};
     onTouch: onTouchFn = () => {};

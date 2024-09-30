@@ -1,0 +1,31 @@
+<div class="spice-container">
+  <div class="spice-content">
+    <!-- Back Button -->
+    <button class="back-button" (click)="goBack()">Back</button> 
+
+    <div class="spice-info">
+      <label>Selected measurement:</label>
+      <p>{{ formatMeasurement() }}</p>
+
+      <!-- Increment size buttons -->
+      <label>Increment by:</label>
+      <div class="increment-buttons">
+        <button (click)="setIncrement(0.125)">1/8 tsp</button>
+        <button (click)="setIncrement(0.25)">1/4 tsp</button>
+        <button (click)="setIncrement(3)">1 tbsp</button>
+      </div>
+      
+      <!-- Reset button -->
+      <button class="reset-button" (click)="reset()">Reset</button>
+    </div>
+
+    <!-- Buttons moved to the right -->
+    <div class="button-group">
+      <button class="increment-decrement" (click)="decrement()">-</button>
+      <button class="increment-decrement" (click)="increment()">+</button>
+    </div>
+  </div>
+
+  <!-- Dispense button at the bottom -->
+  <button class="dispense-button">Dispense</button>
+</div>

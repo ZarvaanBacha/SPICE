@@ -1,0 +1,124 @@
+.spice-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 50vw; 
+  height: 100vh;
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+.back-button {
+  margin-bottom: 10px; 
+  padding: 10px 15px;  
+  background-color: #f0f0f0; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.spice-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  width: 100%;
+}
+
+.spice-info {
+  flex-grow: 1;
+  font-size: 2em;
+}
+
+  .spice-info label {
+    display: block;
+  }
+
+  .spice-info p {
+    margin-top: 10px;
+    font-size: 2em;
+    font-weight: bold;
+    min-height: 50px;
+  }
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 40px; 
+}
+
+.increment-decrement {
+  padding: 30px 50px;
+  font-size: 2em;
+  margin: 20px 0;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+}
+
+  .increment-decrement:hover {
+    background-color: #0056b3;
+  }
+
+button {
+  padding: 20px 30px;
+  font-size: 1.5em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.reset-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+  .reset-button:hover {
+    background-color: #218838;
+  }
+
+.dispense-button {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 1.5em;
+  padding: 20px;
+}
+
+  .dispense-button:hover {
+    background-color: #e0a800;
+  }
+
+.increment-options {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+  .increment-options button {
+    margin-right: 15px; 
+  }
+
+    .increment-options button:last-child {
+      margin-right: 0;
+    }
