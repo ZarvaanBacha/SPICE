@@ -18,7 +18,7 @@ export class SpiceSelectComponent {
 
   // url = 'http://localhost:3000/spice';  
   selectSpice : FormControl = new FormControl('');
-  selectedSpice: string = "Choose Spice";
+  selectedSpice: string = "Choose a Spice";
   spiceList: Spice[] = [
         {      
           id: 0,      
@@ -27,17 +27,17 @@ export class SpiceSelectComponent {
         }
         ,{      
           id: 1,      
-          name: 'pepper',      
+          name: 'Pepper',      
           quantity: 10 
         }
         ,{      
           id: 2,      
-          name: 'papryika',      
+          name: 'Papryika',      
           quantity: 10 
         }
         ,{      
           id: 3,      
-          name: 'thyme',      
+          name: 'Thyme',      
           quantity: 10 
         },
         ];

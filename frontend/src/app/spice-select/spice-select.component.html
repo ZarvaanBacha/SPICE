@@ -1,12 +1,14 @@
-
-<div>
-   @for (spice of spiceList ; track spice){
-    <app-spice-button [spice]="spice" [(ngModel)]="selectedSpice"> {{spice.name}}</app-spice-button>
-    }
-     <!-- <app-spice-button *ngfor="let spicey of spiceList" [spice]="spicey"></app-spice-button> -->
-</div>
-<div>
-    Selected Spice:
-    <pre>{{selectedSpice}}</pre>
-    <button type="button"(click)="goToDispense()">></button>
+<div class="spiceContainer">
+    <div class="infoText">
+        <h1>Selected Spice:</h1>
+        <h2>{{selectedSpice}}</h2>
+    </div>
+    <div class="buttonContainer">
+    @for (spice of spiceList ; track spice){
+        <app-spice-button class="spiceButton" [spice]="spice" [(ngModel)]="selectedSpice"> {{spice.name}}</app-spice-button>
+        }
+        <!-- <app-spice-button *ngfor="let spicey of spiceList" [spice]="spicey"></app-spice-button> -->
+    </div>
+    <button class="continueButton" type="button"(click)="goToDispense()">></button>
+    
 </div>

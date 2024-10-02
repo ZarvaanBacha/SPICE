@@ -1,0 +1,56 @@
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+.infoText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+.spiceContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 50vw; 
+    height: 100vh;
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    background-color: #EEEEEE;
+    box-sizing: border-box;
+  }
+
+.spiceButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    border: none;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+button {
+    padding: 20px 30px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+.continueButton{
+    background-color: #91C056;
+    color: white;
+}
+.continueButton:hover{
+  background-color: hsl(87, 46%, 45%);
+  color: white;
+}
