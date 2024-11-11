@@ -11,7 +11,7 @@ export class SpiceDispenserComponent {
   constructor(private router: Router) {}
 
   goBack() {
-    this.router.navigate(['/']); // Navigate back to the spice select page
+    this.router.navigate(['/spice-select']); // Navigate back to the spice select page
   }
 
 

@@ -1,0 +1,27 @@
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  
+  button {
+    margin: 20px;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: #388e3c;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #2e7d32;
+  }
+  

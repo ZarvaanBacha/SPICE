@@ -50,6 +50,9 @@ export class SpiceSelectComponent {
         ngOnInit() {
           console.log('SpiceSelectComponent initialized'); // Log to confirm initialization
         }
+        goBack() {
+          this.router.navigate(['/']);
+        }
     
 
 
