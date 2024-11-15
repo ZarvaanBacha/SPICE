@@ -17,6 +17,6 @@ export class SelectionScreenComponent {
   }
 
   goToRecipes() {
-    // Implement navigation for recipes page
+    this.router.navigate(['/recipes']);
   }
 }

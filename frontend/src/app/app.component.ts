@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent {
   title = 'frontend';
-  currentView: string = 'home';  // Default to the home view
+  currentView: string = 'home';  
 
   navigate(view: string) {
     this.currentView = view;
