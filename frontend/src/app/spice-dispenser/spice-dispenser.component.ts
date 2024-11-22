@@ -1,14 +1,45 @@
-import { Component } from '@angular/core';
+import { Component,OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SocketService } from '../socket-service/socket.service';
 import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-spice-dispenser',
   templateUrl: './spice-dispenser.component.html',
-  styleUrls: ['./spice-dispenser.component.css']
+  styleUrls: ['./spice-dispenser.component.css'],
 })
-export class SpiceDispenserComponent {
-  constructor(private router: Router) {}
+export class SpiceDispenserComponent implements OnDestroy {
+  
+  private messageSubscription: Subscription; // HTTP fields
+  messages: number = 0;
+  newMessage: number = this.messages;
+  isFinished : boolean = false;
+
+
+  constructor(private router: Router, private socketService: SocketService) {
+    this.messageSubscription = this.socketService//constructor to recieve messages from serverr
+    .on('message')
+    .subscribe((data) => {
+        this.messages = data; // Sending data to server
+        this.isFinished = false;
+    });
+    this.messageSubscription = this.socketService.on('finished').subscribe((data) => {
+      console.log(data);
+      this.isFinished = data; 
+    });
+  }
+
+  sendMessage() {//Function to allow sending to server
+    this.newMessage = this.toAbsolute(this.measurement);
+    this.socketService.emit('message', this.newMessage);
+    console.log(this.newMessage);
+    this.newMessage = this.messages;
+  }
+
+  ngOnDestroy(): void {//Closes subscription while window not active
+    this.messageSubscription.unsubscribe();
+  }
 
   goBack() {
     this.router.navigate(['/spice-select']); // Navigate back to the spice select page
@@ -100,6 +131,10 @@ export class SpiceDispenserComponent {
 
     // If no valid fraction is found, return the decimal representation
     return value.toFixed(3); // Return the decimal value
+  }
+
+  toAbsolute(value:number): number{ //Returns the necessary amount of presses to match selected spice amount
+    return value/0.125;
   }
 }
 
