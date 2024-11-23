@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Recipe, SpiceMeasurement } from '../models/recipe.model';
 import { RecipeService } from '../recipe-service/recipe.service';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -13,8 +15,8 @@ import { CommonModule } from '@angular/common';
 })
 export class RecipeComponent {
   recipes: Recipe[] = [];
-  currentRecipe: Recipe = { name: '', ingredients: [] };
-  newSpice: SpiceMeasurement = { spice: '', measurement: '' };
+  currentRecipe: Recipe = { recipeName: '', spices: [] };
+  newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
 
  
@@ -24,66 +26,77 @@ export class RecipeComponent {
     '1 teaspoon', '1 1/2 teaspoons', '1 tablespoon'
   ];
 
-  constructor(private recipeService: RecipeService, private router: Router) { // Inject Router
-    this.recipes = this.recipeService.getRecipes();
-  }
+  constructor(private recipeService: RecipeService, private router: Router, private http: HttpClient) {} // Inject Router
+  
 
  
   setRecipeName(event: Event) {
-    this.currentRecipe.name = (event.target as HTMLInputElement).value;
+    this.currentRecipe.recipeName = (event.target as HTMLInputElement).value;
   }
 
  
   selectSpice(event: Event) {
-    this.newSpice.spice = (event.target as HTMLSelectElement).value;
+    this.newSpice.spiceName = (event.target as HTMLSelectElement).value;
   }
 
 
   selectMeasurement(event: Event) {
-    this.newSpice.measurement = (event.target as HTMLSelectElement).value;
+    this.newSpice.spiceMeasurement = (event.target as HTMLSelectElement).value;
   }
 
   addIngredient() {
-    if (this.newSpice.spice && this.newSpice.measurement) {
-      this.currentRecipe.ingredients.push({ ...this.newSpice });
-      this.newSpice = { spice: '', measurement: '' }; 
+    if (this.newSpice.spiceName && this.newSpice.spiceMeasurement) {
+      this.currentRecipe.spices.push({ ...this.newSpice });
+      this.newSpice = { spiceName: '', spiceMeasurement: '' }; 
       this.currentRecipe = { ...this.currentRecipe };
     }
   }
 
   removeIngredient(index: number) {
-    this.currentRecipe.ingredients.splice(index, 1);
+    this.currentRecipe.spices.splice(index, 1);
 
     this.currentRecipe = { ...this.currentRecipe };
   }
 
   saveOrUpdateRecipe() {
-    if (this.currentRecipe.name && this.currentRecipe.ingredients.length > 0) {
+    if (this.currentRecipe.recipeName && this.currentRecipe.spices.length > 0) {
       if (this.isEditing) {
         this.recipeService.updateRecipe({ ...this.currentRecipe });
       } else {
         this.recipeService.addRecipe({ ...this.currentRecipe });
       }
-      this.recipes = this.recipeService.getRecipes();
       this.resetCurrentRecipe();
+      window.location.reload()
     }
   }
 
   editRecipe(recipe: Recipe) {
     this.isEditing = true;
-    this.currentRecipe = { ...recipe, ingredients: [...recipe.ingredients] };
+    this.currentRecipe = { ...recipe, spices: [...recipe.spices] };
   }
 
   deleteRecipe(recipe: Recipe) {
     this.recipeService.deleteRecipe(recipe);
-    this.recipes = this.recipeService.getRecipes();
+    window.location.reload()
   }
 
   resetCurrentRecipe() {
-    this.currentRecipe = { name: '', ingredients: [] };
+    this.currentRecipe = { recipeName: '', spices: [] };
     this.isEditing = false;
-    this.newSpice = { spice: '', measurement: '' };
+    this.newSpice = { spiceName: '', spiceMeasurement: '' };
   }
+
+  getRecipes(): Observable<any> {    
+    return this.http.get("http://localhost:4000/getRecipes");
+  }
+
+  ngOnInit() {
+    this.getRecipes().subscribe((data) => {
+      console.log(data)
+      this.recipes = data;
+    });
+  }
+
   goBack() {
     this.router.navigate(['/']);
   }

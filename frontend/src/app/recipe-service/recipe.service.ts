@@ -1,36 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from '../models/recipe.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
-  private recipes: Recipe[] = [];
 
-  constructor() {}
-
-  getRecipes(): Recipe[] {
-    return this.recipes;
-  }
+  constructor(private http: HttpClient) {}
 
   addRecipe(recipe: Recipe): void {
-  
-    if (!recipe.id) {
-      recipe.id = this.recipes.length > 0 ? Math.max(...this.recipes.map(r => r.id || 0)) + 1 : 1;
-    }
-    this.recipes.push(recipe);
+
+    this.http.post("http://localhost:4000/addRecipe",recipe).subscribe(res => {
+    })
   }
 
   updateRecipe(updatedRecipe: Recipe): void {
 
-    const index = this.recipes.findIndex(recipe => recipe.id === updatedRecipe.id);
-    if (index !== -1) {
-    
-      this.recipes[index] = updatedRecipe;
-    }
+    this.http.post("http://localhost:4000/updateRecipe", updatedRecipe).subscribe(res => {
+    })
   }
 
   deleteRecipe(recipeToDelete: Recipe): void {
-    this.recipes = this.recipes.filter(recipe => recipe.id !== recipeToDelete.id);
+    
+    this.http.post("http://localhost:4000/deleteRecipe",recipeToDelete).subscribe(res => {
+    })
   }
 }

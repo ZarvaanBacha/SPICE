@@ -1,10 +1,10 @@
 export interface SpiceMeasurement {
-    spice: string;
-    measurement: string;
+    spiceName: string;
+    spiceMeasurement: string;
   }
   
   export interface Recipe {
     id?: number;
-    name: string;
-    ingredients: SpiceMeasurement[];
+    recipeName: string;
+    spices: SpiceMeasurement[];
   }
