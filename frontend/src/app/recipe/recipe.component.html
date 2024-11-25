@@ -1,54 +1,56 @@
-<div class="recipe-form">
-  <h2>{{ isEditing ? 'Edit Recipe' : 'Create Recipe' }}</h2>
-
- 
-  <label for="recipeName">Recipe Name:</label>
-  <input id="recipeName" type="text" (input)="setRecipeName($event)" placeholder="Enter recipe name" />
-
-  <label for="spice">Select Spice:</label>
-  <select id="spice" (change)="selectSpice($event)">
-    <option value="" disabled selected>--Select a Spice--</option>
-    <option *ngFor="let spice of spiceOptions" [value]="spice">{{ spice }}</option>
-  </select>
-
-
-  <label for="measurement">Select Measurement:</label>
-  <select id="measurement" (change)="selectMeasurement($event)">
-    <option value="" disabled selected>--Select a Measurement--</option>
-    <option *ngFor="let measurement of measurementOptions" [value]="measurement">{{ measurement }}</option>
-  </select>
-
-
-  <button (click)="addIngredient()">Add Ingredient</button>
-
- 
-  <ul>
-    <li *ngFor="let ingredient of currentRecipe.spices; let i = index">
-      {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}
-      <button (click)="removeIngredient(i)">Remove</button>
-    </li>
-  </ul>
+<div class="background">
+  <div class="recipe-form">
+    <h2>{{ isEditing ? 'Edit Recipe' : 'Create Recipe' }}</h2>
 
   
-  <button (click)="saveOrUpdateRecipe()">{{ isEditing ? 'Update Recipe' : 'Save Recipe' }}</button>
+    <label for="recipeName">Recipe Name:</label>
+    <input id="recipeName" type="text" (input)="setRecipeName($event)" placeholder="Enter recipe name" />
 
- 
-  <button (click)="goBack()">Back</button>
-</div>
+    <label for="spice">Select Spice:</label>
+    <select id="spice" (change)="selectSpice($event)">
+      <option value="" disabled selected>--Select a Spice--</option>
+      <option *ngFor="let spice of spiceOptions" [value]="spice">{{ spice }}</option>
+    </select>
 
 
-<div class="recipe-list">
-  <h2>Saved Recipes</h2>
-  <ul>
-    <li *ngFor="let recipe of recipes">
-      <strong>{{ recipe.recipeName }}</strong>
-      <button (click)="editRecipe(recipe)">Edit</button>
-      <button (click)="deleteRecipe(recipe)">Delete</button>
-      <ul>
-        <li *ngFor="let ingredient of recipe.spices">
-          {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}
-        </li>
-      </ul>
-    </li>
-  </ul>
+    <label for="measurement">Select Measurement:</label>
+    <select id="measurement" (change)="selectMeasurement($event)">
+      <option value="" disabled selected>--Select a Measurement--</option>
+      <option *ngFor="let measurement of measurementOptions" [value]="measurement">{{ measurement }}</option>
+    </select>
+
+
+    <button (click)="addIngredient()">Add Ingredient</button>
+
+  
+    <ul>
+      <li *ngFor="let ingredient of currentRecipe.spices; let i = index">
+        {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}
+        <button class="removeButton" (click)="removeIngredient(i)">Remove</button>
+      </li>
+    </ul>
+
+    
+    <button class="saveRecipe" (click)="saveOrUpdateRecipe()">{{ isEditing ? 'Update Recipe' : 'Save Recipe' }}</button>
+
+  
+    <button class="backButton" (click)="goBack()">Back</button>
+  </div>
+
+
+  <div class="recipe-list">
+    <h2>Saved Recipes</h2>
+    <ul>
+      <li *ngFor="let recipe of recipes">
+        <strong>{{ recipe.recipeName }}</strong>
+        <button (click)="editRecipe(recipe)">Edit</button>
+        <button (click)="deleteRecipe(recipe)">Delete</button>
+        <ul>
+          <li *ngFor="let ingredient of recipe.spices">
+            {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </div>

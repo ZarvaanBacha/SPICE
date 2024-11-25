@@ -1,27 +1,17 @@
 .spice-container {
-  display: flex;
   flex-direction: column;
   justify-content: center; 
   align-items: center; 
   font-family: Arial, sans-serif;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  width: 50vw; 
+  background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+  width: 100vw;
   height: 100vh;
-  position: absolute;
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
-  background-color: #EEEEEE;
-  box-sizing: border-box;
 }
 .back-button {
   margin-bottom: 10px; 
   padding: 10px 15px;  
-  background-color: hsl(87, 46%, 31%); 
+  background-color: #2A6A2D; 
   border: none; 
-  border-radius: 5px; 
   cursor: pointer; 
 }
 
@@ -57,15 +47,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 40px; 
 }
 
 .increment-decrement {
-  padding: 30px 50px;
   font-size: 2em;
-  margin: 20px 0;
   cursor: pointer;
-  background-color: hsl(87, 45%, 45%);
+  background-color: #46B34B;;
   color: white;
   border: none;
   border-radius: 10px;
@@ -81,22 +68,25 @@ button {
   font-size: 1.5em;
   cursor: pointer;
   border-radius: 5px;
+  border: none;
+  background:#53732B;
+  margin: 0.1em;
 }
 
 .reset-button {
-  background-color: hsl(87, 45%, 38%);
-  color: white;
+  background-color: #2A6A2D;
+  color: black;
   border: none;
   width: 100%;
   margin-bottom: 20px;
 }
 
   .reset-button:hover {
-    background-color: hsl(87, 45%, 28%);
+    background-color: #2A6A2D;
   }
 
 .dispense-button {
-  background-color: hsl(87, 46%, 55%);
+  background-color: #388E3C;
   color: black;
   border: none;
   width: 100%;
@@ -106,7 +96,7 @@ button {
 }
 
   .dispense-button:hover {
-    background-color: hsl(87, 46%, 25%);
+    background-color: #388E3C;
   }
 
 .increment-options {
@@ -123,5 +113,5 @@ button {
       margin-right: 0;
     }
 .increment-buttons button {
-  background-color: #91C056;
+  background-color: #46B34B;
 }

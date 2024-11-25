@@ -42,10 +42,16 @@ io.on("connection", (socket) => {
     //  console.log('timer', timerOut);
     //  console.log('interval ',interval );
     //  setTimeout(endBlink, timerOut);
- 
-    isDone = true;
-     io.emit('finished', isDone); // Broadcasting the message to all clients that Dispensing is finished
-     console.log('Sent message:', isDone);
+    
+    setTimeout(()=>{//SIMULATES dispense time, Delete
+      isDone = true;
+      io.emit('finished', isDone); // Broadcasting the message to all clients that Dispensing is finished
+      console.log('Sent message:', isDone);
+
+    }, 5000);
+    // isDone = true;
+    //  io.emit('finished', isDone); // Broadcasting the message to all clients that Dispensing is finished
+    //  console.log('Sent message:', isDone);
 });
 
 });

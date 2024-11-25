@@ -10,24 +10,26 @@
     justify-content: center;
     flex-direction: column;
   }
-
+/* .background{
+  background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+  background-color: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+  color: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  border: none;
+} */
 .spiceContainer {
     display: flex;
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
     font-family: Arial, sans-serif;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 50vw; 
+    background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
     height: 100vh;
-    position: absolute;
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    background-color: #EEEEEE;
-    box-sizing: border-box;
+    width: 100vw;
+    margin: 0;
   }
 
 .spiceButton {
@@ -35,22 +37,43 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    color: white;
-    border: none;
     width: 100%;
     margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #46B34B;
   }
 button {
     padding: 20px 30px;
     font-size: 1.5em;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
   }
 .continueButton{
-    background-color: #91C056;
+    background-color: #388E3C;
     color: white;
+    border-radius: 10px;
+    margin: 20px;
+    border: 0;
+}
+.continueButton:disabled{
+  background-color: hsla(123, 43%, 39%, 0.199);
+  color: hsla(0, 0%, 100%, 0.199);
 }
 .continueButton:hover{
   background-color: hsl(87, 46%, 45%);
   color: white;
+  border: 0;
+}
+.back-button{
+  color: white;
+  background-color: #2A6A2D;
+  border-radius: 10px;
+  margin: 20px;
+  border: 0;
+}
+.controlButtons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

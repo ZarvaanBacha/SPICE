@@ -3,10 +3,11 @@ button {
     font-size: 1.5em;
     cursor: pointer;
     border-radius: 5px;
-    background-color: hsl(87, 45%, 38%);
+    background-color: #46B34B;
     display: block;
     width: 100%;
-    color: white;
+    color: black;
+    border: 0;
   }
 
   button:hover {

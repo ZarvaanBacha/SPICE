@@ -18,6 +18,7 @@
     align-items: center;
     justify-content: center;
     padding-left: 20px;
+    animation: shake 1s infinite;
   }
   .sprinkles{
     position: absolute;
@@ -25,4 +26,31 @@
   .sprinkles {
     bottom: 35px;
     left: 60px;
+    animation-name: showHide;
+    animation-duration: 1s;
+    animation-timing-function: steps(3, end);
+    animation-delay: 0;
+    animation-iteration-count: infinite;
+    animation-direction: forwards;
+
+  }
+
+  @keyframes showHide {
+    0% {
+        opacity: 1;
+    }
+    33% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+  }
+
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    80% { transform: rotate(0deg); }
+    85% { transform: rotate(5deg); }
+    95% { transform: rotate(-5deg); }
+   100% { transform: rotate(0deg); }
   }

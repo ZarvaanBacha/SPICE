@@ -1,16 +1,18 @@
 
-
-<div class="spiceContainer">
-    <div class="infoText">
-        <h1>Selected Spice:</h1>
-        <h2>{{selectedSpice}}</h2>
+    <div class="spiceContainer">
+        <div class="infoText">
+            <h1>Selected Spice:</h1>
+            <h2>{{selectedSpice}}</h2>
+        </div>
+        <div class="buttonContainer">
+        @for (spice of spiceList ; track spice){
+            <app-spice-button class="spiceButton" [spice]="spice" [(ngModel)]="selectedSpice" (click)="isSpiceSelected()"> {{spice.name}}</app-spice-button>
+            }
+            <!-- <app-spice-button *ngfor="let spicey of spiceList" [spice]="spicey"></app-spice-button> -->
+        </div>
+       <div class="controlButtons">
+        <button class="back-button" (click)="goBack()">Back</button>    
+        <button class="continueButton" type="button"(click)="goToDispense()" [disabled]="!spiceSelected">Select</button>
+            
+        </div>
     </div>
-    <div class="buttonContainer">
-    @for (spice of spiceList ; track spice){
-        <app-spice-button class="spiceButton" [spice]="spice" [(ngModel)]="selectedSpice"> {{spice.name}}</app-spice-button>
-        }
-        <!-- <app-spice-button *ngfor="let spicey of spiceList" [spice]="spicey"></app-spice-button> -->
-    </div>
-    <button class="continueButton" type="button"(click)="goToDispense()">></button>
-    <button class="back-button" (click)="goBack()">Back</button>
-</div>

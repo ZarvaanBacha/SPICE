@@ -19,6 +19,7 @@ export class SpiceSelectComponent {
   // url = 'http://localhost:3000/spice';  
   selectSpice : FormControl = new FormControl('');
   selectedSpice: string = "Choose a Spice";
+  spiceSelected: boolean = false;
   spiceList: Spice[] = [
         {      
           id: 0,      
@@ -43,7 +44,9 @@ export class SpiceSelectComponent {
         ];
 
         constructor(private router: Router) {}
-
+        isSpiceSelected(){
+          this.spiceSelected = true;
+        }
         goToDispense() {
           this.router.navigate(['/dispense']); // Navigate to the spice dispenser page
         } 
