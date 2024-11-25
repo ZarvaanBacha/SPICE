@@ -41,6 +41,9 @@ export class SpiceDispenserComponent implements OnDestroy {
     this.messageSubscription.unsubscribe();
   }
 
+  loading(){
+    this.router.navigate(['/loading']);
+  }
   goBack() {
     this.router.navigate(['/spice-select']); // Navigate back to the spice select page
   }

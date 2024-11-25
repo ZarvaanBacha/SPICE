@@ -12,10 +12,10 @@ export class SocketService {
     this.socket = io('http://localhost:3000');
    }
 
-   emit(event:string, data: any){
+   emit(event:string, data: any){ //String identifies emit and generates a sends a message
     this.socket.emit(event, data);
    }
-   on(event: string): Observable<any> {
+   on(event: string): Observable<any> { //String Identifies the event and generates a new socket
     return new Observable((observer) => {
       this.socket.on(event, (data) => {
         observer.next(data);

@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  .shaker{
+    position: relative;
+    margin: 10px;
+    height: 450px;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+  }
+  .sprinkles{
+    position: absolute;
+  }
+  .sprinkles {
+    bottom: 35px;
+    left: 60px;
+  }
