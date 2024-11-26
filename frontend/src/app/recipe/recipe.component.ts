@@ -5,13 +5,12 @@ import { RecipeService } from '../recipe-service/recipe.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module';
 @Component({
-  standalone: true,
+  standalone: false,
   selector: 'app-recipe',
-  imports: [CommonModule],
   templateUrl: './recipe.component.html',
-  styleUrls: ['./recipe.component.css']
+  styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
   recipes: Recipe[] = [];
@@ -31,6 +30,7 @@ export class RecipeComponent {
 
  
   setRecipeName(event: Event) {
+    console.log(this.currentRecipe.recipeName);//Test 
     this.currentRecipe.recipeName = (event.target as HTMLInputElement).value;
   }
 

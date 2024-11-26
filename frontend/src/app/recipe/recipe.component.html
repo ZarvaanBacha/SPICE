@@ -4,7 +4,7 @@
 
   
     <label for="recipeName">Recipe Name:</label>
-    <input id="recipeName" type="text" (input)="setRecipeName($event)" placeholder="Enter recipe name" />
+    <input id="recipeName" type="text" (input)="setRecipeName($event)" placeholder="Enter recipe name" ngxTouchKeyboard #touchKeyboard="ngxTouchKeyboard" (focus)="touchKeyboard.openPanel()" />
 
     <label for="spice">Select Spice:</label>
     <select id="spice" (change)="selectSpice($event)">
@@ -53,4 +53,5 @@
       </li>
     </ul>
   </div>
+
 </div>
