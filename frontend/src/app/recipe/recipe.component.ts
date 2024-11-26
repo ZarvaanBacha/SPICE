@@ -17,7 +17,6 @@ export class RecipeComponent {
   currentRecipe: Recipe = { recipeName: '', spices: [] };
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
-
  
   spiceOptions: string[] = ['Salt', 'Pepper', 'Paprika', 'Cumin', 'Cinnamon'];
   measurementOptions: string[] = [
@@ -30,7 +29,6 @@ export class RecipeComponent {
 
  
   setRecipeName(event: Event) {
-    console.log(this.currentRecipe.recipeName);//Test 
     this.currentRecipe.recipeName = (event.target as HTMLInputElement).value;
   }
 
