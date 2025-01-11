@@ -1,0 +1,52 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Header Styling */
+h1 {
+    font-size: 2.5rem;
+    color: #444;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Link Container */
+div {
+    display: flex;
+    flex-direction: column; /* Change to column layout */
+    gap: 15px; /* Space between buttons */
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Link Styling */
+a {
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #28a745; /* Green color */
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    width: 120px; /* Set a consistent width for buttons */
+}
+
+a:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: scale(1.05);
+}
+
+a:active {
+    background-color: #1e7e34; /* Even darker green on click */
+}

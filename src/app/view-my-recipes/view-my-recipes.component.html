@@ -1,0 +1,15 @@
+<h1>Recipes</h1>
+<div class="scrollable-container">
+  <ul>
+    <li *ngFor="let recipe of recipes">
+      <strong>{{ recipe.recipeName }}</strong>
+      <ul>
+        <li *ngFor="let spice of recipe.spices">
+          {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div>
+</div>

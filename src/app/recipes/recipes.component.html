@@ -1,0 +1,47 @@
+  <div class="container">  
+    
+    <h1> Add Recipe </h1>  
+      
+    <form [formGroup]="productForm">
+      <p>  
+        <label for="recipeName">Recipe Name:</label>  
+        <input type="text" id="recipeName" name="recipeName" formControlName="recipeName" class="form-control">  
+      </p>  
+      
+      <table class="table table-bordered" formArrayName="spices">  
+        <tr>  
+          <th colspan="2">Add Spices:</th>  
+          <th width="150px"><button type="button" (click)="addSpice()" class="btn btn-primary">Add More</button></th>  
+        </tr>  
+        <tr *ngFor="let quantity of spices().controls; let i=index" [formGroupName]="i">  
+          <td>  
+              Spice:  
+              <input type="text" formControlName="spiceName" class="form-control">  
+          </td>  
+          <td>  
+              Amount:  
+              <select formControlName="spiceMeasurement" class="form-control">
+                <option>1/8 teaspoon</option>
+                <option>1/4 teaspoon</option>
+                <option>1/2 teaspoon</option>
+                <option>3/4 teaspoon</option>
+                <option>1 teaspoon</option>
+                <option>1 and 1/8 teaspoon</option>
+                <option>1 and 1/4 teaspoon</option>
+                <option>1 and 1/2 teaspoon</option>
+                <option>1 and 3/4 teaspoon</option>
+                <option>2 teaspoon</option>
+              </select>
+          </td>  
+          <td>  
+              <button (click)="removeSpice(i)" class="btn btn-danger">Remove</button>  
+          </td>  
+        </tr>  
+      </table>  
+       
+      <button type="submit" (click)="onSubmit()">Submit</button>  
+        
+    </form>  
+        
+    <br/>  
+  </div>  

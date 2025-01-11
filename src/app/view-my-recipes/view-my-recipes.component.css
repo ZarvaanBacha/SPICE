@@ -1,0 +1,96 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  
+  /* Header Styling */
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #007bff;
+  }
+  
+  /* Scrollable Container */
+  .scrollable-container {
+    width: 80%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 400px; /* Height of the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  /* Recipe List Styling */
+  .scrollable-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .scrollable-container li {
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .scrollable-container li strong {
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  /* Inner List (Spices) */
+  .scrollable-container li ul {
+    list-style-type: disc;
+    margin: 10px 0 0 20px;
+    padding: 0;
+  }
+  
+  .scrollable-container li ul li {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Hover Effects */
+  .scrollable-container li:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+  }
+  
+  /* Custom Scrollbar */
+  .scrollable-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
