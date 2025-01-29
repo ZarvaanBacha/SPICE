@@ -78,6 +78,10 @@ export class RecipeComponent {
     window.location.reload()
   }
 
+  shareRecipe(recipe: Recipe) {
+
+  }
+
   resetCurrentRecipe() {
     this.currentRecipe = { recipeName: '', spices: [] };
     this.isEditing = false;
