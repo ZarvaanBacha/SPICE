@@ -35,17 +35,17 @@ export class SigninComponent {
   onSubmit(email: string, password: string){
     const authUser: SignInModel = {email: email, password: password}
 
-    this.http.post<{userId: Object,email: string, token: string}>("http://localhost:3000/signin",authUser).subscribe(res => {
-      this.authenticatedId = res.userId
-      this.authenticatedEmail = res.email
-      this.token = res.token
-      console.log(this.token)
-      const httpHeaders: HttpHeaders = new HttpHeaders({
-        Authorization: 'Hi'
-      });
-      console.log(httpHeaders.get("Authorization"))
-      // this.http.post(url, body, { headers: httpHeaders });
-      // location.assign("authenticated/home")
-    })
+    // this.http.post<{userId: Object,email: string, token: string}>("http://localhost:3000/signin",authUser).subscribe(res => {
+    //   this.authenticatedId = res.userId
+    //   this.authenticatedEmail = res.email
+    //   this.token = res.token
+    //   console.log(this.token)
+    //   // const httpHeaders: HttpHeaders = new HttpHeaders({
+    //   //   Authorization: 'Hi'
+    //   // });
+    //   // console.log(httpHeaders.get("Authorization"))
+    //   // this.http.post(url, body, { headers: httpHeaders });
+    // })
+    location.assign("authenticated/home")
   }
 }
