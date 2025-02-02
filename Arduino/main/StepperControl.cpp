@@ -1,19 +1,25 @@
 #include "StepperControl.h"
 
-StepperControl::StepperControl(int stepPin, int dirPin, int enablePin) {
+StepperControl::StepperControl(int stepPin, int dirPin, int enablePin, int sleepPin) {
     _stepPin = stepPin;
     _dirPin = dirPin;
     _enablePin = enablePin;
+    _sleepPin = sleepPin;
 
     pinMode(_stepPin, OUTPUT);
     pinMode(_dirPin, OUTPUT);
     pinMode(_enablePin, OUTPUT);
-    
+    pinMode(_sleepPin, OUTPUT);
+
     digitalWrite(_enablePin, HIGH);  // Disable motor initially
+    digitalWrite(_sleepPin, LOW);    // Put driver in sleep mode initially
 }
 
 void StepperControl::moveStepper(int direction, int steps, int aggression) {
-    digitalWrite(_enablePin, LOW);  // Enable motor before movement
+    digitalWrite(_sleepPin, HIGH);  // Wake up driver
+    delay(1);  // Small delay to wake up properly
+
+    digitalWrite(_enablePin, LOW);  // Enable motor
     digitalWrite(_dirPin, direction);
 
     int stepDelay = getStepDelay(aggression); 
@@ -29,7 +35,8 @@ void StepperControl::moveStepper(int direction, int steps, int aggression) {
 }
 
 void StepperControl::disableMotor() {
-    digitalWrite(_enablePin, HIGH);  // Disable motor to reduce heating
+    digitalWrite(_enablePin, HIGH);  // Disable motor
+    digitalWrite(_sleepPin, LOW);    // Put driver in sleep mode
 }
 
 int StepperControl::getStepDelay(int aggression) {
