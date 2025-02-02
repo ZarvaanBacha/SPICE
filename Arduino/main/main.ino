@@ -2,8 +2,9 @@
 
 #define STEP_PIN 9
 #define DIR_PIN 8
+#define ENABLE_PIN 7
 
-StepperControl stepper(STEP_PIN, DIR_PIN);
+StepperControl stepper(STEP_PIN, DIR_PIN, ENABLE_PIN);
 String inputString = "";
 
 void setup() {

@@ -5,12 +5,14 @@
 
 class StepperControl {
 public:
-    StepperControl(int stepPin, int dirPin);
+    StepperControl(int stepPin, int dirPin, int enablePin);
     void moveStepper(int direction, int steps, int aggression);
+    void disableMotor();
 
 private:
     int _stepPin;
     int _dirPin;
+    int _enablePin;
     int getStepDelay(int aggression);
 };
 
