@@ -1,51 +1,33 @@
-#include "StepperControl.h"
+#ifndef STEPPER_CONTROL_H
+#define STEPPER_CONTROL_H
 
-StepperControl::StepperControl(int stepPin, int dirPin, int enablePin, int sleepPin) {
-    _stepPin = stepPin;
-    _dirPin = dirPin;
-    _enablePin = enablePin;
-    _sleepPin = sleepPin;
+#include <Arduino.h>
 
-    pinMode(_stepPin, OUTPUT);
-    pinMode(_dirPin, OUTPUT);
-    pinMode(_enablePin, OUTPUT);
-    pinMode(_sleepPin, OUTPUT);
+class StepperControl {
+public:
+    // Constructor takes STEP, DIR, ENABLE, and SLEEP pins.
+    StepperControl(int stepPin, int dirPin, int enablePin, int sleepPin);
 
-    digitalWrite(_enablePin, HIGH);  // Disable motor initially
-    digitalWrite(_sleepPin, LOW);    // Put driver in sleep mode initially
-}
+    /**
+     * Moves the stepper motor.
+     * @param direction: 1 for forward, 0 for reverse.
+     * @param steps: Total number of steps.
+     * @param aggression: Controls target speed (1=slow, 5=fast).
+     * @param acceleration: Controls ramp profile (e.g., 1-10, where lower is a slower ramp).
+     */
+    void moveStepper(int direction, int steps, int aggression, int acceleration);
 
-void StepperControl::moveStepper(int direction, int steps, int aggression) {
-    digitalWrite(_sleepPin, HIGH);  // Wake up driver
-    delay(1);  // Small delay to wake up properly
+    // Puts the driver into low-power sleep mode.
+    void disableMotor();
 
-    digitalWrite(_enablePin, LOW);  // Enable motor
-    digitalWrite(_dirPin, direction);
+private:
+    int _stepPin;
+    int _dirPin;
+    int _enablePin;
+    int _sleepPin;
 
-    int stepDelay = getStepDelay(aggression); 
+    // Returns the target step delay (in microseconds) based on the aggression level.
+    int getTargetDelay(int aggression);
+};
 
-    for (int i = 0; i < steps; i++) {
-        digitalWrite(_stepPin, HIGH);
-        delay(stepDelay);   // Use delay() for extra slow motion
-        digitalWrite(_stepPin, LOW);
-        delay(stepDelay);
-    }
-
-    disableMotor();  // Disable motor after movement
-}
-
-void StepperControl::disableMotor() {
-    digitalWrite(_enablePin, HIGH);  // Disable motor
-    digitalWrite(_sleepPin, LOW);    // Put driver in sleep mode
-}
-
-int StepperControl::getStepDelay(int aggression) {
-    switch (aggression) {
-        case 1: return 8;    // **Very slow**
-        case 2: return 5;    // Slower
-        case 3: return 3;    // Medium slow
-        case 4: return 2;    // Medium
-        case 5: return 1;    // Fast
-        default: return 3;   // Default speed
-    }
-}
+#endif
