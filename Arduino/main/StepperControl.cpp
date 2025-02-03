@@ -24,12 +24,12 @@ int StepperControl::getTargetDelay(int aggression) {
     // Map aggression (1 to 5) to a target delay.
     // Lower aggression results in a higher (slower) target speed.
     switch (aggression) {
-        case 1: return 2000; // Slow target speed
+        case 1: return 4000; // Slow target speed
         case 2: return 1500;
         case 3: return 1000;
         case 4: return 700;
         case 5: return 400;  // Fast target speed
-        default: return 1000; // Default target delay if out-of-range
+        default: return 4000; // Default target delay if out-of-range
     }
 }
 
