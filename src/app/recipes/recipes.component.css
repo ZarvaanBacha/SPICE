@@ -1,145 +1,196 @@
 /* General Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  /* Container Styling */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #90c290;
+  color: #333;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Container Styling */
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c5a2c;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+/* Form Styling */
+form {
+  width: 100%;
+}
+
+form p {
+  margin-bottom: 18px;
+}
+
+form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #2c5a2c;
+  font-size: 0.95rem;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 5px 0 12px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #68a368;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(104, 163, 104, 0.2);
+  background-color: #fff;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin: 20px 0;
+}
+
+table th {
+  background-color: #68a368;
+  color: #fff;
+  text-align: left;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+table td {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: none;
+}
+
+table tr {
+  transition: all 0.2s ease;
+}
+
+table tr:hover {
+  background-color: #f0f7f0;
+}
+
+table input {
+  width: 95%;
+  border-radius: 6px;
+}
+
+/* Button Styling */
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+button:focus {
+  outline: none;
+}
+
+.btn-primary {
+  background-color: #68a368;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #558855;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background-color: #e57373;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #ef5350;
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: #68a368;
+  color: #fff;
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.btn-success:hover {
+  background-color: #558855;
+  transform: translateY(-1px);
+}
+
+/* Add Ingredient Button */
+.add-ingredient-btn {
+  background-color: #90c290;
+  color: white;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.add-ingredient-btn:hover {
+  background-color: #7eb37e;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
   .container {
-    width: 80%;
-    max-width: 800px;
-    margin: 20px auto;
-    background: #ffffff;
+    width: 95%;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Header */
-  .container h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #5a5a5a;
+
+  table th,
+  table td {
+    font-size: 0.9rem;
+    padding: 10px;
   }
-  
-  /* Form Styling */
-  form {
-    width: 100%;
+
+  button {
+    font-size: 0.95rem;
+    padding: 10px 16px;
   }
-  
-  form p {
-    margin-bottom: 15px;
-  }
-  
-  form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
+
   form input,
   form select {
-    width: 100%;
-    padding: 8px 10px;
-    margin: 5px 0 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  form input:focus,
-  form select:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  }
-  
-  /* Table Styling */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-  
-  table th {
-    background-color: #007bff;
-    color: #fff;
-    text-align: left;
     padding: 10px;
   }
-  
-  table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  table input {
-    width: 95%;
-  }
-  
-  /* Button Styling */
-  button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  
-  .btn-primary {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .btn-danger {
-    background-color: #dc3545;
-    color: #fff;
-  }
-  
-  .btn-danger:hover {
-    background-color: #c82333;
-  }
-  
-  .btn-success {
-    background-color: #28a745;
-    color: #fff;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 600px) {
-    .container {
-      width: 95%;
-    }
-  
-    table th,
-    table td {
-      font-size: 0.9rem;
-      padding: 8px;
-    }
-  
-    button {
-      font-size: 0.9rem;
-    }
-  }
-  
+}
+

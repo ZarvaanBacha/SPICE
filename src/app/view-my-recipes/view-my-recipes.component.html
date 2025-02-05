@@ -2,7 +2,14 @@
 <div class="scrollable-container">
   <ul>
     <li *ngFor="let recipe of recipes">
-      <strong>{{ recipe.recipeName }}</strong>
+      <div class="recipe-header">
+        <strong>{{ recipe.recipeName }}</strong>
+        <div class="recipe-actions">
+          <button class="btn btn-edit" (click)="editRecipe()">Edit</button>
+          <button class="btn btn-share" (click)="shareRecipe()">Share</button>
+          <button class="btn btn-delete" (click)="deleteRecipe()">Delete</button>
+        </div>
+      </div>
       <ul>
         <li *ngFor="let spice of recipe.spices">
           {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
@@ -11,5 +18,4 @@
     </li>
   </ul>
 </div>
-<div>
-</div>
+

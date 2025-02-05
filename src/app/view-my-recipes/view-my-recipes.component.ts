@@ -24,4 +24,16 @@ export class ViewMyRecipesComponent {
       this.recipes = data;
     });
   }
+
+  shareRecipe(){
+
+  }
+
+  editRecipe(){
+
+  }
+
+  deleteRecipe(){
+    
+  }
 }
