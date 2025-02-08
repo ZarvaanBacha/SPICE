@@ -12,7 +12,8 @@ body {
 }
 
 /* Header Styling */
-h1 {
+h3 {
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 2.5rem;
     color: #444;
     text-align: center;
@@ -31,6 +32,7 @@ div {
 
 /* Link Styling */
 a {
+    font-family: Arial, Helvetica, sans-serif;
     text-decoration: none;
     font-size: 1.2rem;
     color: #fff;
@@ -50,3 +52,4 @@ a:hover {
 a:active {
     background-color: #1e7e34; /* Even darker green on click */
 }
+

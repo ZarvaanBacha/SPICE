@@ -1,59 +1,91 @@
 /* Reset some basic styling */
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
+} */
+/* 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #46B34B;
+    color: #69C46D;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
+} */
 
 /* Center the header */
-header {
+/* header {
     display: flex;
+    background-color: #46B34B;
     justify-content: center;
     background-color: #333;
     width: 100%;
     padding: 20px;
-}
+} */
 
 /* Center the main navigation container */
-header > div {
+/* header > div {
     display: flex;
+    background-color: #46B34B;
     align-items: center;
     gap: 20px;
     color: white;
-}
+} */
 
 /* SPICE logo */
-header a {
+/* header a {
     color: #ffffff;
+    background-color: #46B34B;
     text-decoration: none;
-    font-size: 1.5em;
-    font-weight: bold;
+    font-family: "Audiowide", serif;
+    font-weight: 400;
+    font-style: normal;
     margin-right: 20px;
-}
+} */
 
 /* Main nav links container */
-header span {
+/* header span {
+    background-color: #46B34B;
     display: flex;
     gap: 15px;
-}
+} */
 
 /* Style each link */
-header span a {
+/* header span a {
     color: #ffffff;
     text-decoration: none;
     font-size: 1em;
-}
+} */
 
-/* Hover effect */
+/* Hover effect
 header span a:hover {
     text-decoration: underline;
+} */
+
+
+.logo {
+    padding: 15px;
+}
+.bar {
+    background-color: #46B34B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    padding: 0;
+    border: 0;
+}
+.link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: beige;
+    text-decoration: none;
+    padding: 10px;
+    text-decoration: none;
+}
+a {
+    color: beige;
 }
