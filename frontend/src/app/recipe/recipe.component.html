@@ -50,6 +50,8 @@
         <strong>{{ recipe.recipeName }}</strong>
         <button (click)="editRecipe(recipe)">Edit</button>
         <button (click)="deleteRecipe(recipe)">Delete</button>
+        <button (click)="shareRecipe(recipe)">Share</button>
+        <button (click)="dispenseRecipe(recipe)">Dispense</button>
         <ul>
           <li *ngFor="let ingredient of recipe.spices">
             {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}

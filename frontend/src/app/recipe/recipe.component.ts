@@ -82,6 +82,10 @@ export class RecipeComponent {
 
   }
 
+  dispenseRecipe(recipe: Recipe){
+    
+  }
+
   resetCurrentRecipe() {
     this.currentRecipe = { recipeName: '', spices: [] };
     this.isEditing = false;

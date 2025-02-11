@@ -1,1 +1,21 @@
-<p>low-spice works!</p>
+<div class="background">
+    <div class="container">
+      <h2>Spices low in one or more containers:</h2>
+      <ng-container *ngIf="lowSpiceContainers.length > 0; else noLowSpices">
+        <ul>
+          <li *ngFor="let container of lowSpiceContainers">
+            <span>Container {{container.containerNumber}}: {{container.spice}}</span>
+            <span class="percentage" [ngClass]="{'critical': container.percentageLeft < 10}">
+              {{container.percentageLeft}}% left
+            </span>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #noLowSpices>
+        <p>No spices are currently low in stock.</p>
+      </ng-template>
+      <button class="back-button" (click)="goBack()">Back to Recipes</button>
+    </div>
+  </div>
+  
+  

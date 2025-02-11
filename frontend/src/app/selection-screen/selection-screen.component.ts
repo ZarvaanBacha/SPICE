@@ -19,4 +19,8 @@ export class SelectionScreenComponent {
   goToRecipes() {
     this.router.navigate(['/recipes']);
   }
+
+  goLowSpice() {
+    this.router.navigate(['/low-spice']);
+  }
 }
