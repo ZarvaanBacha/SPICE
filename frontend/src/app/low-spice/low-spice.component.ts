@@ -39,7 +39,7 @@ export class LowSpiceComponent implements OnInit{
     ]
 
     // Filter containers with less than 20% remaining
-    return allContainers.filter((container) => container.percentageLeft < 20)
+    return allContainers.filter((container) => container.percentageLeft < 10)
   }
 
   goBack() {
