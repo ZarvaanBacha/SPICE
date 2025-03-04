@@ -2,6 +2,8 @@ import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule} from "@angular/forms"
 import { HttpClient } from '@angular/common/http';
+import { FirebaseService } from '../firebase.service';
+
 
 
 @Component({
@@ -15,7 +17,7 @@ export class RecipesComponent {
     
   productForm: FormGroup;  
      
-  constructor(private fb:FormBuilder, private http: HttpClient) {  
+  constructor(private fb:FormBuilder, private http: HttpClient, private firebaseService: FirebaseService) {  
      
     this.productForm = this.fb.group({  
       recipeName: '',  
@@ -42,10 +44,21 @@ export class RecipesComponent {
     this.spices().removeAt(i);  
   }  
      
-  onSubmit() {     
-    console.log(this.productForm.value.spices.length)
-    this.http.post("http://localhost:3000/addRecipe", this.productForm.value).subscribe(res => {
-      console.log(res)
-    })
-  }  
+  async onSubmit() {     
+    if (!this.productForm.value.recipeName || this.productForm.value.spices.length === 0) {
+      alert('Please enter a recipe name and at least one spice.');
+      return;
+    }
+
+    const newRecipe = {
+      recipeName: this.productForm.value.recipeName,
+      spices: this.productForm.value.spices
+    };
+
+    await this.firebaseService.addRecipe(newRecipe);
+    console.log('Recipe added:', newRecipe);
+
+    this.productForm.reset()
+
+  }
 }

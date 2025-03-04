@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { NgFor } from '@angular/common';
+import { FirebaseService } from '../firebase.service';
 
 @Component({
   selector: 'app-view-my-recipes',
@@ -10,19 +9,24 @@ import { NgFor } from '@angular/common';
   templateUrl: './view-my-recipes.component.html',
   styleUrl: './view-my-recipes.component.css'
 })
-export class ViewMyRecipesComponent {
-  private apiUrl = 'http://localhost:3000/viewRecipes';
+export class ViewMyRecipesComponent implements OnInit{
   recipes: any[] = [];
-  constructor(private http: HttpClient) {}
-
-  getRecipes(): Observable<any> {    
-    return this.http.get(this.apiUrl);
-  }
+  
+  constructor(private firebaseService: FirebaseService) {}
 
   ngOnInit() {
-    this.getRecipes().subscribe((data) => {
-      this.recipes = data;
+    this.loadRecipes();
+  }
+
+  loadRecipes() {
+    this.firebaseService.getRecipes().subscribe(recipes => {
+      this.recipes = recipes;
+      console.log('Fetched Recipes:', this.recipes);
     });
+  }
+
+  getRecipes() {
+    
   }
 
   shareRecipe(){
@@ -33,7 +37,7 @@ export class ViewMyRecipesComponent {
 
   }
 
-  deleteRecipe(){
-    
+  deleteRecipe(idToDelete: string){
+    this.firebaseService.deleteRecipe(idToDelete)
   }
 }
