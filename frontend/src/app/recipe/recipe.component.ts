@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module';
+import { FirebaseService } from '../firebase.service';
+
 @Component({
   standalone: false,
   selector: 'app-recipe',
@@ -13,9 +15,9 @@ import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module'
   styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
-  recipes: Recipe[] = [];
-  currentRecipe: Recipe = { recipeName: '', spices: [] };
-  newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
+  recipes: any[] = [];
+  currentRecipe: any = { recipeName: '', spices: [] };
+  newSpice: any = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
  
   spiceOptions: string[] = ['Salt', 'Pepper', 'Paprika', 'Cumin', 'Cinnamon'];
@@ -24,7 +26,7 @@ export class RecipeComponent {
     '1 teaspoon', '1 1/2 teaspoons', '1 tablespoon'
   ];
 
-  constructor(private recipeService: RecipeService, private router: Router, private http: HttpClient) {} // Inject Router
+  constructor(private recipeService: RecipeService, private router: Router, private http: HttpClient, private firebaseService: FirebaseService) {} // Inject Router
   
 
  
@@ -61,10 +63,9 @@ export class RecipeComponent {
       if (this.isEditing) {
         this.recipeService.updateRecipe({ ...this.currentRecipe });
       } else {
-        this.recipeService.addRecipe({ ...this.currentRecipe });
+        this.firebaseService.addRecipe(this.currentRecipe)
       }
       this.resetCurrentRecipe();
-      window.location.reload()
     }
   }
 
@@ -74,8 +75,7 @@ export class RecipeComponent {
   }
 
   deleteRecipe(recipe: Recipe) {
-    this.recipeService.deleteRecipe(recipe);
-    window.location.reload()
+    this.firebaseService.deleteRecipe(String(recipe.id));
   }
 
   shareRecipe(recipe: Recipe) {
@@ -92,15 +92,11 @@ export class RecipeComponent {
     this.newSpice = { spiceName: '', spiceMeasurement: '' };
   }
 
-  getRecipes(): Observable<any> {    
-    return this.http.get("http://localhost:4000/getRecipes");
-  }
-
   ngOnInit() {
-    this.getRecipes().subscribe((data) => {
-      console.log(data)
-      this.recipes = data;
-    });
+
+    this.firebaseService.getRecipes().subscribe(recipes => {
+      this.recipes = recipes
+    })
   }
 
   goBack() {
