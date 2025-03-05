@@ -2,20 +2,37 @@
 <div class="scrollable-container">
   <ul>
     <li *ngFor="let recipe of recipes">
-      <div class="recipe-header">
-        <strong>{{ recipe.recipeName }}</strong>
-        <div class="recipe-actions">
-          <button class="btn btn-edit" (click)="editRecipe()">Edit</button>
-          <button class="btn btn-share" (click)="shareRecipe()">Share</button>
-          <button class="btn btn-delete" (click)="deleteRecipe(recipe.id)">Delete</button>
+      <form [formGroup]="recipeForms[recipe.id]">
+        <div class="recipe-header">
+          <strong *ngIf="!recipe.editing">{{ recipe.recipeName }}</strong>
+          <input *ngIf="recipe.editing" formControlName="recipeName" placeholder="Edit recipe name" />
+
+          <div class="recipe-actions">
+            <button class="btn btn-edit" *ngIf="!recipe.editing" (click)="editRecipe(recipe)">Edit</button>
+            <button class="btn btn-save" *ngIf="recipe.editing" (click)="saveRecipe(recipe)">Save</button>
+            <button class="btn btn-delete" (click)="deleteRecipe(recipe.id)">Delete</button>
+          </div>
         </div>
-      </div>
-      <ul>
-        <li *ngFor="let spice of recipe.spices">
-          {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
-        </li>
-      </ul>
+
+        <ul formArrayName="spices">
+          <li *ngFor="let spice of getSpices(recipe.id).controls; let i = index" [formGroupName]="i">
+            <div *ngIf="!recipe.editing">
+              {{ spice.get('spiceName')?.value }}: {{ spice.get('spiceMeasurement')?.value }}
+            </div>
+            <div *ngIf="recipe.editing">
+              <input formControlName="spiceName" placeholder="Spice Name" />
+              <select formControlName="spiceMeasurement" class="form-control">
+                <option *ngFor="let amount of spiceMeasurements">{{ amount }}</option>
+              </select>
+              <button class="btn btn-remove" (click)="removeSpice(recipe.id, i)">Remove</button>
+            </div>
+          </li>
+        </ul>
+
+        <div *ngIf="recipe.editing">
+          <button class="btn btn-add" (click)="addSpice(recipe.id)">Add Spice</button>
+        </div>
+      </form>
     </li>
   </ul>
 </div>
-
