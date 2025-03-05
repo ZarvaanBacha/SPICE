@@ -25,10 +25,6 @@ export class ViewMyRecipesComponent implements OnInit{
     });
   }
 
-  getRecipes() {
-    
-  }
-
   shareRecipe(){
 
   }
