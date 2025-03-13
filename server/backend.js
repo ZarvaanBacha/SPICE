@@ -203,13 +203,14 @@ app.post("/refillRoutine", async (req, res) => {
                 await db.collection('containers').doc(logEntry.containerId).update({
                   spiceQuantity: currentSpiceQuantity // TODO: add ,lastRefilled: new Date() ?
                 });
-
+                
                 // create reference to current logEntry to use for removal
                 logEntryRef = db.collection('containers').doc('container_' + logEntry.location);
                 // Remove spice from notifLog
                 await db.collection('device').doc('notificationLog').update({
                   log: admin.firestore.FieldValue.arrayRemove(logEntryRef)
                 });
+                console.log(`Spice ${spiceName} refilled successfully`);
               } else {
                 throw new Error(`Spice ${spiceName} was not refilled properly`); // TODO: handle this error properly in frontend
               }
