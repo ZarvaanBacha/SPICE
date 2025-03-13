@@ -139,6 +139,8 @@ export class SpiceDispenserComponent implements OnDestroy {
   toAbsolute(value:number): number{ //Returns the necessary amount of presses to match selected spice amount
     return value/0.125;
   }
+
+  //TODO add function to deal with single spice dispensing through nodejs
 }
 
 

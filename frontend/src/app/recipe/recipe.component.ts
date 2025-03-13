@@ -4,6 +4,7 @@ import { Recipe, SpiceMeasurement } from '../models/recipe.model';
 import { RecipeService } from '../recipe-service/recipe.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module';
 import { FirebaseService } from '../firebase.service';
@@ -17,7 +18,7 @@ import { FirebaseService } from '../firebase.service';
 export class RecipeComponent {
   recipes: any[] = [];
   currentRecipe: any = { recipeName: '', spices: [] };
-  newSpice: any = { spiceName: '', spiceMeasurement: '' };
+  newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
  
   spiceOptions: string[] = ['Salt', 'Pepper', 'Paprika', 'Cumin', 'Cinnamon'];
@@ -82,8 +83,42 @@ export class RecipeComponent {
 
   }
 
-  dispenseRecipe(recipe: Recipe){
-    
+  dispenseRecipe(recipe: Recipe) {
+    this.http.post('http://localhost:4000/dispenseRecipe', recipe).subscribe(
+      (response: any) => {
+        if (response.lowSpices) {
+          const lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
+          const userResponse = confirm(`The following spice containers must be refilled in order to dispense the recipe: ${lowSpicesList}\nDo you want to refill or cancel?`); //TODO: change to be custom modal?
+  
+          if (userResponse) {
+            // User chose to refill
+            this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'refill' }).subscribe(
+              (response) => {
+                console.log('Dispense output:', response);
+              },
+              (error) => {
+                console.error('Error dispensing recipe:', error);
+              }
+            );
+          } else {
+            // User chose to cancel
+            this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
+              (response) => {
+                console.log('Dispense output:', response);
+              },
+              (error) => {
+                console.error('Error dispensing recipe:', error);
+              }
+            );
+          }
+        } else {
+          console.log('Dispense output:', response);
+        }
+      },
+      (error) => {
+        console.error('Error dispensing recipe:', error);
+      }
+    );
   }
 
   resetCurrentRecipe() {
