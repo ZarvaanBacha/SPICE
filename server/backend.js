@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/spicedb-84047-firebase-adminsdk-fbsvc-1a4fa5e10b.json"); // CHANGE
+const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); // CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -32,7 +32,7 @@ async function createContainersWithBatch() {
   const batch = db.batch();
   const containerCollectionRef = db.collection(`containers`);
 
-  for (let i = 1; i <= containers; i++) {
+  for (let i = 1; i <= containers; i++) { //TODO: no need to loop, parse the output of the python script
       // TODO: use python script to get each container's info.
       // TODO: check if spice needs to be added in notiflog
       const containerDocRef = containerCollectionRef.doc(`container_${i}`);
@@ -45,6 +45,8 @@ async function createContainersWithBatch() {
           location: i, // TODO: change to actual location (depends on zarvaans python script)
           containerId: `container_${i}`
       });
+
+      // TODO: update spicelog entries
   }
 
   await batch.commit();
