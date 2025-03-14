@@ -25,15 +25,4 @@ export class SelectionScreenComponent {
   goLowSpice() {
     this.router.navigate(['/low-spice']);
   }
-
-  startRefillRoutine() {
-    this.http.post('http://localhost:4000/refillRoutine', {}).subscribe(
-      (response: any) => {
-        console.log('Refill routine output:', response);
-      },
-      (error) => {
-        console.error('Error starting refill routine:', error);
-      }
-    );
-  }
 }
