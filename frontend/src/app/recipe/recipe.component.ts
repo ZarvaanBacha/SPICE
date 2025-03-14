@@ -21,7 +21,7 @@ export class RecipeComponent {
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
  
-  spiceOptions: string[] = ['Salt', 'Pepper', 'Paprika', 'Cumin', 'Cinnamon'];
+  spiceOptions: string[] = []; // Initialize as an empty array
   measurementOptions: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
     '1 teaspoon', '1 1/2 teaspoons', '1 tablespoon'
@@ -29,7 +29,7 @@ export class RecipeComponent {
 
   constructor(private recipeService: RecipeService, private router: Router, private http: HttpClient, private firebaseService: FirebaseService) {} // Inject Router
   
-
+  
  
   setRecipeName(event: Event) {
     this.currentRecipe.recipeName = (event.target as HTMLInputElement).value;
@@ -128,10 +128,24 @@ export class RecipeComponent {
   }
 
   ngOnInit() {
+    this.fetchSpiceOptions(); // Fetch spice options on initialization
 
     this.firebaseService.getRecipes().subscribe(recipes => {
       this.recipes = recipes
     })
+  }
+
+  fetchSpiceOptions() {
+    this.http.get<SpiceContainer[]>('http://localhost:4000/api/getSpiceContainers').subscribe(
+      (response) => {
+        // Extract spice names from the response and populate spiceOptions
+        this.spiceOptions = response.map(container => container.spiceName);
+        //console.log('Spice options fetched:', this.spiceOptions);
+      },
+      (error) => {
+        console.error('Error fetching spice options:', error);
+      }
+    );
   }
 
   goBack() {
