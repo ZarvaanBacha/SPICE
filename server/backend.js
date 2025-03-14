@@ -285,7 +285,7 @@ app.post('/api/refill-spices', async (req, res) => {
           // 5. Update the spice quantity in the database
           await db.collection('containers').doc(`container_${container.containerNumber}`).update({
             spiceQuantity: currentSpiceQuantity,
-            lastRefilled: new Date(),
+            // lastRefilled: new Date(), TODO: add lastRefilled field to container document?
           });
 
           // 6. Remove the container from the notification log
@@ -311,6 +311,25 @@ app.post('/api/refill-spices', async (req, res) => {
   } catch (error) {
     console.error('Error during refill process:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/getSpiceContainers', async (req, res) => {
+  try {
+    // Fetch all containers from the database
+    const containersSnapshot = await db.collection('containers').get();
+
+    // Map the containers to extract spice names and quantities
+    const spices = containersSnapshot.docs.map(doc => ({
+      id: doc.id,
+      spiceName: doc.data().spiceName,
+      spiceQuantity: doc.data().spiceQuantity,
+    }));
+
+    res.json(spices);
+  } catch (error) {
+    console.error('Error fetching spices:', error);
+    res.status(500).json({ error: 'Failed to fetch spices' });
   }
 });
 

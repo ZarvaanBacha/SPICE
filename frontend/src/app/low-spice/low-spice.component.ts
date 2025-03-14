@@ -103,7 +103,7 @@ export class LowSpiceComponent implements OnInit{
         console.log(`Remaining containers to refill:`, remainingContainers);
   
         if (fromDispense && remainingContainers.length === 0) {
-          this.router.navigate(['/recipes']); // Automatically navigate back to the recipe page
+          this.router.navigate(['/recipes']); // TODO: use AutomatedRoute to go back to recipes page and start dispense routine for correct recipe?
         }
       },
       (error) => {
@@ -112,7 +112,7 @@ export class LowSpiceComponent implements OnInit{
     );
   }
 
-  refillSingleLowSpiceContainer(container: SpiceContainer) { //TODO: implement in backend
+  refillSingleLowSpiceContainer(container: SpiceContainer) {
     console.log('Refilling single low spice container:', container); 
     
     const spicesToRefill: SpicesToRefill = { spices: [container] }; // Initialize with the single container

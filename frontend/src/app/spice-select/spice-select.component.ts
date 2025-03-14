@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Spice } from '../spice';
+import { SpiceContainer } from '../models/recipe.model';
 import { SpiceButtonComponent } from '../spice-button/spice-button.component';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-spice-select',
@@ -12,62 +13,40 @@ import { Router } from '@angular/router';
   templateUrl: './spice-select.component.html',
   styleUrl: './spice-select.component.css'
 })
-export class SpiceSelectComponent {
-
-      
-
-  // url = 'http://localhost:3000/spice';  
-  selectSpice : FormControl = new FormControl('');
+export class SpiceSelectComponent implements OnInit {
+  selectSpice: FormControl = new FormControl('');
   selectedSpice: string = "Choose a Spice";
   spiceSelected: boolean = false;
-  spiceList: Spice[] = [
-        {      
-          id: 0,      
-          name: 'Salt',      
-          quantity: 10 
-        }
-        ,{      
-          id: 1,      
-          name: 'Pepper',      
-          quantity: 10 
-        }
-        ,{      
-          id: 2,      
-          name: 'Papryika',      
-          quantity: 10 
-        }
-        ,{      
-          id: 3,      
-          name: 'Thyme',      
-          quantity: 10 
-        },
-        ];
+  spiceList: SpiceContainer[] = []; // Initialize as an empty array
 
-        constructor(private router: Router) {}
-        isSpiceSelected(){
-          this.spiceSelected = true;
-        }
-        goToDispense() {
-          this.router.navigate(['/dispense']); // Navigate to the spice dispenser page
-        } 
-        ngOnInit() {
-          console.log('SpiceSelectComponent initialized'); // Log to confirm initialization
-        }
-        goBack() {
-          this.router.navigate(['/']);
-        }
-    
+  constructor(private router: Router, private http: HttpClient) {}
 
+  ngOnInit() {
+    console.log('SpiceSelectComponent initialized');
+    this.fetchSpiceList(); // Fetch the spice list on initialization
+  }
 
+  fetchSpiceList() {
+    this.http.get<SpiceContainer[]>('http://localhost:4000/api/getSpiceContainers').subscribe(
+      (response) => {
+        this.spiceList = response; // Populate the spice list with the response
+        console.log('Spice list fetched:', this.spiceList);
+      },
+      (error) => {
+        console.error('Error fetching spice list:', error);
+      }
+    );
+  }
 
-  // async getSpiceList(): Promise<Spice[]> {
-  //   const data = await fetch(this.url);
-  //   return (await data.json()) ?? [];
-  // }
+  isSpiceSelected() {
+    this.spiceSelected = true;
+  }
 
-  // constructor() {
-  //   this.spiceList.getSpiceList().then((spiceList: Spice[]) => {
-  //     this.spiceList = spiceList;
-  //   });
-  // }
+  goToDispense() {
+    this.router.navigate(['/dispense']); // Navigate to the spice dispenser page
+  }
+
+  goBack() {
+    this.router.navigate(['/']);
+  }
 }

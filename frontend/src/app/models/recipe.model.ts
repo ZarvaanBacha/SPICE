@@ -15,6 +15,6 @@ export interface SpicesToRefill {
 
 export interface SpiceContainer {
   containerNumber: number
-  spice: string
-  percentageLeft: number
+  spiceName: string
+  spiceQuantity: number
 }

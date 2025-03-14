@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, Input } from '@angular/core';
-import { Spice } from '../spice';
+import { SpiceContainer } from '../models/recipe.model';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -19,15 +19,15 @@ import { FormsModule } from '@angular/forms';
   ],
 })
 export class SpiceButtonComponent implements ControlValueAccessor {
-    @Input() spice!: Spice;
+    @Input() spice!: SpiceContainer;
     
 
-    onChange: OnChangeFn<string> = () => {this.spice.name};
+    onChange: OnChangeFn<string> = () => {this.spice.spiceName};
     onTouch: onTouchFn = () => {};
     onToggle(){
       this.pressed = !this.pressed;
-      console.log(this.spice.name);
-      this.onChange(this.spice.name);
+      console.log(this.spice.spiceName);
+      this.onChange(this.spice.spiceName);
     }
     pressed = false;
     disabled = false;

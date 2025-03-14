@@ -4,9 +4,9 @@
       <ng-container *ngIf="lowSpiceContainers.length > 0; else noLowSpices">
         <ul>
           <li *ngFor="let container of lowSpiceContainers">
-            <span>Container {{container.containerNumber}}: {{container.spice}}</span>
-            <span class="percentage" [ngClass]="{'critical': container.percentageLeft < 10}">
-              {{container.percentageLeft}}% left
+            <span>Container {{container.containerNumber}}: {{container.spiceName}}</span>
+            <span class="percentage" [ngClass]="{'critical': container.spiceQuantity < 10}">
+              {{container.spiceQuantity}}% left
             </span>
             <button class="refill-button" (click)="refillSingleLowSpiceContainer(container)">Refill</button> <!-- TODO: make refill button class?-->
           </li>
