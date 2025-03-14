@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Recipe, SpiceMeasurement } from '../models/recipe.model';
+import { Recipe, SpiceMeasurement, SpiceContainer } from '../models/recipe.model';
 import { RecipeService } from '../recipe-service/recipe.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -83,10 +83,10 @@ export class RecipeComponent {
 
   }
 
-  dispenseRecipe(recipe: Recipe) {
+  dispenseRecipe(recipe: Recipe) { //TODO change to redirect user to lowspice page if user needs to refill
     this.http.post('http://localhost:4000/dispenseRecipe', recipe).subscribe(
       (response: any) => {
-        if (response.lowSpices) {
+        if (response.lowSpices) { // If there are low spices that need to be refilled before dispensing
           const lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
           const userResponse = confirm(`The following spice containers must be refilled in order to dispense the recipe: ${lowSpicesList}\nDo you want to refill or cancel?`); //TODO: change to be custom modal?
   
@@ -136,6 +136,19 @@ export class RecipeComponent {
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+  goLowSpice(recipe: Recipe) {
+    this.http.post<SpiceContainer[]>('http://localhost:4000/api/getSpicesToRefillFromRecipe', recipe).subscribe(
+      (spicesToRefill) => {
+        this.router.navigate(['/low-spice'], {
+          queryParams: { spices: JSON.stringify({ spices: spicesToRefill }), fromDispense: true },
+        });
+      },
+      (error) => {
+        console.error('Error fetching spices to refill:', error);
+      }
+    );
   }
   
 }

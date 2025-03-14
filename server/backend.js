@@ -26,8 +26,8 @@ const db = admin.firestore();
 // Create containers in Firebase
 // This function will create 8 containers in the containers collection
 // TODO: use to initialize containers on device startup
-const deviceId = "device";
 const containers = 8;
+
 async function createContainersWithBatch() {
   const batch = db.batch();
   const containerCollectionRef = db.collection(`containers`);
@@ -145,7 +145,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       const lowSpices = notifLog.filter(log => spices.some(spice => spice.spiceName === log.spiceName));
 
       if (lowSpices.length > 0) {
-        if (userResponse === undefined) {
+        if (userResponse === undefined) { //TODO possibly move this up to save compute time
           return res.status(200).json({ lowSpices });
         } else if (userResponse === 'cancel') {
           return res.status(200).json({ message: 'Dispensing cancelled by user' });
@@ -163,77 +163,223 @@ app.post("/dispenseRecipe", async (req, res) => {
       }
 
 
-      res.json({ message: `Dispensing recipe: ${recipeName}`, notifLog });
+      res.json({ message: `Dispensing recipe: ${recipeName}`, notifLog }); //TODO: change the response
   } catch (error) {
       res.status(500).json({ error: error.message });
   }
 });
 
 // API endpoint to handle the refilling routine
-app.post("/refillRoutine", async (req, res) => {
-  try {
-      const notifLog = await getNotificationLog(db); // Fetch the notification log
+// app.post("/refillRoutine", async (req, res) => {
+//   try {
+//       const notifLog = await getNotificationLog(db); // Fetch the notification log
 
-      // check if notiflog is empty
-      if (notifLog.length === 0) {
-          return res.status(200).json({ message: 'Notification log is empty. No spices need refilling.' });
-      }
+//       // check if notiflog is empty
+//       if (notifLog.length === 0) {
+//           return res.status(200).json({ message: 'Notification log is empty. No spices need refilling.' });
+//       }
 
-      //console.log(`notiflog: ${JSON.stringify(notifLog)}`);
+//       //console.log(`notiflog: ${JSON.stringify(notifLog)}`);
 
-      // Iterate through the entries in the notifLog
-      for (const logEntry of notifLog) {
-          const spiceName = logEntry.spiceName;
+//       // Iterate through the entries in the notifLog
+//       for (const logEntry of notifLog) {
+//           const spiceName = logEntry.spiceName;
 
-          // Move the spice container to the refill position (leave as a comment for now)
-          // TODO: move lowspice to refill position (get location from logEntry and pass it to python script)
+//           // Move the spice container to the refill position (leave as a comment for now)
+//           // TODO: move lowspice to refill position (get location from logEntry and pass it to python script)
 
-          // Prompt the user to refill the spice
-          const userResponse = await promptUserToRefill(spiceName);
+//           // Prompt the user to refill the spice
+//           const userResponse = await promptUserToRefill(spiceName);
 
-          // TODO: properly create the user prompts in the frontend (in recipe dispensing AND selection screen)
-          if (userResponse === 'cancel') {
-              continue; // Skip to the next logEntry
-          } else if (userResponse === 'done') {
-              // TODO: get current spice quantity from python script
-              // placeholder for now:
-              const currentSpiceQuantity = 74;
-              if (currentSpiceQuantity > threshold) {
-                // Update spice level in db
-                await db.collection('containers').doc(logEntry.containerId).update({
-                  spiceQuantity: currentSpiceQuantity // TODO: add ,lastRefilled: new Date() ?
-                });
+//           // TODO: properly create the user prompts in the frontend (in recipe dispensing AND selection screen)
+//           if (userResponse === 'cancel') {
+//               continue; // Skip to the next logEntry
+//           } else if (userResponse === 'done') {
+//               // TODO: get current spice quantity from python script
+//               // placeholder for now:
+//               const currentSpiceQuantity = 74;
+//               if (currentSpiceQuantity > threshold) {
+//                 // Update spice level in db
+//                 await db.collection('containers').doc(logEntry.containerId).update({
+//                   spiceQuantity: currentSpiceQuantity // TODO: add ,lastRefilled: new Date() ?
+//                 });
                 
-                // create reference to current logEntry to use for removal
-                logEntryRef = db.collection('containers').doc('container_' + logEntry.location);
-                // Remove spice from notifLog
-                await db.collection('device').doc('notificationLog').update({
-                  log: admin.firestore.FieldValue.arrayRemove(logEntryRef)
-                });
-                console.log(`Spice ${spiceName} refilled successfully`);
-              } else {
-                throw new Error(`Spice ${spiceName} was not refilled properly`); // TODO: handle this error properly in frontend
-              }
-          }
-      }
+//                 // create reference to current logEntry to use for removal
+//                 logEntryRef = db.collection('containers').doc('container_' + logEntry.location);
+//                 // Remove spice from notifLog
+//                 await db.collection('device').doc('notificationLog').update({
+//                   log: admin.firestore.FieldValue.arrayRemove(logEntryRef)
+//                 });
+//                 console.log(`Spice ${spiceName} refilled successfully`);
+//               } else {
+//                 throw new Error(`Spice ${spiceName} was not refilled properly`); // TODO: handle this error properly in frontend
+//               }
+//           }
+//       }
 
-      res.json({ message: 'Refilling routine completed', notifLog });
+//       res.json({ message: 'Refilling routine completed', notifLog });
+//   } catch (error) {
+//       res.status(500).json({ error: error.message });
+//   }
+// });
+
+// Function to prompt the user to refill the spice
+// async function promptUserToRefill(spiceName) {
+//   // Simulate a delay to wait for user response
+//   return new Promise((resolve) => {
+//       setTimeout(() => {
+//           // Simulate user response (replace with actual frontend prompt logic)
+//           const userResponse = 'done'; // or 'cancel'
+//           resolve(userResponse);
+//       }, 1000);
+//   });
+// }
+
+
+// API endpoint to get low spices from notificationLog
+app.get('/api/low-spices', async (req, res) => {
+  try {
+    const notifLogDoc = await db.collection('device').doc('notificationLog').get();
+
+    if (!notifLogDoc.exists) {
+      return res.status(404).json({ message: 'Notification log not found' });
+    }
+
+    const notifLogData = notifLogDoc.data();
+    const logEntries = notifLogData.log || []; // Array of references
+
+    const lowSpices = [];
+    for (const ref of logEntries) {
+      const containerDoc = await ref.get(); // Resolve the reference
+      if (containerDoc.exists) {
+        const containerData = containerDoc.data();
+        lowSpices.push({
+          containerNumber: containerData.location, //TODO: maybe fix this?
+          spice: containerData.spiceName,
+          percentageLeft: containerData.spiceQuantity,
+        });
+      }
+    }
+
+    res.json(lowSpices);
   } catch (error) {
-      res.status(500).json({ error: error.message });
+    console.error('Error fetching low spices:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Function to prompt the user to refill the spice
-async function promptUserToRefill(spiceName) {
-  // Simulate a delay to wait for user response
-  return new Promise((resolve) => {
-      setTimeout(() => {
-          // Simulate user response (replace with actual frontend prompt logic)
-          const userResponse = 'done'; // or 'cancel'
-          resolve(userResponse);
-      }, 1000);
-  });
-}
+// API endpoint to get spices to refill from a recipe. returns an array of containers that need refilling and are in the recipe.
+app.post('/api/getSpicesToRefillFromRecipe', async (req, res) => {
+  try {
+    const recipe = req.body;
+    const { spices } = recipe;
+
+    // Fetch all containers from the database
+    const containersSnapshot = await db.collection('containers').get();
+    const containers = containersSnapshot.docs.map(doc => ({
+      containerNumber: doc.data().location,
+      spice: doc.data().spiceName,
+      percentageLeft: doc.data().spiceQuantity,
+    }));
+
+    // Fetch the notification log
+    const notifLogDoc = await db.collection('device').doc('notificationLog').get();
+    if (!notifLogDoc.exists) {
+      return res.status(404).json({ message: 'Notification log not found' });
+    }
+
+    const notifLogData = notifLogDoc.data();
+    const logEntries = notifLogData.log || []; // Array of references
+
+    // Resolve the notification log references to get the containers that need refilling
+    const lowSpices = [];
+    for (const ref of logEntries) {
+      const containerDoc = await ref.get();
+      if (containerDoc.exists) {
+        const containerData = containerDoc.data();
+        lowSpices.push({
+          containerNumber: containerData.location,
+          spice: containerData.spiceName,
+          percentageLeft: containerData.spiceQuantity,
+        });
+      }
+    }
+
+    // Filter containers to match the spices in the recipe and are in the notification log
+    const spicesToRefill = spices
+      .map(spice => {
+        const container = lowSpices.find(c => c.spice === spice.spiceName);
+        if (container) {
+          return container;
+        }
+        return null; // If no container matches, return null
+      })
+      .filter(Boolean); // Remove null values
+
+    res.json(spicesToRefill);
+  } catch (error) {
+    console.error('Error fetching spices to refill:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/refill-spices', async (req, res) => {
+  try {
+    const { spices, userResponse } = req.body; // Extract spicesToRefill and userResponse from the request body
+
+    for (const container of spices) {
+      console.log(`Processing container ${container.containerNumber} for spice "${container.spice}"`);
+
+      if (userResponse === undefined) {
+        // 1. Move the container to the refill position
+        console.log(`Moving container ${container.containerNumber} to the refill position.`);
+        // TODO: Call a Python script or hardware API to physically move the container
+
+        // 2. Send a response to the frontend to prompt the user
+        return res.status(200).json({
+          message: `Container ${container.containerNumber} is ready for refilling.`,
+          spicesToRefill: spices,
+        });
+      } else if (userResponse === 'done') {
+        // 3. Get the current spice quantity (e.g., from a Python script or sensor)
+        console.log(`Getting current spice quantity for container ${container.containerNumber}.`);
+        const currentSpiceQuantity = 100; // Placeholder value; replace with actual logic
+
+        // 4. Check if the current spice quantity is above the threshold
+        if (currentSpiceQuantity > threshold) {
+          console.log(`Spice quantity for container ${container.containerNumber} is sufficient (${currentSpiceQuantity}%).`);
+
+          // 5. Update the spice quantity in the database
+          await db.collection('containers').doc(`container_${container.containerNumber}`).update({
+            spiceQuantity: currentSpiceQuantity,
+            lastRefilled: new Date(),
+          });
+
+          // 6. Remove the container from the notification log
+          const logEntryRef = db.collection('containers').doc(`container_${container.containerNumber}`);
+          await db.collection('device').doc('notificationLog').update({
+            log: admin.firestore.FieldValue.arrayRemove(logEntryRef),
+          });
+
+          console.log(`Container ${container.containerNumber} successfully refilled and removed from the notification log.`);
+        } else {
+          // 4.1. If not, prompt the user to refill again
+          console.log(`Spice quantity for container ${container.containerNumber} is still below the threshold.`);
+          return res.status(400).json({
+            message: `Spice quantity for container ${container.containerNumber} is insufficient. Please refill again.`,
+          });
+        }
+      }
+
+      // 7. remove current container from spices array and send it back to the frontend
+    }
+
+    res.json({ message: 'Refill process completed successfully.' });
+  } catch (error) {
+    console.error('Error during refill process:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Start the server
 app.listen(PORT, () => {

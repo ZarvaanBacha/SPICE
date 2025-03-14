@@ -1,12 +1,8 @@
 import { Component, type OnInit } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { Router } from "@angular/router"
-
-interface SpiceContainer {
-  containerNumber: number
-  spice: string
-  percentageLeft: number
-}
+import { Router, ActivatedRoute } from "@angular/router"
+import { HttpClient } from "@angular/common/http"
+import { SpicesToRefill, SpiceContainer } from '../models/recipe.model';
 
 @Component({
   selector: 'app-low-spice',
@@ -17,33 +13,111 @@ interface SpiceContainer {
 })
 export class LowSpiceComponent implements OnInit{
 
-  lowSpiceContainers: SpiceContainer[] = []
+  lowSpiceContainers: SpiceContainer[] = [];
+  spicesToRefill: SpicesToRefill = { spices: []}; //passed from the dispensing page
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit() {
-    this.lowSpiceContainers = this.getLowSpiceContainers()
-    console.log("Low spice containers:", this.lowSpiceContainers) // Debugging log
+    this.getLowSpiceContainers(() => {
+      this.route.queryParams.subscribe((params) => {
+        if (params['spices']) {
+          const parsedData = JSON.parse(params['spices']);
+          this.spicesToRefill = { spices: parsedData.spices };
+          //console.log('Spices to Refill:', this.spicesToRefill);
+        }
+      });
+  
+      const fromDispense = this.route.snapshot.data['fromDispense'] || this.route.snapshot.queryParams['fromDispense'];
+  
+      if (fromDispense) {
+        // Call refillLowSpiceContainers only after lowSpiceContainers is populated
+        this.refillLowSpiceContainers(this.spicesToRefill, fromDispense);
+      }
+    });
   }
 
-  getLowSpiceContainers(): SpiceContainer[] {
-    const allContainers: SpiceContainer[] = [
-      { containerNumber: 1, spice: "Cinnamon", percentageLeft: 50 },
-      { containerNumber: 2, spice: "Cumin", percentageLeft: 10 },
-      { containerNumber: 3, spice: "Paprika", percentageLeft: 60 },
-      { containerNumber: 4, spice: "Turmeric", percentageLeft: 5 },
-      { containerNumber: 5, spice: "Oregano", percentageLeft: 25 },
-      { containerNumber: 6, spice: "Basil", percentageLeft: 15 },
-      { containerNumber: 7, spice: "Thyme", percentageLeft: 80 },
-      { containerNumber: 8, spice: "Rosemary", percentageLeft: 8 },
-    ]
+  getLowSpiceContainers(callback?: () => void) {
+    this.http.get<SpiceContainer[]>('http://localhost:4000/api/low-spices').subscribe(
+      (response) => {
+        this.lowSpiceContainers = response;
+        console.log('Low spice containers fetched from backend:', this.lowSpiceContainers);
+  
+        // Execute the callback if provided
+        if (callback) {
+          callback();
+        }
+      },
+      (error) => {
+        console.error('Error fetching low spice containers:', error);
+      }
+    );
 
-    // Filter containers with less than 20% remaining
-    return allContainers.filter((container) => container.percentageLeft < 10)
+    // add threshold check? shouldnt be necessary if backend is handling it
   }
 
   goBack() {
     this.router.navigate(["recipes"])
+  }
+
+  refillLowSpiceContainers(spicesToRefill: SpicesToRefill, fromDispense: boolean = false) {
+    console.log('spicesToRefill:', spicesToRefill.spices);
+  
+    this.http.post('http://localhost:4000/api/refill-spices', spicesToRefill).subscribe(
+      async (response: any) => {
+        console.log('Backend response:', response);
+  
+        // Process each container sequentially
+        for (const container of response.spicesToRefill) {
+          const userResponse = confirm(
+            `You can now refill container ${container.containerNumber} for spice "${container.spice}".\nDo you want to mark it as done or cancel?`
+          );
+  
+          if (userResponse) {
+            // User chose "done"
+            await this.http.post('http://localhost:4000/api/refill-spices', {
+              spices: [container],
+              userResponse: 'done',
+            }).toPromise();
+  
+            console.log(`Container ${container.containerNumber} refilled successfully.`);
+  
+            // Remove the refilled container from the lowSpiceContainers list
+            this.lowSpiceContainers = this.lowSpiceContainers.filter(
+              (c) => c.containerNumber !== container.containerNumber
+            );
+          } else {
+            // User chose "cancel"
+            console.log(`Refilling of container ${container.containerNumber} was canceled.`);
+          }
+        }
+  
+        // Calculate remaining containers after all asynchronous operations are complete
+        const remainingContainers = spicesToRefill.spices.filter((refillContainer) =>
+          this.lowSpiceContainers.some(
+            (lowContainer) => lowContainer.containerNumber === refillContainer.containerNumber
+          )
+        );
+  
+        console.log(`lowSpiceContainers:`, this.lowSpiceContainers);
+        console.log(`Remaining containers to refill:`, remainingContainers);
+  
+        if (fromDispense && remainingContainers.length === 0) {
+          this.router.navigate(['/recipes']); // Automatically navigate back to the recipe page
+        }
+      },
+      (error) => {
+        console.error('Error during refill process:', error);
+      }
+    );
+  }
+
+  refillSingleLowSpiceContainer(container: SpiceContainer) { //TODO: implement in backend
+    console.log('Refilling single low spice container:', container); 
+    
+    const spicesToRefill: SpicesToRefill = { spices: [container] }; // Initialize with the single container
+
+    this.refillLowSpiceContainers(spicesToRefill);
   }
 
 }

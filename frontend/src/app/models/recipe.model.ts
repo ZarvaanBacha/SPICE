@@ -3,8 +3,18 @@ export interface SpiceMeasurement {
     spiceMeasurement: string;
   }
   
-  export interface Recipe {
-    id?: number;
-    recipeName: string;
-    spices: SpiceMeasurement[];
-  }
+export interface Recipe {
+  id?: number;
+  recipeName: string;
+  spices: SpiceMeasurement[];
+}
+
+export interface SpicesToRefill {
+  spices: SpiceContainer[];
+}
+
+export interface SpiceContainer {
+  containerNumber: number
+  spice: string
+  percentageLeft: number
+}
