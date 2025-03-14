@@ -188,8 +188,8 @@ app.get('/api/low-spices', async (req, res) => {
         const containerData = containerDoc.data();
         lowSpices.push({
           containerNumber: containerData.location, //TODO: maybe fix this?
-          spice: containerData.spiceName,
-          percentageLeft: containerData.spiceQuantity,
+          spiceName: containerData.spiceName,
+          spiceQuantity: containerData.spiceQuantity,
         });
       }
     }
@@ -321,7 +321,7 @@ app.get('/api/getSpiceContainers', async (req, res) => {
 
     // Map the containers to extract spice names and quantities
     const spices = containersSnapshot.docs.map(doc => ({
-      id: doc.id,
+      containerNumber: doc.id,
       spiceName: doc.data().spiceName,
       spiceQuantity: doc.data().spiceQuantity,
     }));

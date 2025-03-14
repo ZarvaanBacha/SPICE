@@ -57,7 +57,7 @@ export class LowSpiceComponent implements OnInit{
   }
 
   goBack() {
-    this.router.navigate(["recipes"])
+    this.router.navigate(["/"])
   }
 
   refillLowSpiceContainers(spicesToRefill: SpicesToRefill, fromDispense: boolean = false) {
