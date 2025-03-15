@@ -52,7 +52,11 @@
         <button (click)="deleteRecipe(recipe)">Delete</button>
         <button (click)="shareRecipe(recipe)">Share</button>
         <button (click)="dispenseRecipe(recipe)">Dispense</button>
-        <button (click)="goLowSpice(recipe)">goLowSpice</button> <!-- TODO: remove, temporary to test user answer: refill --> 
+        <div *ngIf="showButton">
+          <p *ngIf="showButton">The following spices require refill: {{ lowSpicesList }}</p>
+          <button (click)="Refill(recipe)">Refill</button>
+          <button (click)="Cancel(recipe)">Cancel</button>
+        </div>
         <ul>
           <li *ngFor="let ingredient of recipe.spices">
             {{ ingredient.spiceName }} - {{ ingredient.spiceMeasurement }}
