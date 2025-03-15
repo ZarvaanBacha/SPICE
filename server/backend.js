@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const { exec } = require('child_process');
 const cors = require('cors');
 
-const { getNotificationLog, isContainerInNotificationLog, updateRecipeAnalytics } = require('./utils'); // Import functions from utils.js
+const { getNotificationLog, isContainerInNotificationLog, updateRecipeAnalytics, updateContainerAnalytics } = require('./utils'); // Import functions from utils.js
 
 const app = express();
 const PORT = 4000;
@@ -28,7 +28,7 @@ const db = admin.firestore();
 // TODO: use to initialize containers on device startup
 const containers = 8;
 
-async function createContainersWithBatch() {
+async function initialContainersCreation() {
   const batch = db.batch();
   const containerCollectionRef = db.collection(`containers`);
 
@@ -43,7 +43,11 @@ async function createContainersWithBatch() {
           spiceName: spiceName || "unknown",
           spiceQuantity: 76,
           location: i, // TODO: change to actual location (depends on zarvaans python script)
-          containerId: `container_${i}`
+          containerId: `container_${i}`,
+          timesUsed: 0,
+          usageHistory: [],
+          lastRefilled: new Date(),
+          totalQuantityUsed: 0
       });
 
       // TODO: update spicelog entries
@@ -73,7 +77,7 @@ async function testNotifLog() {
 }
 
 // create the containers in Firebase
-createContainersWithBatch();
+initialContainersCreation();
 
 // TODO: remove, its only to test the notification log
 testNotifLog();
@@ -149,6 +153,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       }
 
       updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
+      updateContainerAnalytics(db, spices, admin.firestore.FieldValue); // Update the container analytics
 
       //TODO: call dispense script here?
       //TODO: dispense script should return new spice level values to be updated in the db
@@ -275,7 +280,7 @@ app.post('/api/refill-spices', async (req, res) => {
           // 5. Update the spice quantity in the database
           await db.collection('containers').doc(`container_${container.containerNumber}`).update({
             spiceQuantity: currentSpiceQuantity,
-            // lastRefilled: new Date(), TODO: add lastRefilled field to container document?
+            lastRefilled: new Date()
           });
 
           // 6. Remove the container from the notification log
@@ -326,6 +331,33 @@ app.get('/api/getSpiceContainers', async (req, res) => {
   } catch (error) {
     console.error('Error fetching spices:', error);
     res.status(500).json({ error: 'Failed to fetch spices' });
+  }
+});
+
+app.get('/api/getAnalytics', async (req, res) => {
+  try {
+    // Fetch all recipes from the database
+    const recipesSnapshot = await db.collection('recipes').get();
+    const recipes = recipesSnapshot.docs.map(doc => ({
+      id: doc.id, // Include the document ID
+      ...doc.data(), // Include all fields in the recipe document
+    }));
+
+    // Fetch all spice containers from the database
+    const containersSnapshot = await db.collection('containers').get();
+    const containers = containersSnapshot.docs.map(doc => ({
+      id: doc.id, // Include the document ID
+      ...doc.data(), // Include all fields in the container document
+    }));
+
+    // Send the analytics as a response
+    res.json({
+      recipeAnalytics: recipes,
+      spiceContainerAnalytics: containers,
+    });
+  } catch (error) {
+    console.error('Error fetching analytics:', error);
+    res.status(500).json({ error: 'Failed to fetch analytics' });
   }
 });
 

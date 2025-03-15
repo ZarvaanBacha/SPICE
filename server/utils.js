@@ -88,9 +88,46 @@ async function updateRecipeAnalytics(db, recipeId, FieldValue) {
   }
 }
 
+async function updateContainerAnalytics(db, spices, FieldValue) {
+  try {
+
+    for (const spice of spices) {
+      // Find the container corresponding to the spice
+      const containerSnapshot = await db
+        .collection('containers')
+        .where('spiceName', '==', spice.spiceName)
+        .get();
+
+      if (containerSnapshot.empty) {
+        console.warn(`No container found for spice: ${spice.spiceName}`);
+        continue;
+      }
+
+      // Update analytics for each matching container
+      containerSnapshot.forEach(async (doc) => {
+        const containerRef = db.collection('containers').doc(doc.id);
+
+        // Calculate the total quantity used in eighth teaspoons
+        const quantityUsed = spice.spiceQuantityInEighthTsp;
+
+        await containerRef.update({
+          totalQuantityUsed: FieldValue.increment(quantityUsed), // Increment totalQuantityUsed
+          timesUsed: FieldValue.increment(1), // Increment timesUsed by 1
+          usageHistory: FieldValue.arrayUnion(new Date().toISOString()), // Add the current timestamp to usageHistory
+        });
+
+      });
+    }
+  } catch (error) {
+    console.error('Error updating container analytics:', error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+}
+
 module.exports = {
   getNotificationLog,
   logRecipeDetails,
   isContainerInNotificationLog,
-  updateRecipeAnalytics, // Export the new function
+  updateRecipeAnalytics,
+  updateContainerAnalytics,
 };
