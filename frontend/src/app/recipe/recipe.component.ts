@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module';
 import { FirebaseService } from '../firebase.service';
 
+
 @Component({
   standalone: false,
   selector: 'app-recipe',
@@ -16,19 +17,10 @@ import { FirebaseService } from '../firebase.service';
   styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
-  recipes: any[] = [
-    {
-      recipeName: 'Spicy Chicken',
-      spices: [
-        { spiceName: 'Salt', spiceMeasurement: '1 teaspoon' },
-        { spiceName: 'Pepper', spiceMeasurement: '1/2 teaspoon' },
-        { spiceName: 'Paprika', spiceMeasurement: '1 tablespoon' },
-      ],
-    },
-  ]; // Hardcoded recipe // TODO : this should be of type Recipe[]
+  recipes: any[] = [];// TODO : this should be of type Recipe[]
   lowSpicesList: string = '';
   currentRecipe: any = { recipeName: '', spices: [] }; // TODO: change to be a Recipe object
-  newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
+  newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '', spiceQuantityInEighthTsp: 0 };
   isEditing = false;
   requiresRefill = false; // Add a flag to indicate if refill is required
   showButton = false;
@@ -55,12 +47,13 @@ export class RecipeComponent {
 
   selectMeasurement(event: Event) {
     this.newSpice.spiceMeasurement = (event.target as HTMLSelectElement).value;
+    this.newSpice.spiceQuantityInEighthTsp = this.convertToEighthTeaspoons(this.newSpice.spiceMeasurement); // Convert measurement to 1/8th teaspoons
   }
 
   addIngredient() {
     if (this.newSpice.spiceName && this.newSpice.spiceMeasurement) {
       this.currentRecipe.spices.push({ ...this.newSpice });
-      this.newSpice = { spiceName: '', spiceMeasurement: '' }; 
+      this.newSpice = { spiceName: '', spiceMeasurement: '', spiceQuantityInEighthTsp: 0 }; 
       this.currentRecipe = { ...this.currentRecipe };
     }
   }
@@ -179,7 +172,7 @@ export class RecipeComponent {
   resetCurrentRecipe() {
     this.currentRecipe = { recipeName: '', spices: [] };
     this.isEditing = false;
-    this.newSpice = { spiceName: '', spiceMeasurement: '' };
+    this.newSpice = { spiceName: '', spiceMeasurement: '', spiceQuantityInEighthTsp: 0 };
   }
 
   ngOnInit() {
@@ -221,4 +214,27 @@ export class RecipeComponent {
     );
   }
   
+  // New method to convert measurement string to 1/8th teaspoons
+  convertToEighthTeaspoons(measurement: string): number { //TODO: this has a duplicate in spice-dispenser.component.ts, to fix
+    const regex = /(\d+)\s*(tablespoon|teaspoon|tbsp|tsp)/i;
+    const match = measurement.match(regex);
+
+    if (!match) {
+      throw new Error('Invalid measurement format');
+    }
+
+    const value = parseFloat(match[1]);
+    const unit = match[2].toLowerCase();
+
+    let teaspoons = 0;
+
+    if (unit === 'tablespoon' || unit === 'tbsp') {
+      teaspoons = value * 3; // 1 tablespoon = 3 teaspoons
+    } else if (unit === 'teaspoon' || unit === 'tsp') {
+      teaspoons = value;
+    }
+
+    return Math.round(teaspoons / 0.125); // Convert to 1/8th teaspoons
+  }
+
 }

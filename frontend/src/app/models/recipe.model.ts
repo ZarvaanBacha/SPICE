@@ -1,6 +1,7 @@
 export interface SpiceMeasurement {
     spiceName: string;
     spiceMeasurement: string;
+    spiceQuantityInEighthTsp: number;
 }
   
 export interface Recipe {

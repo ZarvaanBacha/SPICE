@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./spice-dispenser.component.css'],
 })
 export class SpiceDispenserComponent implements OnDestroy {
-  
+  //TODO : we dont need socket service anymore? remove if not needed
   private messageSubscription: Subscription; // HTTP fields
   messages: number = 0;
   newMessage: number = this.messages;
@@ -52,7 +52,7 @@ export class SpiceDispenserComponent implements OnDestroy {
   public measurement = 0; // Start with 0
   public selectedStep = 0.125; // Default to 1/8 teaspoon
   public incrementOptions = [0.125, 0.25, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
-
+  //TODO: add more increment options
   // Function to increment the measurement
   increment() {
     this.measurement += this.selectedStep;
@@ -140,8 +140,8 @@ export class SpiceDispenserComponent implements OnDestroy {
     return value/0.125;
   }
 
-   // New method to convert measurement string to 1/8th teaspoons
-   convertToEighthTeaspoons(measurement: string): number {
+  // New method to convert measurement string to 1/8th teaspoons
+  convertToEighthTeaspoons(measurement: string): number { //TODO: move to service or backend?
     const regex = /(\d+)\s*(tablespoon|teaspoon|tbsp|tsp)/i;
     const match = measurement.match(regex);
 
