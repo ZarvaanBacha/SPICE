@@ -184,7 +184,7 @@ export class RecipeComponent {
   }
 
   fetchSpiceOptions() {
-    this.http.get<SpiceContainer[]>('http://localhost:4000/api/getSpiceContainers').subscribe(
+    this.http.get<SpiceContainer[]>('http://localhost:4000/getSpiceContainers').subscribe(
       (response) => {
         // Extract spice names from the response and populate spiceOptions
         this.spiceOptions = response.map(container => container.spiceName);
@@ -201,7 +201,7 @@ export class RecipeComponent {
   }
 
   goLowSpice(recipe: Recipe) {
-    this.http.post<SpiceContainer[]>('http://localhost:4000/api/getSpicesToRefillFromRecipe', recipe).subscribe(
+    this.http.post<SpiceContainer[]>('http://localhost:4000/getSpicesToRefillFromRecipe', recipe).subscribe(
       (spicesToRefill) => {
         this.router.navigate(['/low-spice'], {
           queryParams: { spices: JSON.stringify({ spices: spicesToRefill }), fromDispense: true },

@@ -83,7 +83,7 @@ initialContainersCreation();
 testNotifLog();
 
 // // API endpoint to get data from Firebase
-// app.get('/api/recipes', async (req, res) => {
+// app.get('/recipes', async (req, res) => {
 //   try {
 //     const recipesSnapshot = await db.collection('recipes').get();
 //     const recipes = recipesSnapshot.docs.map(doc => doc.data());
@@ -94,7 +94,7 @@ testNotifLog();
 // });
 
 // // API endpoint to add data to Firebase
-// app.post('/api/recipes', async (req, res) => {
+// app.post('/recipes', async (req, res) => {
 //   try {
 //     const newRecipe = req.body;
 //     await db.collection('recipes').add(newRecipe);
@@ -110,7 +110,7 @@ app.get('/', (req, res) => {
 });
 
 // API endpoint to run a Python script
-app.post('/api/run-script', (req, res) => {
+app.post('/run-script', (req, res) => {
   exec('python3 path/to/your/script.py', (error, stdout, stderr) => {
     if (error) {
       res.status(500).send(`Error: ${error.message}`);
@@ -165,7 +165,7 @@ app.post("/dispenseRecipe", async (req, res) => {
 });
 
 // API endpoint to get low spices from notificationLog
-app.get('/api/low-spices', async (req, res) => {
+app.get('/low-spices', async (req, res) => {
   try {
     const notifLogDoc = await db.collection('device').doc('notificationLog').get();
 
@@ -197,7 +197,7 @@ app.get('/api/low-spices', async (req, res) => {
 });
 
 // API endpoint to get spices to refill from a recipe. returns an array of containers that need refilling and are in the recipe.
-app.post('/api/getSpicesToRefillFromRecipe', async (req, res) => {
+app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
   try {
     const recipe = req.body;
     const { spices } = recipe;
@@ -251,7 +251,7 @@ app.post('/api/getSpicesToRefillFromRecipe', async (req, res) => {
   }
 });
 
-app.post('/api/refill-spices', async (req, res) => {
+app.post('/refill-spices', async (req, res) => {
   try {
     const { spices, userResponse } = req.body; // Extract spicesToRefill and userResponse from the request body
 
@@ -309,7 +309,7 @@ app.post('/api/refill-spices', async (req, res) => {
   }
 });
 
-app.get('/api/getSpiceContainers', async (req, res) => {
+app.get('/getSpiceContainers', async (req, res) => {
   try {
     // Fetch all containers from the database
     const containersSnapshot = await db.collection('containers').get();
@@ -334,7 +334,7 @@ app.get('/api/getSpiceContainers', async (req, res) => {
   }
 });
 
-app.get('/api/getAnalytics', async (req, res) => {
+app.get('/getAnalytics', async (req, res) => {
   try {
     // Fetch all recipes from the database
     const recipesSnapshot = await db.collection('recipes').get();
@@ -350,7 +350,7 @@ app.get('/api/getAnalytics', async (req, res) => {
       ...doc.data(), // Include all fields in the container document
     }));
 
-    // Send the analytics as a response
+    // send the analytics
     res.json({
       recipeAnalytics: recipes,
       spiceContainerAnalytics: containers,

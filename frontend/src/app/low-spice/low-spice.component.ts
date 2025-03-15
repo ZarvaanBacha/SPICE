@@ -38,7 +38,7 @@ export class LowSpiceComponent implements OnInit{
   }
 
   getLowSpiceContainers(callback?: () => void) {
-    this.http.get<SpiceContainer[]>('http://localhost:4000/api/low-spices').subscribe(
+    this.http.get<SpiceContainer[]>('http://localhost:4000/low-spices').subscribe(
       (response) => {
         this.lowSpiceContainers = response;
         console.log('Low spice containers fetched from backend:', this.lowSpiceContainers);
@@ -63,7 +63,7 @@ export class LowSpiceComponent implements OnInit{
   refillLowSpiceContainers(spicesToRefill: SpicesToRefill, fromDispense: boolean = false) {
     console.log('spicesToRefill:', spicesToRefill.spices);
   
-    this.http.post('http://localhost:4000/api/refill-spices', spicesToRefill).subscribe(
+    this.http.post('http://localhost:4000/refill-spices', spicesToRefill).subscribe(
       async (response: any) => {
         console.log('Backend response:', response);
   
@@ -75,7 +75,7 @@ export class LowSpiceComponent implements OnInit{
   
           if (userResponse) {
             // User chose "done"
-            await this.http.post('http://localhost:4000/api/refill-spices', {
+            await this.http.post('http://localhost:4000/refill-spices', {
               spices: [container],
               userResponse: 'done',
             }).toPromise();

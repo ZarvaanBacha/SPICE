@@ -27,7 +27,7 @@ export class SpiceSelectComponent implements OnInit {
   }
 
   fetchSpiceList() {
-    this.http.get<SpiceContainer[]>('http://localhost:4000/api/getSpiceContainers').subscribe(
+    this.http.get<SpiceContainer[]>('http://localhost:4000/getSpiceContainers').subscribe(
       (response) => {
         this.spiceList = response; // Populate the spice list with the response
         console.log('Spice list fetched:', this.spiceList);
