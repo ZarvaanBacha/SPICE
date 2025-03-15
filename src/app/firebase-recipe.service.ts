@@ -1,5 +1,3 @@
-
-
 import { Injectable } from '@angular/core';
 import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -7,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseRecipeService {
   constructor(private firestore: Firestore) {}
 
   getRecipes(): Observable<any[]> {
@@ -23,6 +21,12 @@ export class FirebaseService {
   deleteRecipe(recipeId: string): Promise<void> {
     const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
     return deleteDoc(recipeRef);
+  }
+
+  async toggleRecipePublic(change: boolean, recipeId: string) {
+    const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+    await updateDoc(recipeRef, { togglePublic: change });
+
   }
 
   async addRecipe(recipe: any): Promise<void> {

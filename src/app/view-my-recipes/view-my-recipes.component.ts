@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FirebaseService } from '../firebase.service';
+import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { NgFor, NgIf } from '@angular/common';
 
 @Component({
@@ -14,6 +14,7 @@ import { NgFor, NgIf } from '@angular/common';
 export class ViewMyRecipesComponent implements OnInit {
   recipes: any[] = [];
   recipeForms: { [key: string]: FormGroup } = {};
+  isPublic: boolean
 
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
@@ -21,10 +22,10 @@ export class ViewMyRecipesComponent implements OnInit {
     '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon'
   ];
 
-  constructor(private fb: FormBuilder, private firebaseService: FirebaseService) {}
+  constructor(private fb: FormBuilder, private firebaseRecipeService: FirebaseRecipeService) {}
 
   ngOnInit() {
-    this.firebaseService.getRecipes().subscribe((recipes) => {
+    this.firebaseRecipeService.getRecipes().subscribe((recipes) => {
       this.recipes = recipes.map(recipe => ({
         ...recipe,
         editing: false 
@@ -36,10 +37,17 @@ export class ViewMyRecipesComponent implements OnInit {
           spices: this.fb.array(recipe.spices.map(spice => this.fb.group({
             spiceName: [spice.spiceName],
             spiceMeasurement: [spice.spiceMeasurement]
-          })))
+          }))),
+          togglePublic: this.isPublic
         });
       });
     });
+  }
+
+  toggle(recipeId: string) {
+    this.isPublic = !this.isPublic;
+    console.log('Toggle Switch is now:', this.isPublic ? 'ON' : 'OFF');
+    this.firebaseRecipeService.toggleRecipePublic(this.isPublic, recipeId)
   }
 
   getSpices(recipeId: string) {
@@ -51,13 +59,13 @@ export class ViewMyRecipesComponent implements OnInit {
   }
 
   deleteRecipe(recipeId: string) {
-    this.firebaseService.deleteRecipe(recipeId);
+    this.firebaseRecipeService.deleteRecipe(recipeId);
   }
 
   saveRecipe(recipe: any) {
     const updatedRecipe = this.recipeForms[recipe.id].value;
 
-    this.firebaseService.updateRecipe(recipe.id, updatedRecipe)
+    this.firebaseRecipeService.updateRecipe(recipe.id, updatedRecipe)
       .then(() => {
         recipe.recipeName = updatedRecipe.recipeName;
         recipe.spices = updatedRecipe.spices;
