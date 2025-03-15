@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const { exec } = require('child_process');
 const cors = require('cors');
 
-const { getNotificationLog, isContainerInNotificationLog } = require('./utils'); // Import functions from utils.js
+const { getNotificationLog, isContainerInNotificationLog, updateRecipeAnalytics } = require('./utils'); // Import functions from utils.js
 
 const app = express();
 const PORT = 4000;
@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/dextr/Desktop/firebase-admin-private-keys.json"); // CHANGE
+const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); // CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -125,7 +125,7 @@ app.post('/api/run-script', (req, res) => {
 app.post("/dispenseRecipe", async (req, res) => {
   try {
       const recipe = req.body;
-      const { recipeName, spices, userResponse } = recipe; // Destructure the recipe object
+      const { id, recipeName, spices } = recipe; // Destructure the recipe object
 
       const notifLog = await getNotificationLog(db); // Fetch the notification log
       //console.log(`notiflog: ${JSON.stringify(notifLog)}`);
@@ -143,28 +143,17 @@ app.post("/dispenseRecipe", async (req, res) => {
 
       // Check the notification log for any low spices
       const lowSpices = notifLog.filter(log => spices.some(spice => spice.spiceName === log.spiceName));
-
-      if (lowSpices.length > 0) { //TODO: change the full logic here, since the cancel and refill user responses arent dealt with here anymore
-        if (userResponse === undefined) { //TODO possibly move this up to save compute time
-          return res.status(200).json({ lowSpices });
-        } else if (userResponse === 'cancel') {
-          return res.status(200).json({ message: 'Dispensing cancelled by user' });
-        } else if (userResponse === 'refill') {
-          // TODO: call the refilling routine
-          const refillResponse = await fetch('http://localhost:4000/refillRoutine', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
-          });
-          const refillData = await refillResponse.json();
-          return res.status(200).json(refillData);
-          //TODO: call dispense script here?
-          //TODO: dispense script should return new spice level values to be updated in the db
-        }
+      // return the list of low spices, if the recipe contains any.
+      if (lowSpices.length > 0) {
+        return res.status(200).json({ lowSpices });
       }
 
+      updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
 
-      res.json({ message: `Dispensing recipe: ${recipeName}`, notifLog }); //TODO: change the response
+      //TODO: call dispense script here?
+      //TODO: dispense script should return new spice level values to be updated in the db
+
+      res.json({ message: `Dispensing recipe: ${recipeName}`, spices }); //TODO: change the response
   } catch (error) {
       res.status(500).json({ error: error.message });
   }

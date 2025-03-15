@@ -149,15 +149,15 @@ export class RecipeComponent {
     //doesnt need to call api, just stop button show
     this.showButton = false;
     this.requiresRefill = false;
-    this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
-      (response) => {
-        console.log('Dispense output:', response);
-      },
-      (error) => {
-        console.error('Error dispensing recipe:', error);
-      }
-    );
-    
+    // this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
+    //   (response) => {
+    //     console.log('Dispense output:', response);
+    //   },
+    //   (error) => {
+    //     console.error('Error dispensing recipe:', error);
+    //   }
+    // );
+    // TODO: clean this up
   }
 
   Refill(recipe: Recipe){
@@ -165,7 +165,6 @@ export class RecipeComponent {
     this.requiresRefill = false;
     this.showButton = false;
     this.goLowSpice(recipe)
-
 
   }
 
@@ -215,6 +214,7 @@ export class RecipeComponent {
   }
   
   // New method to convert measurement string to 1/8th teaspoons
+  // TODO : doesn't always properly convert, need to fix. 3/4 teaspoon gives 32 eighth teaspoons, should give 6
   convertToEighthTeaspoons(measurement: string): number { //TODO: this has a duplicate in spice-dispenser.component.ts, to fix
     const regex = /(\d+)\s*(tablespoon|teaspoon|tbsp|tsp)/i;
     const match = measurement.match(regex);

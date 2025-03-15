@@ -70,8 +70,27 @@ async function isContainerInNotificationLog(db, containerNumber) {
   }
 }
 
+async function updateRecipeAnalytics(db, recipeId, FieldValue) {
+  try {
+    // Reference the recipe document in the Firestore database
+    const recipeDocRef = db.collection('recipes').doc(recipeId);
+
+    // Update the analytics fields
+    await recipeDocRef.update({
+      timesUsed: FieldValue.increment(1), // Increment timesUsed by 1
+      usageHistory: FieldValue.arrayUnion(new Date().toISOString()), // Add the current timestamp to usageHistory
+    });
+
+    //console.log(`Analytics updated for recipe with ID: ${recipeId}`);
+  } catch (error) {
+    //console.error(`Error updating analytics for recipe with ID: ${recipeId}`, error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+}
+
 module.exports = {
-    getNotificationLog,
-    logRecipeDetails,
-    isContainerInNotificationLog
+  getNotificationLog,
+  logRecipeDetails,
+  isContainerInNotificationLog,
+  updateRecipeAnalytics, // Export the new function
 };
