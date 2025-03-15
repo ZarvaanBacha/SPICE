@@ -26,6 +26,7 @@ export class RecipeComponent {
       ],
     },
   ]; // Hardcoded recipe // TODO : this should be of type Recipe[]
+  lowSpicesList: string = '';
   currentRecipe: any = { recipeName: '', spices: [] };
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
