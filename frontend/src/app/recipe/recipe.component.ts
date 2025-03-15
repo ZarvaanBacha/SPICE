@@ -16,7 +16,16 @@ import { FirebaseService } from '../firebase.service';
   styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
-  recipes: any[] = [];
+  recipes: any[] = [
+    {
+      recipeName: 'Spicy Chicken',
+      spices: [
+        { spiceName: 'Salt', spiceMeasurement: '1 teaspoon' },
+        { spiceName: 'Pepper', spiceMeasurement: '1/2 teaspoon' },
+        { spiceName: 'Paprika', spiceMeasurement: '1 tablespoon' },
+      ],
+    },
+  ]; // Hardcoded recipe // TODO : this should be of type Recipe[]
   currentRecipe: any = { recipeName: '', spices: [] };
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
