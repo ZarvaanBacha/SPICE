@@ -143,6 +143,7 @@ export class SpiceDispenserComponent implements OnDestroy {
   // TODO : add function to deal with single spice dispensing through nodejs
   // should work the same way as dispensing a recipe. call the same API endpoint with a single-spice recipe. 
   // spice refilling should be handled in the same way too?
+  // TODO : THIS MUST DEAL WITH POTENTIAL REFILLS
 }
 
 

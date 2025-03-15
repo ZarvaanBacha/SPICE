@@ -132,6 +132,7 @@ export class RecipeComponent {
 
     this.firebaseService.getRecipes().subscribe(recipes => {
       this.recipes = recipes
+      console.log('Recipes:', this.recipes);
     })
   }
 

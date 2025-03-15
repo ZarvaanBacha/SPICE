@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const { exec } = require('child_process');
 const cors = require('cors');
 
-const { getNotificationLog } = require('./utils'); // Import functions from utils.js
+const { getNotificationLog, isContainerInNotificationLog } = require('./utils'); // Import functions from utils.js
 
 const app = express();
 const PORT = 4000;
@@ -159,6 +159,7 @@ app.post("/dispenseRecipe", async (req, res) => {
           const refillData = await refillResponse.json();
           return res.status(200).json(refillData);
           //TODO: call dispense script here?
+          //TODO: dispense script should return new spice level values to be updated in the db
         }
       }
 
@@ -319,12 +320,18 @@ app.get('/api/getSpiceContainers', async (req, res) => {
     // Fetch all containers from the database
     const containersSnapshot = await db.collection('containers').get();
 
-    // Map the containers to extract spice names and quantities
-    const spices = containersSnapshot.docs.map(doc => ({
-      containerNumber: doc.id,
-      spiceName: doc.data().spiceName,
-      spiceQuantity: doc.data().spiceQuantity,
-    }));
+    // Map the containers and resolve the isLow property asynchronously
+    const spices = await Promise.all(
+      containersSnapshot.docs.map(async (doc) => {
+        const isLow = await isContainerInNotificationLog(doc.id); // Resolve the isLow value
+        return {
+          containerNumber: doc.id,
+          spiceName: doc.data().spiceName,
+          spiceQuantity: doc.data().spiceQuantity,
+          isLow: isLow, // Set the resolved isLow value
+        };
+      })
+    );
 
     res.json(spices);
   } catch (error) {

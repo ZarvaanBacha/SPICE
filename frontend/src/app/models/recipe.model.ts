@@ -1,7 +1,7 @@
 export interface SpiceMeasurement {
     spiceName: string;
     spiceMeasurement: string;
-  }
+}
   
 export interface Recipe {
   id?: number;
@@ -17,4 +17,5 @@ export interface SpiceContainer {
   containerNumber: number
   spiceName: string
   spiceQuantity: number
+  isLow: boolean
 }
