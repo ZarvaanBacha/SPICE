@@ -10,7 +10,7 @@
         *ngFor="let spice of spiceList"
         [spice]="spice"
         [(ngModel)]="selectedSpice"
-        [disabled]="!spice.isLow"
+        [disabled]="spice.isLow"
         (click)="isSpiceSelected()"
       >
         {{ spice.spiceName }}
