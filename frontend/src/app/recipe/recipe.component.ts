@@ -99,7 +99,7 @@ export class RecipeComponent {
               (error) => {
                 console.error('Error dispensing recipe:', error);
               }
-            );
+            ); //TODO: replace by gotolowspice function call
           } else {
             // User chose to cancel
             this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
@@ -109,10 +109,10 @@ export class RecipeComponent {
               (error) => {
                 console.error('Error dispensing recipe:', error);
               }
-            );
+            ); //TODO: remove the refill prompt buttons, dont call the endpoint
           }
         } else {
-          console.log('Dispense output:', response);
+          console.log('Dispense output:', response); //TODO: make it go to dispensing animation page
         }
       },
       (error) => {

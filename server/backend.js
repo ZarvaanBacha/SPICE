@@ -144,7 +144,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       // Check the notification log for any low spices
       const lowSpices = notifLog.filter(log => spices.some(spice => spice.spiceName === log.spiceName));
 
-      if (lowSpices.length > 0) {
+      if (lowSpices.length > 0) { //TODO: change the full logic here, since the cancel and refill user responses arent dealt with here anymore
         if (userResponse === undefined) { //TODO possibly move this up to save compute time
           return res.status(200).json({ lowSpices });
         } else if (userResponse === 'cancel') {
