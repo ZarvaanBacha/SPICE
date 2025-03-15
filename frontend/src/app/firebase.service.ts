@@ -13,10 +13,18 @@ export class FirebaseService {
     return collectionData(recipesRef, { idField: 'id' });
   }
 
-  async addRecipe(recipe: any) {
+  async addRecipe(recipe: any) { //TODO: change any to Recipe object
     try {
       const recipesRef = collection(this.firestore, 'recipes');
-      await addDoc(recipesRef, recipe);
+
+      // to add custom fields to recipes
+      const recipeWithCustomFields = {
+        ...recipe,
+        timesUsed: 0, // Initialize timesUsed to 0
+        usageHistory: [] // Initialize usageHistory as an empty array
+      };
+
+      await addDoc(recipesRef, recipeWithCustomFields);
       console.log('Recipe added successfully!');
     } catch (error) {
       console.error('Error adding recipe:', error);

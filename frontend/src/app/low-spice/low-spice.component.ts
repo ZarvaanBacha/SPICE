@@ -70,7 +70,7 @@ export class LowSpiceComponent implements OnInit{
         // Process each container sequentially
         for (const container of response.spicesToRefill) {
           const userResponse = confirm(
-            `You can now refill container ${container.containerNumber} for spice "${container.spice}".\nDo you want to mark it as done or cancel?`
+            `You can now refill container ${container.containerNumber} for spice "${container.spiceName}".\nDo you want to mark it as done or cancel?`
           );
   
           if (userResponse) {

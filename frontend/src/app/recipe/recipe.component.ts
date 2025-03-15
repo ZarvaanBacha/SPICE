@@ -27,7 +27,7 @@ export class RecipeComponent {
     },
   ]; // Hardcoded recipe // TODO : this should be of type Recipe[]
   lowSpicesList: string = '';
-  currentRecipe: any = { recipeName: '', spices: [] };
+  currentRecipe: any = { recipeName: '', spices: [] }; // TODO: change to be a Recipe object
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '' };
   isEditing = false;
   requiresRefill = false; // Add a flag to indicate if refill is required
@@ -137,7 +137,7 @@ export class RecipeComponent {
     this.http.post('http://localhost:4000/dispenseRecipe', recipe).subscribe(
       (response: any) => {
         if (response.lowSpices) {
-          this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
+          this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', '); //TODO : remove? not sure if this is needed
           this.showButton = true;
           this.requiresRefill = true;
       
@@ -169,7 +169,6 @@ export class RecipeComponent {
 
   Refill(recipe: Recipe){
     // User chose to refill
-    // Replace with goTOLowSpice
     this.requiresRefill = false;
     this.showButton = false;
     this.goLowSpice(recipe)
