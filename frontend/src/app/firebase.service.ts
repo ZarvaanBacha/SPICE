@@ -21,7 +21,8 @@ export class FirebaseService {
       const recipeWithCustomFields = {
         ...recipe,
         timesUsed: 0, // Initialize timesUsed to 0
-        usageHistory: [] // Initialize usageHistory as an empty array
+        usageHistory: [], // Initialize usageHistory as an empty array
+        isPublic: false, // Initialize isPublic to false
       };
 
       await addDoc(recipesRef, recipeWithCustomFields);
