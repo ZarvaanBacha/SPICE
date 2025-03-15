@@ -42,13 +42,13 @@ function logRecipeDetails(recipe) {
   });
 }
 
-async function isContainerInNotificationLog(containerNumber) {
+async function isContainerInNotificationLog(db, containerNumber) {
   try {
     // Fetch the notification log document
     const notifLogDoc = await db.collection('device').doc('notificationLog').get();
 
     if (!notifLogDoc.exists) {
-      //console.error('Notification log not found');
+      console.error('Notification log not found');
       return false; // Return false if the notification log does not exist
     }
 
@@ -58,14 +58,14 @@ async function isContainerInNotificationLog(containerNumber) {
     // Check if the containerNumber exists in the notification log
     for (const ref of logEntries) {
       const containerDoc = await ref.get(); // Resolve the reference
-      if (containerDoc.exists && containerDoc.id === `container_${containerNumber}`) {
+      if (containerDoc.exists && containerDoc.id === containerNumber) {
         return true; // Return true if the container is found in the notification log
       }
     }
 
     return false; // Return false if the container is not found in the notification log
   } catch (error) {
-    //console.error('Error checking notification log:', error);
+    console.error('Error checking notification log:', error);
     return false; // Return false in case of an error
   }
 }

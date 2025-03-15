@@ -323,7 +323,7 @@ app.get('/api/getSpiceContainers', async (req, res) => {
     // Map the containers and resolve the isLow property asynchronously
     const spices = await Promise.all(
       containersSnapshot.docs.map(async (doc) => {
-        const isLow = await isContainerInNotificationLog(doc.id); // Resolve the isLow value
+        const isLow = await isContainerInNotificationLog(db, doc.id); // Resolve the isLow value
         return {
           containerNumber: doc.id,
           spiceName: doc.data().spiceName,
