@@ -295,6 +295,53 @@ async function createEmptyContainerData(db) {
   return spice_data;
 }
 
+async function callDispenseScript(db, spices) {
+
+  dispensingData = await createDispensingData(db, spices); // create dispensing data json for python script
+  //console.log(`Dispensing spices: ${JSON.stringify(dispensingData)}`);
+
+  //TODO: call python script
+
+  //TODO: get the output of the python script 
+
+  //TODO: update container collection (spiceQuantity and isLow) and notificationLog if needed 
+}
+
+async function createDispensingData(db, spices) {
+  // Fetch all documents from the containers collection
+  const containersSnapshot = await db.collection('containers').get();
+  
+  let spice_data = {};
+
+  // Iterate over each container document and add to spice_data
+  containersSnapshot.forEach((doc) => {
+    let key = doc.data().containerId; //TODO: cahnge to QrCodeId
+    let spiceName = doc.data().spiceName;
+    let location = doc.data().location;
+    let spiceQuantity = doc.data().spiceQuantity;
+
+    // Find the spice in the spices array
+    const spice = spices.find(s => s.spiceName === spiceName);
+
+    if (spice) { // If the spice is in the recipe
+      spice_data[key] = {
+        spiceQuantityInEighthTsp: spice.spiceQuantityInEighthTsp,
+        location: location,
+        spiceQuantity: spiceQuantity
+      };
+    } else { // If the spice is not in the recipe
+      spice_data[key] = {
+        spiceQuantityInEighthTsp: 0,
+        location: location,
+        spiceQuantity: spiceQuantity
+      };
+    }
+      
+  });
+
+  return spice_data;
+}
+
 module.exports = {
   getNotificationLog,
   logRecipeDetails,
@@ -306,4 +353,5 @@ module.exports = {
   updateContainersOnStartUp,
   addContainerToNotifLog,
   removeContainerToNotifLog,
+  callDispenseScript,
 };

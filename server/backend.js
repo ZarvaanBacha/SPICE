@@ -13,6 +13,7 @@ const {
   updateContainersOnStartUp,
   addContainerToNotifLog,
   removeContainerToNotifLog,
+  callDispenseScript,
 } = require('./utils'); // Import functions from utils.js
 
 const app = express();
@@ -52,7 +53,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       const { recipe, FromSingleDispense} = req.body;
       const { id, recipeName, spices } = recipe; // Destructure the recipe object
       const notifLog = await getNotificationLog(db); // Fetch the notification log
-      //console.log(`notiflog: ${JSON.stringify(notifLog)}`);
+      //console.log(`spices: ${JSON.stringify(spices)}`);
 
       // Check if all spices in the recipe are located in containers
       const containersSnapshot = await db.collection('containers').get();
@@ -79,6 +80,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       updateContainerAnalytics(db, spices, admin.firestore.FieldValue); // Update the container analytics
 
       //TODO: call dispense script here?
+      const dispenseResult = await callDispenseScript(db, spices);
       //TODO: dispense script should return new spice level values to be updated in the db
       //TODO: update spice levels AND notiflog db
 
