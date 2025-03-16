@@ -15,7 +15,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SpiceSelectComponent implements OnInit {
   selectSpice: FormControl = new FormControl('');
-  selectedSpice: string = "Choose a Spice";
+  
+  selectedSpice: SpiceContainer = { containerNumber: 0, spiceName: 'Choose a Spice', spiceQuantity: 0, isLow: false };
+
   spiceSelected: boolean = false;
   spiceList: SpiceContainer[] = []; // Initialize as an empty array
 
@@ -40,12 +42,15 @@ export class SpiceSelectComponent implements OnInit {
     //TODO: set isLow boolean for each spice container
   }
 
-  isSpiceSelected() {
+  isSpiceSelected(spice: SpiceContainer) {
     this.spiceSelected = true;
+    this.selectedSpice = spice;
   }
 
   goToDispense() {
-    this.router.navigate(['/dispense']); // Navigate to the spice dispenser page
+    this.router.navigate(['/dispense'], {
+      queryParams: { selectedSpice: JSON.stringify(this.selectedSpice) },
+    });
   }
 
   goBack() {

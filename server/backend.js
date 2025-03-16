@@ -128,9 +128,8 @@ app.post('/run-script', (req, res) => {
 // This endpoint will take the recipe item as input and deal with the dispensing logic
 app.post("/dispenseRecipe", async (req, res) => {
   try {
-      const recipe = req.body;
+      const { recipe, FromSingleDispense} = req.body;
       const { id, recipeName, spices } = recipe; // Destructure the recipe object
-
       const notifLog = await getNotificationLog(db); // Fetch the notification log
       //console.log(`notiflog: ${JSON.stringify(notifLog)}`);
 
@@ -152,7 +151,10 @@ app.post("/dispenseRecipe", async (req, res) => {
         return res.status(200).json({ lowSpices });
       }
 
-      updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
+      console.log(`${FromSingleDispense}`)
+      if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
+        updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
+      }
       updateContainerAnalytics(db, spices, admin.firestore.FieldValue); // Update the container analytics
 
       //TODO: call dispense script here?

@@ -1,4 +1,8 @@
-import { Component,OnDestroy } from '@angular/core';
+import { Component,OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { SpiceContainer, Recipe } from '../models/recipe.model';
+import { HttpClient } from '@angular/common/http';
+
 import { Subscription } from 'rxjs';
 import { SocketService } from '../socket-service/socket.service';
 import { Router } from '@angular/router';
@@ -9,15 +13,21 @@ import { Router } from '@angular/router';
   templateUrl: './spice-dispenser.component.html',
   styleUrls: ['./spice-dispenser.component.css'],
 })
-export class SpiceDispenserComponent implements OnDestroy {
-  //TODO : we dont need socket service anymore? remove if not needed
+export class SpiceDispenserComponent implements OnDestroy, OnInit {
+  //TODO: (FOR NOAH) we dont need socket service anymore? remove if not needed
   private messageSubscription: Subscription; // HTTP fields
   messages: number = 0;
   newMessage: number = this.messages;
   isFinished : boolean = false;
 
+  //TODO: fix measurements? 
+  public measurement = 0; // Start with 0
+  public selectedStep = 0.125; // Default to 1/8 teaspoon
+  public incrementOptions = [0.125, 0.25, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
 
-  constructor(private router: Router, private socketService: SocketService) {
+  selectedSpice!: SpiceContainer; // Selected spice from the spice select page
+
+  constructor(private router: Router, private socketService: SocketService, private route: ActivatedRoute, private http: HttpClient) {
     this.messageSubscription = this.socketService//constructor to recieve messages from serverr
     .on('message')
     .subscribe((data) => {
@@ -28,6 +38,49 @@ export class SpiceDispenserComponent implements OnDestroy {
       console.log(data);
       this.isFinished = data; 
     });
+  }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['selectedSpice']) {
+        this.selectedSpice = JSON.parse(params['selectedSpice']);
+        console.log('Selected Spice:', this.selectedSpice);
+      }
+    });
+  }
+
+  dispenseSpice() {
+    // map this.selectedSpice to a Recipe object
+    const recipe: Recipe = {
+      recipeName: this.selectedSpice.spiceName, // Use the spiceName as the recipeName
+      spices: [
+        {
+          spiceName: this.selectedSpice.spiceName,
+          spiceMeasurement: '', // empty string for now, would be formatMeasurement()
+          spiceQuantityInEighthTsp: this.measurement, // current selected measurement
+        },
+      ],
+    };
+    
+    // make the payload
+    const payload = {
+      recipe,
+      FromSingleDispense: true, // Flag to indicate single spice dispensing
+    };
+
+    this.http.post('http://localhost:4000/dispenseRecipe', payload).subscribe(
+      (response: any) => {
+        if (response) {
+          console.log('Dispense output:', response);
+      
+        } else {
+          console.log('no response');
+        }
+      },
+      (error) => {
+        console.error('Error dispensing recipe:', error);
+      }
+    );
   }
 
   sendMessage() {//Function to allow sending to server
@@ -44,14 +97,12 @@ export class SpiceDispenserComponent implements OnDestroy {
   loading(){
     this.router.navigate(['/loading']);
   }
+
   goBack() {
     this.router.navigate(['/spice-select']); // Navigate back to the spice select page
   }
 
 
-  public measurement = 0; // Start with 0
-  public selectedStep = 0.125; // Default to 1/8 teaspoon
-  public incrementOptions = [0.125, 0.25, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
   //TODO: add more increment options
   // Function to increment the measurement
   increment() {

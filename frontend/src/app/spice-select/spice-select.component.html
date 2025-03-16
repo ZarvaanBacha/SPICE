@@ -1,7 +1,7 @@
 <div class="spiceContainer">
     <div class="infoText">
       <h1>Selected Spice:</h1>
-      <h2>{{ selectedSpice }}</h2>
+      <h2>{{ selectedSpice.spiceName }}</h2>
     </div>
     <div class="buttonContainer">
       <!-- Use *ngFor to iterate over spiceList -->
@@ -11,7 +11,7 @@
         [spice]="spice"
         [(ngModel)]="selectedSpice"
         [disabled]="spice.isLow"
-        (click)="isSpiceSelected()"
+        (click)="isSpiceSelected(spice)"
       >
         {{ spice.spiceName }}
       </app-spice-button>

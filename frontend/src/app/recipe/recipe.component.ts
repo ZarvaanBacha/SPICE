@@ -127,7 +127,14 @@ export class RecipeComponent {
   // }
 
   dispenseRecipe(recipe: Recipe) {
-    this.http.post('http://localhost:4000/dispenseRecipe', recipe).subscribe(
+
+    // make the payload
+    const payload = {
+      recipe,
+      FromSingleDispense: false, // Flag to indicate single spice dispensing
+    };
+
+    this.http.post('http://localhost:4000/dispenseRecipe', payload).subscribe(
       (response: any) => {
         if (response.lowSpices) {
           this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', '); //TODO : remove? not sure if this is needed
