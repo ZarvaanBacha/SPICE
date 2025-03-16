@@ -66,4 +66,32 @@ export class FirebaseRecipeService {
       throw error;
     }
   }
+
+  async getAnalytics() {
+    try {
+      // Fetch all recipes from the database
+      const recipesRef = collection(this.firestore, 'recipes');
+      const recipesSnapshot = await getDocs(recipesRef);
+      const recipes = recipesSnapshot.docs.map(doc => ({
+        id: doc.id, // Include the document ID
+        ...doc.data(), // Include all fields in the recipe document
+      }));
+  
+      // Fetch all spice containers from the database
+      const containersRef = collection(this.firestore, 'containers');
+      const containersSnapshot = await getDocs(containersRef);
+      const containers = containersSnapshot.docs.map(doc => ({
+        id: doc.id, // Include the document ID
+        ...doc.data(), // Include all fields in the container document
+      }));
+  
+      return {
+        recipeAnalytics: recipes,
+        spiceContainerAnalytics: containers,
+      };
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      throw new Error('Failed to fetch analytics');
+    }
+  }
 }
