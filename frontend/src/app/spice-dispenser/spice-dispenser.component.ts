@@ -94,6 +94,7 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
     this.messageSubscription.unsubscribe();
   }
 
+  //TODO: this needs to exit properly after dispensing is complete.
   loading(){
     this.router.navigate(['/loading']);
   }
@@ -214,10 +215,6 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
     return Math.round(teaspoons / 0.125); // Convert to 1/8th teaspoons
   }
 
-  // TODO : add function to deal with single spice dispensing through nodejs
-  // should work the same way as dispensing a recipe. call the same API endpoint with a single-spice recipe. 
-  // spice refilling should be handled in the same way too?
-  // TODO : THIS MUST DEAL WITH POTENTIAL REFILLS
 }
 
 

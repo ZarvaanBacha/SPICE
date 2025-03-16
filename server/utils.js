@@ -124,10 +124,186 @@ async function updateContainerAnalytics(db, spices, FieldValue) {
   }
 }
 
+
+// Create containers in Firebase
+// This function will create 8 containers in the containers collection
+async function initialContainersCreation(db) {
+  const batch = db.batch();
+  const containerCollectionRef = db.collection(`containers`);
+  const containers = 8;
+
+  for (let i = 1; i <= containers; i++) {
+      const containerDocRef = containerCollectionRef.doc(`container_${i}`);
+      const spiceLogDoc = await db.collection('device').doc('spiceLog').get();
+      const spiceName = spiceLogDoc.get(String(i)); // Get the spice name for the current container
+      batch.set(containerDocRef, {
+          QrCodeId: "",
+          spiceName: spiceName || "unknown",
+          spiceQuantity: 76,
+          location: i, // TODO: change to actual location (depends on zarvaans python script)
+          containerId: `container_${i}`,
+          timesUsed: 0,
+          usageHistory: [],
+          lastRefilled: new Date(),
+          totalQuantityUsed: 0,
+          isLow: false,
+      });
+
+      // TODO: update spicelog entries
+  }
+
+  await batch.commit();
+  console.log("containers batch write completed");
+}
+
+
+async function testNotifLog(db, FieldValue) {
+  try {
+    // Hardcoded references for testing
+    const container1Ref = db.collection('containers').doc('container_1');
+    const container2Ref = db.collection('containers').doc('container_2');
+
+    // Update the notificationLog document with the hardcoded references
+    addContainerToNotifLog(db, container1Ref, FieldValue);
+    addContainerToNotifLog(db, container2Ref, FieldValue);
+
+    console.log('Notification log updated with hardcoded references for testing');
+  } catch (error) {
+    console.error('Error updating notification log:', error);
+  }
+}
+
+async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: logic
+  
+  emptyContainerJson = await createEmptyContainerData(db);
+  // init containerData
+  containerData = { //TODO: change to actual data, temporary for test
+    "container_1": {
+      spiceQuantity: 50,
+      location: 1,
+    },
+    "container_2": {
+      spiceQuantity: 30,
+      location: 2,
+    },
+    "container_3": {
+      spiceQuantity: 10,
+      location: 3,
+    },
+    "container_4": {
+      spiceQuantity: 0,
+      location: 4,
+    },
+    "container_5": {
+      spiceQuantity: 50,
+      location: 5,
+    },
+    "container_6": {
+      spiceQuantity: 30,
+      location: 6,
+    },
+    "container_7": {
+      spiceQuantity: 10,
+      location: 7,
+    },
+    "container_8": {
+      spiceQuantity: 0,
+      location: 8,
+    },
+  };
+  //console.log(`emptyjson: ${JSON.stringify(emptyContainerJson)}`);
+
+  //TODO: call python script
+
+  //TODO: get the output (containerData) of the python script 
+
+  // process data and update the containers collection (spiceQuantity, location, isLow)
+  for (const key in containerData) {
+    if (containerData.hasOwnProperty(key)) {
+      const spice = containerData[key];
+
+      const QrCodeId = key;
+
+      // Fetch doc that matches QrCodeId
+      const containerSnapshot = await db.collection('containers')
+                                        .where('containerId', '==', QrCodeId) //TODO: change containerId to qrCodeId
+                                        .limit(1)
+                                        .get();
+
+      // update doc if it exists
+      if (!containerSnapshot.empty) {
+        const containerRef = containerSnapshot.docs[0].ref; // works?
+
+        // Check if spice quantity is below threshold
+        var isLow = false;
+        if (spice.spiceQuantity <= threshold) {
+          await addContainerToNotifLog(db, containerRef, FieldValue); // add container to notificationLog
+          isLow = true;
+        } else {
+          await removeContainerToNotifLog(db, containerRef, FieldValue); // remove container to notificationLog
+        }
+
+        // Update the container document
+        await containerRef.update({
+          spiceQuantity: spice.spiceQuantity,
+          location: spice.location,
+          isLow: isLow,
+        });
+
+        console.log(`Updated container: ${QrCodeId}`);
+      } else {
+        console.log(`Container not found for: ${QrCodeId}`);
+      }
+    }
+  }
+}
+
+async function addContainerToNotifLog(db, containerDoc, FieldValue) {
+  
+  const notifLogRef = db.collection('device').doc('notificationLog');
+  
+  await notifLogRef.update({
+    log: FieldValue.arrayUnion(containerDoc), // Append containerDoc to the log array
+  });
+}
+
+async function removeContainerToNotifLog(db, containerDoc, FieldValue) {
+  
+  const notifLogRef = db.collection('device').doc('notificationLog');
+  
+  await notifLogRef.update({
+    log: FieldValue.arrayRemove(containerDoc), // remove containerDoc from the log array
+  });
+}
+
+async function createEmptyContainerData(db) {
+  // Fetch all documents from the containers collection
+  const containersSnapshot = await db.collection('containers').get();
+  
+  let spice_data = {};
+
+  // Iterate over each container document and add to spice_data
+  containersSnapshot.forEach((doc) => {
+      let key = doc.data().containerId; //TODO: cahnge to QrCodeId
+      
+      spice_data[key] = {
+          spiceQuantity: 0,
+          location: null
+      };
+  });
+
+  return spice_data;
+}
+
 module.exports = {
   getNotificationLog,
   logRecipeDetails,
   isContainerInNotificationLog,
   updateRecipeAnalytics,
   updateContainerAnalytics,
+  initialContainersCreation,
+  testNotifLog,
+  updateContainersOnStartUp,
+  addContainerToNotifLog,
+  removeContainerToNotifLog,
 };

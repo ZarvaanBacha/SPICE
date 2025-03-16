@@ -38,8 +38,6 @@ export class SpiceSelectComponent implements OnInit {
         console.error('Error fetching spice list:', error);
       }
     );
-
-    //TODO: set isLow boolean for each spice container
   }
 
   isSpiceSelected(spice: SpiceContainer) {

@@ -3,7 +3,17 @@ const admin = require('firebase-admin');
 const { exec } = require('child_process');
 const cors = require('cors');
 
-const { getNotificationLog, isContainerInNotificationLog, updateRecipeAnalytics, updateContainerAnalytics } = require('./utils'); // Import functions from utils.js
+const { 
+  getNotificationLog, 
+  isContainerInNotificationLog, 
+  updateRecipeAnalytics, 
+  updateContainerAnalytics, 
+  initialContainersCreation, 
+  testNotifLog,
+  updateContainersOnStartUp,
+  addContainerToNotifLog,
+  removeContainerToNotifLog,
+} = require('./utils'); // Import functions from utils.js
 
 const app = express();
 const PORT = 4000;
@@ -23,105 +33,16 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-// Create containers in Firebase
-// This function will create 8 containers in the containers collection
-// TODO: use to initialize containers on device startup
-const containers = 8;
-
-async function initialContainersCreation() {
-  const batch = db.batch();
-  const containerCollectionRef = db.collection(`containers`);
-
-  for (let i = 1; i <= containers; i++) { //TODO: no need to loop, parse the output of the python script
-      // TODO: use python script to get each container's info.
-      // TODO: check if spice needs to be added in notiflog
-      const containerDocRef = containerCollectionRef.doc(`container_${i}`);
-      const spiceLogDoc = await db.collection('device').doc('spiceLog').get();
-      const spiceName = spiceLogDoc.get(String(i)); // Get the spice name for the current container
-      batch.set(containerDocRef, {
-          QrCodeId: "",
-          spiceName: spiceName || "unknown",
-          spiceQuantity: 76,
-          location: i, // TODO: change to actual location (depends on zarvaans python script)
-          containerId: `container_${i}`,
-          timesUsed: 0,
-          usageHistory: [],
-          lastRefilled: new Date(),
-          totalQuantityUsed: 0
-      });
-
-      // TODO: update spicelog entries
-  }
-
-  await batch.commit();
-  console.log("containers batch write completed");
-}
-
-async function testNotifLog() {
-  try {
-    const notifLogRef = db.collection('device').doc('notificationLog');
-
-    // Hardcoded references for testing
-    const container1Ref = db.collection('containers').doc('container_1');
-    const container2Ref = db.collection('containers').doc('container_2');
-
-    // Update the notificationLog document with the hardcoded references
-    await notifLogRef.set({
-      log: [container1Ref, container2Ref]
-    }, { merge: true });
-
-    console.log('Notification log updated with hardcoded references for testing');
-  } catch (error) {
-    console.error('Error updating notification log:', error);
-  }
-}
-
 // create the containers in Firebase
-initialContainersCreation();
+//initialContainersCreation(db);
+updateContainersOnStartUp(db, admin.firestore.FieldValue, threshold);
 
 // TODO: remove, its only to test the notification log
-testNotifLog();
-
-// // API endpoint to get data from Firebase
-// app.get('/recipes', async (req, res) => {
-//   try {
-//     const recipesSnapshot = await db.collection('recipes').get();
-//     const recipes = recipesSnapshot.docs.map(doc => doc.data());
-//     res.json(recipes);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// });
-
-// // API endpoint to add data to Firebase
-// app.post('/recipes', async (req, res) => {
-//   try {
-//     const newRecipe = req.body;
-//     await db.collection('recipes').add(newRecipe);
-//     res.status(201).send('Recipe added successfully');
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// });
+testNotifLog(db, admin.firestore.FieldValue);
 
 // Root URL route
 app.get('/', (req, res) => {
   res.send('Welcome to the backend server!');
-});
-
-// API endpoint to run a Python script
-app.post('/run-script', (req, res) => {
-  exec('python3 path/to/your/script.py', (error, stdout, stderr) => {
-    if (error) {
-      res.status(500).send(`Error: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      res.status(500).send(`Stderr: ${stderr}`);
-      return;
-    }
-    res.send(`Output: ${stdout}`);
-  });
 });
 
 // API endpoint to dispense a recipe
@@ -151,7 +72,7 @@ app.post("/dispenseRecipe", async (req, res) => {
         return res.status(200).json({ lowSpices });
       }
 
-      console.log(`${FromSingleDispense}`)
+      //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
         updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
       }
@@ -159,6 +80,7 @@ app.post("/dispenseRecipe", async (req, res) => {
 
       //TODO: call dispense script here?
       //TODO: dispense script should return new spice level values to be updated in the db
+      //TODO: update spice levels AND notiflog db
 
       res.json({ message: `Dispensing recipe: ${recipeName}`, spices }); //TODO: change the response
   } catch (error) {
@@ -167,7 +89,7 @@ app.post("/dispenseRecipe", async (req, res) => {
 });
 
 // API endpoint to get low spices from notificationLog
-app.get('/low-spices', async (req, res) => {
+app.get('/getLowSpices', async (req, res) => {
   try {
     const notifLogDoc = await db.collection('device').doc('notificationLog').get();
 
@@ -184,7 +106,7 @@ app.get('/low-spices', async (req, res) => {
       if (containerDoc.exists) {
         const containerData = containerDoc.data();
         lowSpices.push({
-          containerNumber: containerData.location, //TODO: maybe fix this?
+          containerNumber: containerData.location, //TODO: maybe fix the name to containerId or location.
           spiceName: containerData.spiceName,
           spiceQuantity: containerData.spiceQuantity,
         });
@@ -208,8 +130,8 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
     const containersSnapshot = await db.collection('containers').get();
     const containers = containersSnapshot.docs.map(doc => ({
       containerNumber: doc.data().location,
-      spice: doc.data().spiceName,
-      percentageLeft: doc.data().spiceQuantity,
+      spiceName: doc.data().spiceName,
+      spiceQuantity: doc.data().spiceQuantity,
     }));
 
     // Fetch the notification log
@@ -229,8 +151,8 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
         const containerData = containerDoc.data();
         lowSpices.push({
           containerNumber: containerData.location,
-          spice: containerData.spiceName,
-          percentageLeft: containerData.spiceQuantity,
+          spiceName: containerData.spiceName,
+          spiceQuantity: containerData.spiceQuantity,
         });
       }
     }
@@ -238,7 +160,7 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
     // Filter containers to match the spices in the recipe and are in the notification log
     const spicesToRefill = spices
       .map(spice => {
-        const container = lowSpices.find(c => c.spice === spice.spiceName);
+        const container = lowSpices.find(c => c.spiceName === spice.spiceName);
         if (container) {
           return container;
         }
@@ -246,6 +168,7 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
       })
       .filter(Boolean); // Remove null values
 
+    
     res.json(spicesToRefill);
   } catch (error) {
     console.error('Error fetching spices to refill:', error);
@@ -253,12 +176,12 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
   }
 });
 
-app.post('/refill-spices', async (req, res) => {
+app.post('/refillSpices', async (req, res) => {
   try {
     const { spices, userResponse } = req.body; // Extract spicesToRefill and userResponse from the request body
 
     for (const container of spices) {
-      console.log(`Processing container ${container.containerNumber} for spice "${container.spice}"`);
+      console.log(`Processing container ${container.containerNumber} for spice "${container.spiceName}"`);
 
       if (userResponse === undefined) {
         // 1. Move the container to the refill position
@@ -282,14 +205,13 @@ app.post('/refill-spices', async (req, res) => {
           // 5. Update the spice quantity in the database
           await db.collection('containers').doc(`container_${container.containerNumber}`).update({
             spiceQuantity: currentSpiceQuantity,
-            lastRefilled: new Date()
+            lastRefilled: new Date(),
+            isLow: false,
           });
 
           // 6. Remove the container from the notification log
           const logEntryRef = db.collection('containers').doc(`container_${container.containerNumber}`);
-          await db.collection('device').doc('notificationLog').update({
-            log: admin.firestore.FieldValue.arrayRemove(logEntryRef),
-          });
+          removeContainerToNotifLog(db, logEntryRef, admin.firestore.FieldValue);
 
           console.log(`Container ${container.containerNumber} successfully refilled and removed from the notification log.`);
         } else {
