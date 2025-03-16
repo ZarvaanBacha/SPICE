@@ -51,7 +51,7 @@ export class RecipesComponent {
     const newRecipe = {
       recipeName: this.productForm.value.recipeName,
       spices: this.productForm.value.spices,
-      togglePublic: false,
+      isPublic: false,
     };
 
     await this.firebaseRecipeService.addRecipe(newRecipe);

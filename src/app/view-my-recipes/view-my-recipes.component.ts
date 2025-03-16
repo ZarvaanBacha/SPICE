@@ -16,6 +16,8 @@ export class ViewMyRecipesComponent implements OnInit {
   recipeForms: { [key: string]: FormGroup } = {};
   isPublic: boolean
 
+  publicRecipes: any[] = []; //TODO: move to shared recipe page
+
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
     '1 teaspoon', '1 and 1/8 teaspoon', '1 and 1/4 teaspoon',
@@ -38,17 +40,19 @@ export class ViewMyRecipesComponent implements OnInit {
             spiceName: [spice.spiceName],
             spiceMeasurement: [spice.spiceMeasurement]
           }))),
-          togglePublic: this.isPublic
+          isPublic: this.isPublic
         });
       });
     });
+
+    this.loadPublicRecipes(5); //TODO: move to shared recipe page
   }
 
   toggle(recipeId: string) {
     // Find the recipe by ID
     const recipe = this.recipes.find(r => r.id === recipeId);
     if (recipe) {
-      recipe.isPublic = !recipe.isPublic; // Toggle the `togglePublic` property
+      recipe.isPublic = !recipe.isPublic; // Toggle the isPublic property
   
       // update the backend
       this.firebaseRecipeService.toggleRecipePublic(recipe.isPublic, recipeId)
@@ -70,13 +74,19 @@ export class ViewMyRecipesComponent implements OnInit {
   }
 
   saveRecipe(recipe: any) {
+    
+    this.recipeForms[recipe.id].value.isPublic = recipe.isPublic;
     const updatedRecipe = this.recipeForms[recipe.id].value;
+
+    console.log('Updated Recipe:', updatedRecipe);
+
 
     this.firebaseRecipeService.updateRecipe(recipe.id, updatedRecipe)
       .then(() => {
         recipe.recipeName = updatedRecipe.recipeName;
         recipe.spices = updatedRecipe.spices;
         recipe.editing = false;
+        recipe.isPublic = updatedRecipe.isPublic;
       })
       .catch(error => console.error('Error updating recipe:', error));
   }
@@ -90,5 +100,14 @@ export class ViewMyRecipesComponent implements OnInit {
 
   removeSpice(recipeId: string, index: number) {
     this.getSpices(recipeId).removeAt(index);
+  }
+
+  async loadPublicRecipes(n: number) { //TODO: move to shared recipe page
+    try {
+      this.publicRecipes = await this.firebaseRecipeService.getPublicRecipes(n);
+      console.log('Public Recipes:', this.publicRecipes);
+    } catch (error) {
+      console.error('Error loading public recipes:', error);
+    }
   }
 }
