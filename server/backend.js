@@ -260,33 +260,6 @@ app.get('/getSpiceContainers', async (req, res) => {
   }
 });
 
-app.get('/getAnalytics', async (req, res) => {
-  try {
-    // Fetch all recipes from the database
-    const recipesSnapshot = await db.collection('recipes').get();
-    const recipes = recipesSnapshot.docs.map(doc => ({
-      id: doc.id, // Include the document ID
-      ...doc.data(), // Include all fields in the recipe document
-    }));
-
-    // Fetch all spice containers from the database
-    const containersSnapshot = await db.collection('containers').get();
-    const containers = containersSnapshot.docs.map(doc => ({
-      id: doc.id, // Include the document ID
-      ...doc.data(), // Include all fields in the container document
-    }));
-
-    // send the analytics
-    res.json({
-      recipeAnalytics: recipes,
-      spiceContainerAnalytics: containers,
-    });
-  } catch (error) {
-    console.error('Error fetching analytics:', error);
-    res.status(500).json({ error: 'Failed to fetch analytics' });
-  }
-});
-
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
