@@ -60,4 +60,6 @@ export class RecipesComponent {
     this.productForm.reset()
 
   }
+
+  //TODO: get spices from db
 }

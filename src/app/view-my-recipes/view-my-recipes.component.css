@@ -108,3 +108,7 @@ h1 {
     font-size: 1.75rem;
   }
 }
+
+input[type="checkbox"] {
+  appearance: checkbox !important;
+}

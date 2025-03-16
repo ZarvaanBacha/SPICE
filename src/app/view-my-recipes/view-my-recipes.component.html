@@ -12,7 +12,11 @@
             <button class="btn btn-save" *ngIf="recipe.editing" (click)="saveRecipe(recipe)">Save</button>
             <button class="btn btn-delete" (click)="deleteRecipe(recipe.id)">Delete</button>
             <label class="toggle-switch">
-              <input type="checkbox" (click)="toggle(recipe.id)"/>
+              <input 
+                type="checkbox" 
+                [checked]="recipe.isPublic"
+                (change)="toggle(recipe.id)"
+                />
               <span class="slider"></span>
             </label>
           </div>

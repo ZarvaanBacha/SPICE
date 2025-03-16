@@ -25,7 +25,7 @@ export class FirebaseRecipeService {
 
   async toggleRecipePublic(change: boolean, recipeId: string) {
     const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
-    await updateDoc(recipeRef, { togglePublic: change });
+    await updateDoc(recipeRef, { isPublic: change });
 
   }
 

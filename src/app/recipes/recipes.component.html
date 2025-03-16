@@ -16,7 +16,7 @@
         <tr *ngFor="let quantity of spices().controls; let i=index" [formGroupName]="i">  
           <td>  
               Spice:  
-              <input type="text" formControlName="spiceName" class="form-control">  
+              <input type="text" formControlName="spiceName" class="form-control">  <!-- TODO: use dropdown instead -->
           </td>  
           <td>  
               Amount:  

@@ -45,9 +45,16 @@ export class ViewMyRecipesComponent implements OnInit {
   }
 
   toggle(recipeId: string) {
-    this.isPublic = !this.isPublic;
-    console.log('Toggle Switch is now:', this.isPublic ? 'ON' : 'OFF');
-    this.firebaseRecipeService.toggleRecipePublic(this.isPublic, recipeId)
+    // Find the recipe by ID
+    const recipe = this.recipes.find(r => r.id === recipeId);
+    if (recipe) {
+      recipe.isPublic = !recipe.isPublic; // Toggle the `togglePublic` property
+  
+      // update the backend
+      this.firebaseRecipeService.toggleRecipePublic(recipe.isPublic, recipeId)
+        .then(() => console.log('Recipe public state updated successfully'))
+        .catch(error => console.error('Error updating recipe public state:', error));
+    }
   }
 
   getSpices(recipeId: string) {
