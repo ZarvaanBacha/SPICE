@@ -20,7 +20,7 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
   newMessage: number = this.messages;
   isFinished : boolean = false;
 
-  //TODO: fix measurements? 
+  //TODO: fix measurements
   public measurement = 0; // Start with 0
   public selectedStep = 0.125; // Default to 1/8 teaspoon
   public incrementOptions = [0.125, 0.25, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
@@ -57,7 +57,7 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
         {
           spiceName: this.selectedSpice.spiceName,
           spiceMeasurement: '', // empty string for now, would be formatMeasurement()
-          spiceQuantityInEighthTsp: this.measurement, // current selected measurement
+          spiceQuantityInEighthTsp: this.measurement * 8, // current selected measurement
         },
       ],
     };
@@ -190,29 +190,6 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
 
   toAbsolute(value:number): number{ //Returns the necessary amount of presses to match selected spice amount
     return value/0.125;
-  }
-
-  // New method to convert measurement string to 1/8th teaspoons
-  convertToEighthTeaspoons(measurement: string): number { //TODO: move to service or backend?
-    const regex = /(\d+)\s*(tablespoon|teaspoon|tbsp|tsp)/i;
-    const match = measurement.match(regex);
-
-    if (!match) {
-      throw new Error('Invalid measurement format');
-    }
-
-    const value = parseFloat(match[1]);
-    const unit = match[2].toLowerCase();
-
-    let teaspoons = 0;
-
-    if (unit === 'tablespoon' || unit === 'tbsp') {
-      teaspoons = value * 3; // 1 tablespoon = 3 teaspoons
-    } else if (unit === 'teaspoon' || unit === 'tsp') {
-      teaspoons = value;
-    }
-
-    return Math.round(teaspoons / 0.125); // Convert to 1/8th teaspoons
   }
 
 }

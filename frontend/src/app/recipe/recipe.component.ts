@@ -179,27 +179,41 @@ export class RecipeComponent {
   }
   
   // New method to convert measurement string to 1/8th teaspoons
-  // TODO : doesn't always properly convert, need to fix. 3/4 teaspoon gives 32 eighth teaspoons, should give 6
-  convertToEighthTeaspoons(measurement: string): number { //TODO: this has a duplicate in spice-dispenser.component.ts, to fix
-    const regex = /(\d+)\s*(tablespoon|teaspoon|tbsp|tsp)/i;
-    const match = measurement.match(regex);
-
-    if (!match) {
-      throw new Error('Invalid measurement format');
+  convertToEighthTeaspoons(measurement: string): number {
+    const regex = /(\d+\s*\d*\/?\d*)\s*(tablespoon|teaspoon|tbsp|tsp)/gi;
+    let match;
+    let totalTeaspoons = 0;
+  
+    while ((match = regex.exec(measurement)) !== null) {
+      let valueStr = match[1].trim();
+      let unit = match[2].toLowerCase();
+      let value: number;
+  
+      //Handle mixed fractions (e.g., "2 3/4")
+      if (valueStr.includes(' ')) {
+        const [whole, fraction] = valueStr.split(' ');
+        const [numerator, denominator] = fraction.split('/').map(Number);
+        value = parseInt(whole) + numerator / denominator;
+      } 
+      //Handle proper fractions (e.g., "3/4")
+      else if (valueStr.includes('/')) {
+        const [numerator, denominator] = valueStr.split('/').map(Number);
+        value = numerator / denominator;
+      } 
+      //Handle whole numbers (e.g., "2")
+      else {
+        value = parseInt(valueStr);
+      }
+  
+      //Convert to teaspoons
+      if (unit === 'tablespoon' || unit === 'tbsp') {
+        totalTeaspoons += value * 3; //1 tablespoon = 3 teaspoons
+      } else if (unit === 'teaspoon' || unit === 'tsp') {
+        totalTeaspoons += value;
+      }
     }
-
-    const value = parseFloat(match[1]);
-    const unit = match[2].toLowerCase();
-
-    let teaspoons = 0;
-
-    if (unit === 'tablespoon' || unit === 'tbsp') {
-      teaspoons = value * 3; // 1 tablespoon = 3 teaspoons
-    } else if (unit === 'teaspoon' || unit === 'tsp') {
-      teaspoons = value;
-    }
-
-    return Math.round(teaspoons / 0.125); // Convert to 1/8th teaspoons
+  
+    return Math.round(totalTeaspoons / 0.125); // Convert to 1/8th teaspoons
   }
 
 }
