@@ -1,0 +1,14 @@
+<div class="find-recipes-container">
+    <h1>Find Recipes</h1>
+    <ul>
+      <li *ngFor="let recipe of publicRecipes">
+        <strong>{{ recipe.recipeName }}</strong>
+        <ul>
+          <li *ngFor="let spice of recipe.spices">
+            {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
+          </li>
+        </ul>
+        <button (click)="saveRecipe(recipe)">Save Recipe</button>
+      </li>
+    </ul>
+  </div>
