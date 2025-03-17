@@ -43,7 +43,7 @@
   </div>
 
 
-  <div class="recipe-list">
+  <div class="recipe-list" style="max-height: 400px; overflow-y: auto;">
     <h2>Saved Recipes</h2>
     <ul>
       <li *ngFor="let recipe of recipes">
@@ -52,8 +52,8 @@
         <button (click)="deleteRecipe(recipe)">Delete</button>
         <button (click)="shareRecipe(recipe)">Share</button>
         <button (click)="dispenseRecipe(recipe)">Dispense</button>
-        <div *ngIf="showButton">
-          <p *ngIf="showButton">The following spices require refill: {{ lowSpicesList }}</p>
+        <div *ngIf="selectedRecipeForDispense === recipe">
+          <p>The following spices require refill: {{ lowSpicesList }}</p>
           <button (click)="Refill(recipe)">Refill</button>
           <button (click)="Cancel(recipe)">Cancel</button>
         </div>

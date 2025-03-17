@@ -24,6 +24,7 @@ export class RecipeComponent {
   isEditing = false;
   requiresRefill = false; // Add a flag to indicate if refill is required
   showButton = false;
+  selectedRecipeForDispense: Recipe | null = null; // Add this property
  
   spiceOptions: string[] = []; // Initialize as an empty array
   measurementOptions: string[] = [
@@ -88,45 +89,8 @@ export class RecipeComponent {
 
   }
 
-  // dispenseRecipe(recipe: Recipe) { //TODO change to redirect user to lowspice page if user needs to refill
-  //   this.http.post('http://localhost:4000/dispenseRecipe', recipe).subscribe(
-  //     (response: any) => {
-  //       if (response.lowSpices) { // If there are low spices that need to be refilled before dispensing
-  //         const lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
-  //         const userResponse = confirm(`The following spice containers must be refilled in order to dispense the recipe: ${lowSpicesList}\nDo you want to refill or cancel?`); //TODO: change to be custom modal?
-  
-  //         if (userResponse) {
-  //           // User chose to refill
-  //           this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'refill' }).subscribe(
-  //             (response) => {
-  //               console.log('Dispense output:', response);
-  //             },
-  //             (error) => {
-  //               console.error('Error dispensing recipe:', error);
-  //             }
-  //           ); //TODO: replace by gotolowspice function call
-  //         } else {
-  //           // User chose to cancel
-  //           this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
-  //             (response) => {
-  //               console.log('Dispense output:', response);
-  //             },
-  //             (error) => {
-  //               console.error('Error dispensing recipe:', error);
-  //             }
-  //           ); //TODO: remove the refill prompt buttons, dont call the endpoint
-  //         }
-  //       } else {
-  //         console.log('Dispense output:', response); //TODO: make it go to dispensing animation page
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error dispensing recipe:', error);
-  //     }
-  //   );
-  // }
-
   dispenseRecipe(recipe: Recipe) {
+    this.selectedRecipeForDispense = recipe; // Set the selected recipe
 
     // make the payload
     const payload = {
@@ -152,22 +116,16 @@ export class RecipeComponent {
   }
 
   Cancel(recipe: Recipe){
+    this.selectedRecipeForDispense = null; // Reset the selected recipe
     //User chose to Cancel
     //doesnt need to call api, just stop button show
     this.showButton = false;
     this.requiresRefill = false;
-    // this.http.post('http://localhost:4000/dispenseRecipe', { ...recipe, userResponse: 'cancel' }).subscribe(
-    //   (response) => {
-    //     console.log('Dispense output:', response);
-    //   },
-    //   (error) => {
-    //     console.error('Error dispensing recipe:', error);
-    //   }
-    // );
     // TODO: clean this up
   }
 
   Refill(recipe: Recipe){
+    this.selectedRecipeForDispense = null; // Reset the selected recipe
     // User chose to refill
     this.requiresRefill = false;
     this.showButton = false;

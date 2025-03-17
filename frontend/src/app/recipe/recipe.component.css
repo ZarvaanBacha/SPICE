@@ -144,3 +144,18 @@
   .removeButton{
     background-color: #2A6A2D
   }
+
+.recipe-list {
+  max-height: 400px; /* Adjust the height as needed */
+  overflow-y: auto;
+}
+
+.recipe-list ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.recipe-list li {
+  margin-bottom: 10px;
+}

@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); // CHANGE
+const serviceAccount = require("C:/Users/dextr/Desktop/firebase-admin-private-keys.json"); // CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
