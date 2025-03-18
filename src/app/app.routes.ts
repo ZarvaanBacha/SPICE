@@ -23,7 +23,7 @@ export const routes: Routes = [
             {path:"recipes", component: RecipesComponent},
             {path:"deviceView",component: ViewDeviceComponent},
             {path:"addDevice", component: AddDeviceComponent},
-            {path: 'find-recipes', component: FindRecipesComponent },,
+            {path: 'find-recipes', component: FindRecipesComponent },
             {path:"analytics", component: AnalyticsComponent}
         ]
     },
