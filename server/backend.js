@@ -14,6 +14,7 @@ const {
   addContainerToNotifLog,
   removeContainerToNotifLog,
   callDispenseScript,
+  getUserReferenceByDeviceId,
 } = require('./utils'); // Import functions from utils.js
 
 const app = express();
@@ -26,13 +27,14 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/dextr/Desktop/firebase-admin-private-keys.json"); // CHANGE
+const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); // CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://spicedb-84047-default-rtdb.firebaseio.com'
 });
 const db = admin.firestore();
+const deviceId = 'testsetst';
 
 // create the containers in Firebase
 //initialContainersCreation(db);
@@ -40,6 +42,11 @@ updateContainersOnStartUp(db, admin.firestore.FieldValue, threshold);
 
 // TODO: remove, its only to test the notification log
 testNotifLog(db, admin.firestore.FieldValue);
+
+(async () => {
+  const userRef = await getUserReferenceByDeviceId(db, deviceId);
+  // Add any other logic that depends on this here
+})();
 
 // Root URL route
 app.get('/', (req, res) => {

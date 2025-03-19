@@ -1,4 +1,34 @@
 
+
+async function getUserReferenceByDeviceId(db, deviceId) {
+  try {
+
+    // Query the 'users' collection to find the user with the specified productID
+    const userQuerySnapshot = await db.collection('users')
+      .where('device.deviceInfo.productID', '==', deviceId)
+      .get();
+
+    if (userQuerySnapshot.empty) {
+      console.log('No user found');
+      return null;
+    }
+
+    // userQuerySnapshot.forEach(doc => {
+    //   const userData = doc.data();
+    //   console.log(`User ID: ${doc.id}, User Data: ${JSON.stringify(userData)}`);
+    // });
+
+    // If a user is found, return the reference to the user document
+    const userDoc = userQuerySnapshot.docs[0]; // Assuming there's only one document
+    console.log('Found user:', userDoc.id);
+    return userDoc.ref;
+
+  } catch (error) {
+    console.error('Error fetching user reference:', error);
+    throw error;
+  }
+}
+
 async function getNotificationLog(db) {
     try {
       const docRef = db.collection('device').doc('notificationLog');
@@ -354,4 +384,5 @@ module.exports = {
   addContainerToNotifLog,
   removeContainerToNotifLog,
   callDispenseScript,
+  getUserReferenceByDeviceId,
 };
