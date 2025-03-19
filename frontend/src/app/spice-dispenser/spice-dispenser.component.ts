@@ -16,10 +16,9 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
   newMessage: number = this.messages;
   isFinished : boolean = false;
 
-  //TODO: fix measurements (after more have been added)
   public measurement = 0; // Start with 0
   public selectedStep = 0.125; // Default to 1/8 teaspoon
-  public incrementOptions = [0.125, 0.25, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
+  public incrementOptions = [0.125, 0.25, 0.50, 1, 3]; // 1/8 tsp, 1/4 tsp, 1 tbsp
 
   selectedSpice!: SpiceContainer; // Selected spice from the spice select page
 
@@ -83,7 +82,6 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
   }
 
 
-  //TODO: add more increment options
   // Function to increment the measurement
   increment() {
     this.measurement += this.selectedStep;

@@ -26,7 +26,7 @@ export class SelectionScreenComponent {
     this.router.navigate(['/low-spice']);
   }
 
-  //TODO: the data is not instantly displayed on other pages. deal with pulling data from db here to pass to other pages?
+  //TODO-minor: the data is not instantly displayed on other pages. deal with pulling data from db here to pass to other pages?
   // example 1: the spice choices arent instantly displayed on the spice select page
   // example 2: the low spice containers arent instantly displayed on the low spice page
 }
