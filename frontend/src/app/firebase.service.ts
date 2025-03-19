@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseService { //TODO: fix this service to work for user-specific recipes
   constructor(private firestore: Firestore) {}
 
   getRecipes(): Observable<any[]> {
@@ -13,7 +13,7 @@ export class FirebaseService {
     return collectionData(recipesRef, { idField: 'id' });
   }
 
-  async addRecipe(recipe: any) { //TODO: change any to Recipe object
+  async addRecipe(recipe: any) {
     try {
       const recipesRef = collection(this.firestore, 'recipes');
 

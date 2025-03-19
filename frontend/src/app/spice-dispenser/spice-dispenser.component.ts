@@ -78,11 +78,6 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {//Closes subscription while window not active
   }
 
-  //TODO: this needs to exit properly after dispensing is complete.
-  loading(){
-    this.router.navigate(['/loading']);
-  }
-
   goBack() {
     this.router.navigate(['/spice-select']); // Navigate back to the spice select page
   }

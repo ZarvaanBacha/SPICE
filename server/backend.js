@@ -127,7 +127,7 @@ app.get('/getLowSpices', async (req, res) => {
       if (containerDoc.exists) {
         const containerData = containerDoc.data();
         lowSpices.push({
-          containerNumber: containerData.location, //TODO: maybe fix the name to containerId or location.
+          containerNumber: containerData.location, //TODO-minor: maybe fix the name to containerId or location.
           spiceName: containerData.spiceName,
           spiceQuantity: containerData.spiceQuantity,
         });

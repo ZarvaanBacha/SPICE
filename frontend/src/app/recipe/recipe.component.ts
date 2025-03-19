@@ -17,9 +17,9 @@ import { FirebaseService } from '../firebase.service';
   styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
-  recipes: any[] = [];// TODO : this should be of type Recipe[]
+  recipes: any[] = [];// TODO-minor : this should be of type Recipe[]
   lowSpicesList: string = '';
-  currentRecipe: any = { recipeName: '', spices: [] }; // TODO: change to be a Recipe object
+  currentRecipe: any = { recipeName: '', spices: [] }; // TODO-minor: change to be a Recipe object
   newSpice: SpiceMeasurement = { spiceName: '', spiceMeasurement: '', spiceQuantityInEighthTsp: 0 };
   isEditing = false;
   requiresRefill = false; // Add a flag to indicate if refill is required
@@ -90,18 +90,22 @@ export class RecipeComponent {
   }
 
   dispenseRecipe(recipe: Recipe) {
-    this.selectedRecipeForDispense = recipe; // Set the selected recipe
-
     // make the payload
     const payload = {
       recipe,
       FromSingleDispense: false, // Flag to indicate single spice dispensing
     };
 
+    //TODO: navigate to loading page before starting the dispensing process.
+    // we need to nav to the loading page before the dispenseRecipe endpoint is called, but we also 
+    // need to wait for the response in case refilling is needed. We would need to split it into 2 endpoints: 1 to check if refilling is needed,
+    // then another to dispense the recipe. This is a bit more complicated than I thought.
+
     this.http.post('http://localhost:4000/dispenseRecipe', payload).subscribe(
       (response: any) => {
         if (response.lowSpices) {
-          this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', '); //TODO : remove? not sure if this is needed
+          this.selectedRecipeForDispense = recipe; // Set the selected recipe
+          this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
           this.showButton = true;
           this.requiresRefill = true;
       
@@ -121,7 +125,6 @@ export class RecipeComponent {
     //doesnt need to call api, just stop button show
     this.showButton = false;
     this.requiresRefill = false;
-    // TODO: clean this up
   }
 
   Refill(recipe: Recipe){

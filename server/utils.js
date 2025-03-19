@@ -190,8 +190,6 @@ async function initialContainersCreation(db, userRef) {
           totalQuantityUsed: 0,
           isLow: false,
       });
-
-      // TODO: update spicelog entries
   }
 
   await batch.commit();
@@ -219,7 +217,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: lo
   
   emptyContainerJson = await createEmptyContainerData(db);
   // init containerData
-  containerData = { //TODO: change to actual data, temporary for test
+  let containerData = { //TODO: change to actual data, temporary for test
     "container_1": {
       spiceQuantity: 50,
       location: 1,

@@ -103,7 +103,7 @@ export class LowSpiceComponent implements OnInit{
         console.log(`Remaining containers to refill:`, remainingContainers);
   
         if (fromDispense && remainingContainers.length === 0) {
-          this.router.navigate(['/recipes']); // TODO: use AutomatedRoute to go back to recipes page and start dispense routine for correct recipe?
+          this.router.navigate(['/recipes']); // TODO-minor: use AutomatedRoute to go back to recipes page and start dispense routine for correct recipe?
         }
       },
       (error) => {
