@@ -1,30 +1,42 @@
+const { getDatabase } = require("firebase-admin/database");
 
 
 async function getUserReferenceByDeviceId(db, deviceId) {
   try {
-
-    // Query the 'users' collection to find the user with the specified productID
-    const userQuerySnapshot = await db.collection('users')
-      .where('device.deviceInfo.productID', '==', deviceId)
-      .get();
+    // Fetch all documents in the 'users' collection
+    const userQuerySnapshot = await db.collection('users').get();
 
     if (userQuerySnapshot.empty) {
-      console.log('No user found');
+      //console.log('No users found in the collection.');
       return null;
     }
 
-    // userQuerySnapshot.forEach(doc => {
-    //   const userData = doc.data();
-    //   console.log(`User ID: ${doc.id}, User Data: ${JSON.stringify(userData)}`);
-    // });
+    // Iterate through each user document
+    for (const userDoc of userQuerySnapshot.docs) {
+      //console.log(`Checking User ID: ${userDoc.id}`);
 
-    // If a user is found, return the reference to the user document
-    const userDoc = userQuerySnapshot.docs[0]; // Assuming there's only one document
-    console.log('Found user:', userDoc.id);
-    return userDoc.ref;
+      // Access the 'device' subcollection and the 'deviceInfo' document
+      const deviceDoc = await userDoc.ref.collection('device').doc('deviceInfo').get();
+
+      if (deviceDoc.exists) {
+        const productID = deviceDoc.data().productID; // Access the productID field
+       // console.log(`Found Product ID: ${productID}`);
+
+        // Check if the productID matches the provided deviceId
+        if (productID === deviceId) {
+          //console.log(`Match found for User ID: ${userDoc.id}`);
+          return userDoc.ref; // Return the reference to the user document
+        }
+      } else {
+        //console.log(`DeviceInfo document does not exist for User ID: ${userDoc.id}`);
+      }
+    }
+
+    //console.log('No user found with the specified deviceId.');
+    return null;
 
   } catch (error) {
-    console.error('Error fetching user reference:', error);
+    //console.error('Error fetching user reference:', error);
     throw error;
   }
 }
@@ -157,14 +169,14 @@ async function updateContainerAnalytics(db, spices, FieldValue) {
 
 // Create containers in Firebase
 // This function will create 8 containers in the containers collection
-async function initialContainersCreation(db) {
+async function initialContainersCreation(db, userRef) {
   const batch = db.batch();
-  const containerCollectionRef = db.collection(`containers`);
+  const containerCollectionRef = userRef.collection(`containers`);
   const containers = 8;
 
   for (let i = 1; i <= containers; i++) {
       const containerDocRef = containerCollectionRef.doc(`container_${i}`);
-      const spiceLogDoc = await db.collection('device').doc('spiceLog').get();
+      const spiceLogDoc = await userRef.collection('device').doc('spiceLog').get();
       const spiceName = spiceLogDoc.get(String(i)); // Get the spice name for the current container
       batch.set(containerDocRef, {
           QrCodeId: "",

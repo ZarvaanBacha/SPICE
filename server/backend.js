@@ -34,19 +34,31 @@ admin.initializeApp({
   databaseURL: 'https://spicedb-84047-default-rtdb.firebaseio.com'
 });
 const db = admin.firestore();
-const deviceId = 'testsetst';
+const deviceId = "testsetst";
+let userRef;
 
-// create the containers in Firebase
-//initialContainersCreation(db);
-updateContainersOnStartUp(db, admin.firestore.FieldValue, threshold);
+getUserReferenceByDeviceId(db, deviceId)
+  .then((ref) => {
+    userRef = ref;
+
+    //return initialContainersCreation(db, userRef);
+  })
+  .then(() => {
+    return updateContainersOnStartUp(userRef, admin.firestore.FieldValue, threshold);
+  })
+  .then(() => {
+    // Start the server after initialization
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Error initializing userRef:', error);
+    process.exit(1); // Exit the process if initialization fails
+  });
 
 // TODO: remove, its only to test the notification log
-testNotifLog(db, admin.firestore.FieldValue);
-
-(async () => {
-  const userRef = await getUserReferenceByDeviceId(db, deviceId);
-  // Add any other logic that depends on this here
-})();
+//testNotifLog(userRef, admin.firestore.FieldValue);
 
 // Root URL route
 app.get('/', (req, res) => {
@@ -59,11 +71,11 @@ app.post("/dispenseRecipe", async (req, res) => {
   try {
       const { recipe, FromSingleDispense} = req.body;
       const { id, recipeName, spices } = recipe; // Destructure the recipe object
-      const notifLog = await getNotificationLog(db); // Fetch the notification log
+      const notifLog = await getNotificationLog(userRef); // Fetch the notification log
       //console.log(`spices: ${JSON.stringify(spices)}`);
 
       // Check if all spices in the recipe are located in containers
-      const containersSnapshot = await db.collection('containers').get();
+      const containersSnapshot = await userRef.collection('containers').get();
       const containers = containersSnapshot.docs.map(doc => doc.data());
 
       for (const spice of spices) {
@@ -82,12 +94,12 @@ app.post("/dispenseRecipe", async (req, res) => {
 
       //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
-        updateRecipeAnalytics(db, id, admin.firestore.FieldValue); // Update the recipe analytics
+        updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
       }
-      updateContainerAnalytics(db, spices, admin.firestore.FieldValue); // Update the container analytics
+      updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
 
       //TODO: call dispense script here?
-      const dispenseResult = await callDispenseScript(db, spices);
+      const dispenseResult = await callDispenseScript(userRef, spices);
       //TODO: dispense script should return new spice level values to be updated in the db
       //TODO: update spice levels AND notiflog db
 
@@ -100,7 +112,7 @@ app.post("/dispenseRecipe", async (req, res) => {
 // API endpoint to get low spices from notificationLog
 app.get('/getLowSpices', async (req, res) => {
   try {
-    const notifLogDoc = await db.collection('device').doc('notificationLog').get();
+    const notifLogDoc = await userRef.collection('device').doc('notificationLog').get();
 
     if (!notifLogDoc.exists) {
       return res.status(404).json({ message: 'Notification log not found' });
@@ -136,7 +148,7 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
     const { spices } = recipe;
 
     // Fetch all containers from the database
-    const containersSnapshot = await db.collection('containers').get();
+    const containersSnapshot = await userRef.collection('containers').get();
     const containers = containersSnapshot.docs.map(doc => ({
       containerNumber: doc.data().location,
       spiceName: doc.data().spiceName,
@@ -144,7 +156,7 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
     }));
 
     // Fetch the notification log
-    const notifLogDoc = await db.collection('device').doc('notificationLog').get();
+    const notifLogDoc = await userRef.collection('device').doc('notificationLog').get();
     if (!notifLogDoc.exists) {
       return res.status(404).json({ message: 'Notification log not found' });
     }
@@ -212,15 +224,15 @@ app.post('/refillSpices', async (req, res) => {
           console.log(`Spice quantity for container ${container.containerNumber} is sufficient (${currentSpiceQuantity}%).`);
 
           // 5. Update the spice quantity in the database
-          await db.collection('containers').doc(`container_${container.containerNumber}`).update({
+          await userRef.collection('containers').doc(`container_${container.containerNumber}`).update({
             spiceQuantity: currentSpiceQuantity,
             lastRefilled: new Date(),
             isLow: false,
           });
 
           // 6. Remove the container from the notification log
-          const logEntryRef = db.collection('containers').doc(`container_${container.containerNumber}`);
-          removeContainerToNotifLog(db, logEntryRef, admin.firestore.FieldValue);
+          const logEntryRef = userRef.collection('containers').doc(`container_${container.containerNumber}`);
+          removeContainerToNotifLog(userRef, logEntryRef, admin.firestore.FieldValue);
 
           console.log(`Container ${container.containerNumber} successfully refilled and removed from the notification log.`);
         } else {
@@ -245,17 +257,17 @@ app.post('/refillSpices', async (req, res) => {
 app.get('/getSpiceContainers', async (req, res) => {
   try {
     // Fetch all containers from the database
-    const containersSnapshot = await db.collection('containers').get();
+    const containersSnapshot = await userRef.collection('containers').get();
 
     // Map the containers and resolve the isLow property asynchronously
     const spices = await Promise.all(
       containersSnapshot.docs.map(async (doc) => {
-        const isLow = await isContainerInNotificationLog(db, doc.id); // Resolve the isLow value
+        //const isLow = await isContainerInNotificationLog(userRef, doc.id); // Resolve the isLow value
         return {
           containerNumber: doc.id,
           spiceName: doc.data().spiceName,
           spiceQuantity: doc.data().spiceQuantity,
-          isLow: isLow, // Set the resolved isLow value
+          isLow: doc.data().isLow, // Set the resolved isLow value
         };
       })
     );
@@ -265,9 +277,4 @@ app.get('/getSpiceContainers', async (req, res) => {
     console.error('Error fetching spices:', error);
     res.status(500).json({ error: 'Failed to fetch spices' });
   }
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
 });
