@@ -14,13 +14,24 @@ import { FirebaseRecipeService } from '../firebase-recipe.service';
 export class RecipesComponent {
     
   productForm: FormGroup;  
-     
+  spiceOptions: string[] = [];
+  
+
   constructor(private fb:FormBuilder, private http: HttpClient, private firebaseRecipeService: FirebaseRecipeService) {  
      
     this.productForm = this.fb.group({  
       recipeName: '',  
       spices: this.fb.array([]) ,  
     });  
+
+    this.firebaseRecipeService.getSpiceOptions()
+    .then(spiceOptions => {
+      this.spiceOptions = spiceOptions;
+      //console.log('Spice Options:', spiceOptions);
+    })
+    .catch(error => {
+      //console.error('Error fetching spice options:', error);
+    });
   }  
     
   spices() : FormArray {  

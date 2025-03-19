@@ -22,6 +22,8 @@ export class ViewMyRecipesComponent implements OnInit {
     '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon'
   ];
 
+  spiceOptions: string[] = [];
+
   constructor(private fb: FormBuilder, private firebaseRecipeService: FirebaseRecipeService) {}
 
   ngOnInit() {
@@ -41,6 +43,15 @@ export class ViewMyRecipesComponent implements OnInit {
           isPublic: this.isPublic
         });
       });
+    });
+
+    this.firebaseRecipeService.getSpiceOptions()
+    .then(spiceOptions => {
+      this.spiceOptions = spiceOptions;
+      //console.log('Spice Options:', spiceOptions);
+    })
+    .catch(error => {
+      //console.error('Error fetching spice options:', error);
     });
   }
 

@@ -145,4 +145,34 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
       throw error;
     }
   }
+
+  async getSpiceOptions() {
+    try {
+      const userId = 'test@spice.com'; // Replace with the actual user ID
+  
+      // References to the required documents
+      const spiceLogRef = doc(this.firestore, `users/${userId}/device/spiceLog`);
+      
+      // Fetch the spiceLog document
+      const spiceLogSnap = await getDoc(spiceLogRef);
+      if (!spiceLogSnap.exists()) {
+        throw new Error('SpiceLog document does not exist.');
+      }
+
+      // Extract fields 1 to 8 and map them into a string array
+      const spiceLogData = spiceLogSnap.data();
+      const spiceOptions: string[] = [];
+      for (let i = 1; i <= 8; i++) {
+        const spice = spiceLogData[i.toString()]; // Access fields as strings ("1", "2", ..., "8")
+        if (spice) {
+          spiceOptions.push(spice); // Add the spice name to the array if it exists
+        }
+      }
+
+      return spiceOptions;
+    } catch (error) {
+      console.error('Error fetching spice options:', error);
+      throw new Error('Failed to fetch spice options');
+    }
+  }
 }
