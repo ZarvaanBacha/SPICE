@@ -1,0 +1,205 @@
+{
+  "recipeAnalytics": [
+    {
+      "id": "5ZcTUfPNThCSTNPqZsA3",
+      "recipeName": "BigSPICEY",
+      "spices": [
+        {
+          "spiceName": "Paprika",
+          "spiceMeasurement": "3/4 teaspoon",
+          "spiceQuantityInEighthTsp": 32
+        },
+        {
+          "spiceName": "Cumin",
+          "spiceMeasurement": "1 tablespoon",
+          "spiceQuantityInEighthTsp": 24
+        }
+      ],
+      "timesUsed": 4,
+      "usageHistory": [
+        "2025-03-15T22:43:27.059Z",
+        "2025-03-15T22:59:01.254Z",
+        "2025-03-15T22:59:03.533Z",
+        "2025-03-15T22:59:03.715Z"
+      ]
+    },
+    {
+      "id": "U4wDk4mCgJ7DIhCOtJKW",
+      "recipeName": "mediumSpiceMan",
+      "spices": [
+        {
+          "spiceName": "Italian seasoning",
+          "spiceMeasurement": "1 tablespoon",
+          "spiceQuantityInEighthTsp": 24
+        }
+      ],
+      "timesUsed": 9,
+      "usageHistory": [
+        "2025-03-15T22:30:24.967Z",
+        "2025-03-15T22:30:38.479Z",
+        "2025-03-15T22:43:21.049Z",
+        "2025-03-15T22:45:55.037Z",
+        "2025-03-15T22:46:09.302Z",
+        "2025-03-15T22:59:02.038Z",
+        "2025-03-15T22:59:02.893Z",
+        "2025-03-15T22:59:04.238Z"
+      ]
+    },
+    {
+      "id": "vcY5EIiqO4gCUNazsCS8",
+      "recipeName": "littleSpicey",
+      "spices": [
+        {
+          "spiceName": "Paprika",
+          "spiceMeasurement": "1 teaspoon",
+          "spiceQuantityInEighthTsp": 8
+        }
+      ],
+      "timesUsed": 5,
+      "usageHistory": [
+        "2025-03-15T22:43:33.548Z",
+        "2025-03-15T22:43:34.172Z",
+        "2025-03-15T22:59:02.464Z",
+        "2025-03-15T22:59:04.702Z",
+        "2025-03-15T22:59:04.815Z"
+      ]
+    }
+  ],
+"spiceContainerAnalytics": [
+    {
+      "id": "container_1",
+      "usageHistory": [],
+      "QrCodeId": "",
+      "spiceName": "Pepper",
+      "spiceQuantity": 76,
+      "location": 1,
+      "containerId": "container_1",
+      "timesUsed": 0,
+      "lastRefilled": {
+        "_seconds": 1742079400,
+        "_nanoseconds": 914000000
+      },
+      "totalQuantityUsed": 2
+    },
+    {
+      "id": "container_2",
+      "usageHistory": [],
+      "QrCodeId": "",
+      "spiceName": "Salt",
+      "spiceQuantity": 76,
+      "location": 2,
+      "containerId": "container_2",
+      "timesUsed": 0,
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 9000000
+      },
+      "totalQuantityUsed": 11
+    },
+    {
+      "id": "container_3",
+      "QrCodeId": "",
+      "spiceName": "Paprika",
+      "spiceQuantity": 76,
+      "location": 3,
+      "containerId": "container_3",
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 117000000
+      },
+      "totalQuantityUsed": 120,
+      "timesUsed": 6,
+      "usageHistory": [
+        "2025-03-15T22:59:01.432Z",
+        "2025-03-15T22:59:02.638Z",
+        "2025-03-15T22:59:03.705Z",
+        "2025-03-15T22:59:03.886Z",
+        "2025-03-15T22:59:04.788Z",
+        "2025-03-15T22:59:04.902Z"
+      ]
+    },
+    {
+      "id": "container_4",
+      "QrCodeId": "",
+      "spiceName": "Cumin",
+      "spiceQuantity": 76,
+      "location": 4,
+      "containerId": "container_4",
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 193000000
+      },
+      "totalQuantityUsed": 72,
+      "timesUsed": 3,
+      "usageHistory": [
+        "2025-03-15T22:59:01.604Z",
+        "2025-03-15T22:59:03.883Z",
+        "2025-03-15T22:59:04.061Z"
+      ]
+    },
+    {
+      "id": "container_5",
+      "usageHistory": [],
+      "QrCodeId": "",
+      "spiceName": "Cinnamon",
+      "spiceQuantity": 76,
+      "location": 5,
+      "containerId": "container_5",
+      "timesUsed": 0,
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 310000000
+      },
+      "totalQuantityUsed": 55
+    },
+    {
+      "id": "container_6",
+      "usageHistory": [],
+      "QrCodeId": "",
+      "spiceName": "Parsley",
+      "spiceQuantity": 76,
+      "location": 6,
+      "containerId": "container_6",
+      "timesUsed": 0,
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 385000000
+      },
+      "totalQuantityUsed": 22
+    },
+    {
+      "id": "container_7",
+      "QrCodeId": "",
+      "spiceName": "Italian seasoning",
+      "spiceQuantity": 76,
+      "location": 7,
+      "containerId": "container_7",
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 499000000
+      },
+      "totalQuantityUsed": 72,
+      "timesUsed": 3,
+      "usageHistory": [
+        "2025-03-15T22:59:02.215Z",
+        "2025-03-15T22:59:03.076Z",
+        "2025-03-15T22:59:04.458Z"
+      ]
+    },
+    {
+      "id": "container_8",
+      "usageHistory": [],
+      "QrCodeId": "",
+      "spiceName": "Oregano",
+      "spiceQuantity": 76,
+      "location": 8,
+      "containerId": "container_8",
+      "timesUsed": 0,
+      "lastRefilled": {
+        "_seconds": 1742079401,
+        "_nanoseconds": 574000000
+      },
+      "totalQuantityUsed": 14
+    }
+  ]
+}

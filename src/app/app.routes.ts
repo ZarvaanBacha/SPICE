@@ -10,6 +10,7 @@ import { AuthenticatedComponent } from './authenticated/authenticated.component'
 import { AddDeviceComponent } from './add-device/add-device.component';
 import { ViewDeviceComponent } from './view-device/view-device.component';
 import { FindRecipesComponent } from './find-recipes/find-recipes.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 
 export const routes: Routes = [
     {path:"", component:WelcomepageComponent},
@@ -22,7 +23,8 @@ export const routes: Routes = [
             {path:"recipes", component: RecipesComponent},
             {path:"deviceView",component: ViewDeviceComponent},
             {path:"addDevice", component: AddDeviceComponent},
-            { path: 'find-recipes', component: FindRecipesComponent },
+            {path: 'find-recipes', component: FindRecipesComponent },
+            {path:"analytics", component: AnalyticsComponent}
         ]
     },
 ];
