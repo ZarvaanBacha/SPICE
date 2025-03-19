@@ -1,29 +1,30 @@
 import { Component } from '@angular/core';
+import { NgIf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FirebaseRecipeService } from '../firebase-recipe.service';
 
 @Component({
   selector: 'app-view-device',
   standalone: true,
-  imports: [],
+  imports: [NgIf, CommonModule],
   templateUrl: './view-device.component.html',
   styleUrl: './view-device.component.css'
 })
 export class ViewDeviceComponent {
-  product: String;
+  deviceInfo: any;
 
-  constructor(private http: HttpClient){}
+  constructor(private firebaseRecipeService: FirebaseRecipeService){}
 
-  getProductID(): Observable<any>{
-    return this.http.get("http://localhost:3000/viewDevice")
-  }
-  
-  
   ngOnInit() {
-    this.getProductID().subscribe(res => {
-      this.product = res.productID
-    })
-  }  
-
+    this.firebaseRecipeService.getDeviceInfo()
+      .then(deviceInfo => {
+        this.deviceInfo = deviceInfo;
+        console.log('Device Info retrieved:', deviceInfo);
+      })
+      .catch(error => {
+        console.error('Error retrieving device info:', error);
+      });
+  }
 
 }

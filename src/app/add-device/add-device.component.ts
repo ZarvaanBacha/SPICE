@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DeviceModel } from '../shared/deviceModel'
+import { FirebaseRecipeService } from '../firebase-recipe.service';
+
 
 @Component({
   selector: 'app-add-device',
@@ -11,14 +13,16 @@ import { DeviceModel } from '../shared/deviceModel'
 })
 export class AddDeviceComponent {
 
-  constructor(private http: HttpClient){}
+  constructor(private firebaseRecipeService: FirebaseRecipeService){}
 
-  onSubmit(productID: number){
-    const addDevice: DeviceModel = {productID: productID}
-
-    this.http.post("http://localhost:3000/addDevice",addDevice).subscribe(res => {
-      console.log(res)
-    })
+  onSubmit(productID: string) {
+    this.firebaseRecipeService.addDeviceToDatabase(productID)
+      .then(() => {
+        console.log('Device added successfully.');
+      })
+      .catch((err) => {
+        console.error('Error adding device:', err);
+      });
   }
 
 }

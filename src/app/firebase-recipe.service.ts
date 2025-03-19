@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDocs } from '@angular/fire/firestore';
+import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDocs, getDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -92,6 +92,57 @@ export class FirebaseRecipeService {
     } catch (error) {
       console.error('Error fetching analytics:', error);
       throw new Error('Failed to fetch analytics');
+    }
+  }
+
+  async addDeviceToDatabase(productID: string): Promise<void> {
+    try {
+      // Get a reference to the 'deviceInfo' document in the 'device' subcollection
+      const userId = 'test@spice.com'; // Replace with the actual user ID
+      const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
+  
+      // Update the 'productID' field in the 'deviceInfo' document
+      await updateDoc(deviceInfoRef, { productID: productID });
+      console.log(`Product ID ${productID} successfully added to the database.`);
+    } catch (error) {
+      console.error('Error adding product ID to the database:', error);
+      throw error;
+    }
+  }
+
+  async getDeviceInfo(): Promise<any> {
+    try {
+      const userId = 'test@spice.com'; // Replace with the actual user ID
+  
+      // References to the required documents
+      const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
+      const spiceLogRef = doc(this.firestore, `users/${userId}/device/spiceLog`);
+      const notificationLogRef = doc(this.firestore, `users/${userId}/device/notificationLog`);
+  
+      // Fetch the deviceInfo document
+      const deviceInfoSnap = await getDoc(deviceInfoRef);
+      if (!deviceInfoSnap.exists()) {
+        throw new Error('DeviceInfo document does not exist.');
+      }
+      const productID = deviceInfoSnap.data()['productID'];
+  
+      // Fetch the spiceLog document
+      const spiceLogSnap = await getDoc(spiceLogRef);
+      if (!spiceLogSnap.exists()) {
+        throw new Error('SpiceLog document does not exist.');
+      }
+      const spiceLogData = spiceLogSnap.data();
+    
+      // Combine all the data into a single JSON object
+      const result = {
+        productID,
+        spiceLog: spiceLogData,
+      };
+  
+      return result;
+    } catch (error) {
+      console.error('Error retrieving device info:', error);
+      throw error;
     }
   }
 }

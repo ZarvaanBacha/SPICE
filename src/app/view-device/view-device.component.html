@@ -1,2 +1,11 @@
-<p>view-device works!</p>
-<a>{{ product }}</a>
+<div class="container">
+    <h1>Device Info</h1>
+    <div *ngIf="deviceInfo">
+      <strong>Product ID:</strong> {{ deviceInfo.productID }}<br>
+      <strong>Spice Log:</strong>
+      <pre>{{ deviceInfo.spiceLog | json }}</pre> <!--TODO: make this pretty -->
+    </div>
+    <div *ngIf="!deviceInfo">
+      <p>No device info found.</p>
+    </div>
+  </div>
