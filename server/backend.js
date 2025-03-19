@@ -41,7 +41,7 @@ getUserReferenceByDeviceId(db, deviceId)
   .then((ref) => {
     userRef = ref;
 
-    //return initialContainersCreation(db, userRef);
+    return initialContainersCreation(db, userRef);
   })
   .then(() => {
     return updateContainersOnStartUp(userRef, admin.firestore.FieldValue, threshold);
