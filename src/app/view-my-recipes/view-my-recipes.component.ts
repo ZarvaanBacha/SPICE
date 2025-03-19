@@ -16,8 +16,6 @@ export class ViewMyRecipesComponent implements OnInit {
   recipeForms: { [key: string]: FormGroup } = {};
   isPublic: boolean
 
-  publicRecipes: any[] = []; //TODO: move to shared recipe page
-
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
     '1 teaspoon', '1 and 1/8 teaspoon', '1 and 1/4 teaspoon',
@@ -44,8 +42,6 @@ export class ViewMyRecipesComponent implements OnInit {
         });
       });
     });
-
-    this.loadPublicRecipes(5); //TODO: move to shared recipe page
   }
 
   toggle(recipeId: string) {
@@ -100,14 +96,5 @@ export class ViewMyRecipesComponent implements OnInit {
 
   removeSpice(recipeId: string, index: number) {
     this.getSpices(recipeId).removeAt(index);
-  }
-
-  async loadPublicRecipes(n: number) { //TODO: move to shared recipe page
-    try {
-      this.publicRecipes = await this.firebaseRecipeService.getPublicRecipes(n);
-      console.log('Public Recipes:', this.publicRecipes);
-    } catch (error) {
-      console.error('Error loading public recipes:', error);
-    }
   }
 }

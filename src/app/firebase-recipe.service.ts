@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseRecipeService {
+export class FirebaseRecipeService { //TODO: fix this service to work for user-specific recipes
   constructor(private firestore: Firestore) {}
 
   getRecipes(): Observable<any[]> {
@@ -57,7 +57,7 @@ export class FirebaseRecipeService {
       const publicRecipes = querySnapshot.docs.map((doc) => ({ //change the fields collected here:
         recipeName: doc.data()['recipeName'],
         spices: doc.data()['spices'],
-        //TODO: possibly add a counter to how many times the recipe was added by other users
+        //TODO-minor: possibly add a counter to how many times the recipe was added by other users
       }));
 
       return publicRecipes;
