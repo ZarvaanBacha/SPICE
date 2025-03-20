@@ -73,7 +73,6 @@ app.post("/dispenseRecipe", async (req, res) => {
   try {
       const { recipe, FromSingleDispense} = req.body;
       const { id, recipeName, spices } = recipe; // Destructure the recipe object
-      const notifLog = await getNotificationLog(userRef); // Fetch the notification log
       //console.log(`spices: ${JSON.stringify(spices)}`);
 
       // Check if all spices in the recipe are located in containers
@@ -87,16 +86,13 @@ app.post("/dispenseRecipe", async (req, res) => {
           }
       }
 
-      // Check the notification log for any low spices
-      const lowSpices = notifLog.filter(log => spices.some(spice => spice.spiceName === log.spiceName));
-
       // call dispense script. db values for containers and notifLog are updated in it.
-      const dispenseResult = await callDispenseScript(userRef, admin.firestore.FieldValue, spices, threshold);
+      await callDispenseScript(userRef, admin.firestore.FieldValue, spices, threshold);
       
       //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
         //updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
-      }
+      } //TODO: uncomment above line. used to cause error because users did not have a recipes collection.
       updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
       
 
@@ -146,7 +142,7 @@ app.post('/getSpicesToRefillFromRecipe', async (req, res) => {
 
     // Fetch all containers from the database
     const containersSnapshot = await userRef.collection('containers').get();
-    const containers = containersSnapshot.docs.map(doc => ({
+    const containers = containersSnapshot.docs.map(doc => ({ //TODO: remove?
       containerNumber: doc.data().location,
       spiceName: doc.data().spiceName,
       spiceQuantity: doc.data().spiceQuantity,
