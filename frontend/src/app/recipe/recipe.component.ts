@@ -25,6 +25,8 @@ export class RecipeComponent {
   requiresRefill = false; // Add a flag to indicate if refill is required
   showButton = false;
   selectedRecipeForDispense: Recipe | null = null; // Add this property
+
+  lowSpiceContainers: SpiceContainer[] = [];
  
   spiceOptions: string[] = []; // Initialize as an empty array
   measurementOptions: string[] = [
@@ -96,27 +98,26 @@ export class RecipeComponent {
       FromSingleDispense: false, // Flag to indicate single spice dispensing
     };
 
-    //TODO: navigate to loading page before starting the dispensing process.
-    // we need to nav to the loading page before the dispenseRecipe endpoint is called, but we also 
-    // need to wait for the response in case refilling is needed. We would need to split it into 2 endpoints: 1 to check if refilling is needed,
-    // then another to dispense the recipe. This is a bit more complicated than I thought.
-
-    this.http.post('http://localhost:4000/dispenseRecipe', payload).subscribe(
-      (response: any) => {
-        if (response.lowSpices) {
-          this.selectedRecipeForDispense = recipe; // Set the selected recipe
-          this.lowSpicesList = response.lowSpices.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
-          this.showButton = true;
-          this.requiresRefill = true;
+    if (this.checkLowSpicesInRecipe(recipe)) { // check if recipe can be dispensed
+      this.router.navigate(['/loading']); // Navigate to the loading page before starting the dispensing process
       
-        } else {
-          console.log('Dispense output:', response);
+      this.http.post('http://localhost:4000/dispenseRecipe', payload).subscribe(
+        (response: any) => {
+          if (response) {
+            console.log('Dispense output:', response);
+    
+            this.router.navigate(['/recipes']); //TODO-minor: add a message for the user to indicate that dispensing is complete
+          } else {
+            console.log('No response from backend.');
+          }
+        },
+        (error) => {
+          console.error('Error dispensing recipe:', error);
+    
+          this.router.navigate(['/recipes']); // navigate back to spice-select on error
         }
-      },
-      (error) => {
-        console.error('Error dispensing recipe:', error);
-      }
-    );
+      );
+    }
   }
 
   Cancel(recipe: Recipe){
@@ -144,11 +145,13 @@ export class RecipeComponent {
 
   ngOnInit() {
     this.fetchSpiceOptions(); // Fetch spice options on initialization
+    this.getLowSpiceContainers(); // Fetch low spice containers on initialization
 
     this.firebaseService.getRecipes().subscribe(recipes => {
       this.recipes = recipes
       console.log('Recipes:', this.recipes);
     })
+
   }
 
   fetchSpiceOptions() {
@@ -219,4 +222,39 @@ export class RecipeComponent {
     return Math.round(totalTeaspoons / 0.125); // Convert to 1/8th teaspoons
   }
 
+
+  getLowSpiceContainers() {
+    this.http.get<SpiceContainer[]>('http://localhost:4000/getLowSpices').subscribe(
+      (response) => {
+        this.lowSpiceContainers = response;
+        console.log('Low spice containers fetched from backend:', this.lowSpiceContainers);
+      },
+      (error) => {
+        console.error('Error fetching low spice containers:', error);
+      }
+    );
+  }
+
+  /**
+   * Checks if any spices in the recipe are in the lowSpiceContainers list.
+   * @param recipe The recipe to check.
+   * @returns a boolean indicating if the recipe can be dispensed
+   */
+  checkLowSpicesInRecipe(recipe: Recipe): boolean {
+    const lowSpicesInRecipe = recipe.spices.filter((spice) =>
+      this.lowSpiceContainers.some(
+        (lowSpice) => lowSpice.spiceName === spice.spiceName
+      )
+    );
+
+    if (lowSpicesInRecipe.length > 0) {
+      this.selectedRecipeForDispense = recipe; // Set the selected recipe
+      this.lowSpicesList = lowSpicesInRecipe.map((spice: SpiceMeasurement) => spice.spiceName).join(', ');
+      this.showButton = true;
+      this.requiresRefill = true;
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

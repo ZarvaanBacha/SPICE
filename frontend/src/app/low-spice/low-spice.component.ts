@@ -33,7 +33,7 @@ export class LowSpiceComponent implements OnInit{
   
       if (fromDispense) {
         this.loading = true; // Disable buttons while processing
-        
+
         // Call refillLowSpiceContainers only after lowSpiceContainers is populated
         this.refillLowSpiceContainers(this.spicesToRefill, fromDispense);
       }
@@ -56,7 +56,6 @@ export class LowSpiceComponent implements OnInit{
       }
     );
 
-    // add threshold check? shouldnt be necessary if backend is handling it
   }
 
   goBack() {

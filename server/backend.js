@@ -89,10 +89,6 @@ app.post("/dispenseRecipe", async (req, res) => {
 
       // Check the notification log for any low spices
       const lowSpices = notifLog.filter(log => spices.some(spice => spice.spiceName === log.spiceName));
-      // return the list of low spices, if the recipe contains any.
-      if (lowSpices.length > 0) {
-        return res.status(200).json({ lowSpices });
-      }
 
       // call dispense script. db values for containers and notifLog are updated in it.
       const dispenseResult = await callDispenseScript(userRef, admin.firestore.FieldValue, spices, threshold);
