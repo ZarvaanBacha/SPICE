@@ -1,7 +1,6 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule} from "@angular/forms"
-import { HttpClient } from '@angular/common/http';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class RecipesComponent {
   spiceOptions: string[] = [];
   
 
-  constructor(private fb:FormBuilder, private http: HttpClient, private firebaseRecipeService: FirebaseRecipeService) {  
+  constructor(private fb:FormBuilder, private firebaseRecipeService: FirebaseRecipeService) {  
      
     this.productForm = this.fb.group({  
       recipeName: '',  

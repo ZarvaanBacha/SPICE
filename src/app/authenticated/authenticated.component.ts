@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AuthInterceptor } from '../shared/authInterceptor';
 import { HeaderComponent } from "../header/header.component";
 import { RouterOutlet } from '@angular/router';
 import { SigninComponent } from '../signin/signin.component';
