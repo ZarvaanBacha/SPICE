@@ -1,13 +1,10 @@
-  <div class="container">  
-    
+<div class="container">  
     <h1> Add Recipe </h1>  
-      
     <form [formGroup]="productForm">
       <p>  
         <label for="recipeName">Recipe Name:</label>  
         <input type="text" id="recipeName" name="recipeName" formControlName="recipeName" class="form-control">  
       </p>  
-      
       <table class="table table-bordered" formArrayName="spices">  
         <tr>  
           <th colspan="2">Add Spices:</th>  
@@ -16,7 +13,9 @@
         <tr *ngFor="let quantity of spices().controls; let i=index" [formGroupName]="i">  
           <td>  
               Spice:  
-              <input type="text" formControlName="spiceName" class="form-control">  <!-- TODO: use dropdown instead -->
+              <select formControlName="spiceName" class="form-control">
+                <option *ngFor="let spice of spiceOptions" [value]="spice">{{ spice }}</option>
+              </select>
           </td>  
           <td>  
               Amount:  
@@ -38,10 +37,7 @@
           </td>  
         </tr>  
       </table>  
-       
       <button type="submit" (click)="onSubmit()">Submit</button>  
-        
     </form>  
-        
     <br/>  
-  </div>  
+</div>

@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
@@ -14,7 +13,7 @@ import { NgFor, NgIf } from '@angular/common';
 export class ViewMyRecipesComponent implements OnInit {
   recipes: any[] = [];
   recipeForms: { [key: string]: FormGroup } = {};
-  isPublic: boolean
+  isPublic: boolean;
 
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
@@ -51,7 +50,7 @@ export class ViewMyRecipesComponent implements OnInit {
       //console.log('Spice Options:', spiceOptions);
     })
     .catch(error => {
-      //console.error('Error fetching spice options:', error);
+      console.error('Error fetching spice options:', error);
     });
   }
 

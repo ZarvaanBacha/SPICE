@@ -9,16 +9,13 @@ import { FirebaseRecipeService } from '../firebase-recipe.service';
   standalone: true,
   imports: [ReactiveFormsModule, NgFor],
   templateUrl: './recipes.component.html',
-  styleUrl: './recipes.component.css'
+  styleUrls: ['./recipes.component.css']
 })
 export class RecipesComponent {
-    
   productForm: FormGroup;  
   spiceOptions: string[] = [];
   
-
   constructor(private fb:FormBuilder, private http: HttpClient, private firebaseRecipeService: FirebaseRecipeService) {  
-     
     this.productForm = this.fb.group({  
       recipeName: '',  
       spices: this.fb.array([]) ,  
@@ -30,7 +27,7 @@ export class RecipesComponent {
       //console.log('Spice Options:', spiceOptions);
     })
     .catch(error => {
-      //console.error('Error fetching spice options:', error);
+      console.error('Error fetching spice options:', error);
     });
   }  
     
@@ -69,8 +66,5 @@ export class RecipesComponent {
     console.log('Recipe added:', newRecipe);
 
     this.productForm.reset()
-
   }
-
-  //TODO: get spices from db
 }
