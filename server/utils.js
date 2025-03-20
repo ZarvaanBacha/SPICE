@@ -1,4 +1,5 @@
 const { getDatabase } = require("firebase-admin/database");
+const { exec } = require('child_process');
 
 
 async function getUserReferenceByDeviceId(db, deviceId) {
@@ -216,46 +217,61 @@ async function testNotifLog(db, FieldValue) {
 async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: logic
   
   emptyContainerJson = await createEmptyContainerData(db);
-  // init containerData
-  let containerData = { //TODO: change to actual data, temporary for test
-    "container_1": {
-      spiceQuantity: 50,
-      location: 1,
-    },
-    "container_2": {
-      spiceQuantity: 30,
-      location: 2,
-    },
-    "container_3": {
-      spiceQuantity: 10,
-      location: 3,
-    },
-    "container_4": {
-      spiceQuantity: 0,
-      location: 4,
-    },
-    "container_5": {
-      spiceQuantity: 50,
-      location: 5,
-    },
-    "container_6": {
-      spiceQuantity: 30,
-      location: 6,
-    },
-    "container_7": {
-      spiceQuantity: 10,
-      location: 7,
-    },
-    "container_8": {
-      spiceQuantity: 0,
-      location: 8,
-    },
-  };
-  //console.log(`emptyjson: ${JSON.stringify(emptyContainerJson)}`);
+  
+  const isTesting = false; //TODO: change to false for in-person tests
+  let containerData = {};
+  if (isTesting) {
+    containerData = { //temp data for testing
+      "container_1": { spiceQuantity: 50, location: 1 },
+      "container_2": { spiceQuantity: 30, location: 2 },
+      "container_3": { spiceQuantity: 10, location: 3 },
+      "container_4": { spiceQuantity: 0, location: 4 },
+      "container_5": { spiceQuantity: 50, location: 5 },
+      "container_6": { spiceQuantity: 30, location: 6 },
+      "container_7": { spiceQuantity: 10, location: 7 },
+      "container_8": { spiceQuantity: 0, location: 8 },
+    };
+  } else {
+    try {
+      console.log('Executing start up script...');
 
-  //TODO: call python script
+      // Wrap the exec call in a Promise
+      containerData = await new Promise((resolve, reject) => {
+        const pyDir = "C:/Users/ludov/Python/python.exe";
+        const scriptDir = '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/startup.py"';
+        const command = `${pyDir} ${scriptDir}`;
 
-  //TODO: get the output (containerData) of the python script 
+        const child = exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return reject(error);
+          }
+          if (stderr) {
+            console.error(`Python script error: ${stderr}`);
+            return reject(new Error(stderr));
+          }
+
+          try {
+            const parsedData = JSON.parse(stdout);
+            resolve(parsedData); // Resolve the promise with the parsed data
+          } catch (parseError) {
+            console.error(`Error parsing Python script output: ${parseError.message}`);
+            reject(parseError);
+          }
+        });
+
+        // Send the JSON input to the Python script via stdin
+        child.stdin.write(JSON.stringify(emptyContainerJson));
+        child.stdin.end();
+      });
+
+      console.log('Python script execution completed.');
+    } catch (error) {
+      console.error('Failed to execute Python script or parse its output:', error);
+      throw error; // Re-throw the error to handle it in the calling function
+    }
+  }
+  //console.log(JSON.stringify(containerData)); //TODO-minor: remove, for testing only
 
   // process data and update the containers collection (spiceQuantity, location, isLow)
   for (const key in containerData) {
@@ -324,7 +340,7 @@ async function createEmptyContainerData(db) {
 
   // Iterate over each container document and add to spice_data
   containersSnapshot.forEach((doc) => {
-      let key = doc.data().containerId; //TODO: cahnge to QrCodeId
+      let key = doc.data().containerId; //TODO: change to QrCodeId
       
       spice_data[key] = {
           spiceQuantity: 0,
@@ -335,22 +351,96 @@ async function createEmptyContainerData(db) {
   return spice_data;
 }
 
-async function callDispenseScript(db, spices) {
+async function callDispenseScript(db, FieldValue, spices, threshold) {
 
   dispensingData = await createDispensingData(db, spices); // create dispensing data json for python script
-  //console.log(`Dispensing spices: ${JSON.stringify(dispensingData)}`);
+  let containerData = {}; // container data received from python script
 
-  //TODO: call python script
+  try {
+    console.log('Executing dispense script...');
 
-  //TODO: get the output of the python script 
+    // Wrap the exec call in a Promise
+    containerData = await new Promise((resolve, reject) => {
+      const pyDir = "C:/Users/ludov/Python/python.exe";
+      const scriptDir = '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/dispense.py"';
+      const command = `${pyDir} ${scriptDir}`;
 
-  //TODO: update container collection (spiceQuantity and isLow) and notificationLog if needed 
+      const child = exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing Python script: ${error.message}`);
+          return reject(error);
+        }
+        if (stderr) {
+          console.error(`Python script error: ${stderr}`);
+          return reject(new Error(stderr));
+        }
+
+        try {
+          const parsedData = JSON.parse(stdout);
+          resolve(parsedData); // Resolve the promise with the parsed data
+        } catch (parseError) {
+          console.error(`Error parsing Python script output: ${parseError.message}`);
+          reject(parseError);
+        }
+      });
+
+      // Send the JSON input to the Python script via stdin
+      child.stdin.write(JSON.stringify(dispensingData));
+      child.stdin.end();
+    });
+
+    console.log('Python script execution completed.');
+  } catch (error) {
+    console.error('Failed to execute Python script or parse its output:', error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+  console.log(JSON.stringify(containerData)); //TODO-minor: remove, for testing only
+
+
+  // process data and update the containers collection (spiceQuantity, location, isLow)
+  for (const key in containerData) { //key is the QrCodeId
+    if (containerData.hasOwnProperty(key)) {
+      const spice = containerData[key];
+
+      const QrCodeId = key;
+
+      // Fetch doc that matches QrCodeId
+      const containerSnapshot = await db.collection('containers')
+                                        .where('containerId', '==', QrCodeId) //TODO: change containerId to qrCodeId
+                                        .limit(1)
+                                        .get();
+
+      // update doc if it exists
+      if (!containerSnapshot.empty) {
+        const containerRef = containerSnapshot.docs[0].ref; // works?
+
+        // Check if spice quantity is below threshold
+        var isLow = false;
+        if (spice.spiceQuantity <= threshold) {
+          await addContainerToNotifLog(db, containerRef, FieldValue); // add container to notificationLog
+          isLow = true;
+        } else {
+          await removeContainerToNotifLog(db, containerRef, FieldValue); // remove container to notificationLog
+        }
+
+        // Update the container document
+        await containerRef.update({
+          spiceQuantity: spice.spiceQuantity,
+          location: spice.location,
+          isLow: isLow,
+        });
+
+      } else {
+        //console.log(`Container not found for: ${QrCodeId}`);
+      }
+    }
+  }
 }
 
 async function createDispensingData(db, spices) {
   // Fetch all documents from the containers collection
   const containersSnapshot = await db.collection('containers').get();
-  
+
   let spice_data = {};
 
   // Iterate over each container document and add to spice_data

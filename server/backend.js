@@ -34,14 +34,14 @@ admin.initializeApp({
   databaseURL: 'https://spicedb-84047-default-rtdb.firebaseio.com'
 });
 const db = admin.firestore();
-const deviceId = "testsetst";
+const deviceId = "testsetst"; //TODO set the device id here
 let userRef;
 
 getUserReferenceByDeviceId(db, deviceId)
   .then((ref) => {
     userRef = ref;
 
-    return initialContainersCreation(db, userRef);
+    //return initialContainersCreation(db, userRef);
   })
   .then(() => {
     return updateContainersOnStartUp(userRef, admin.firestore.FieldValue, threshold);
@@ -57,7 +57,7 @@ getUserReferenceByDeviceId(db, deviceId)
     process.exit(1); // Exit the process if initialization fails
   });
 
-// TODO: remove, its only to test the notification log
+// TODO-minor: remove, its only to test the notification log
 //testNotifLog(userRef, admin.firestore.FieldValue);
 
 // Root URL route
@@ -92,16 +92,15 @@ app.post("/dispenseRecipe", async (req, res) => {
         return res.status(200).json({ lowSpices });
       }
 
+      // call dispense script. db values for containers and notifLog are updated in it.
+      const dispenseResult = await callDispenseScript(userRef, admin.firestore.FieldValue, spices, threshold);
+      
       //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
         updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
       }
       updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
-
-      //TODO: call dispense script here?
-      const dispenseResult = await callDispenseScript(userRef, spices);
-      //TODO: dispense script should return new spice level values to be updated in the db
-      //TODO: update spice levels AND notiflog db
+      
 
       res.json({ message: `Dispensing recipe: ${recipeName}`, spices }); //TODO: change the response
   } catch (error) {

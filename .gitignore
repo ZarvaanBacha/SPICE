@@ -27,3 +27,6 @@ server/.cache/
 
 # Other
 *.swp
+
+
+node_modules
