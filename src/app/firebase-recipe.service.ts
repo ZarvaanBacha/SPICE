@@ -9,29 +9,29 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
   constructor(private firestore: Firestore) {}
 
   getRecipes(): Observable<any[]> {
-    const recipesRef = collection(this.firestore, 'recipes');
+    const recipesRef = collection(this.firestore, 'users/test/recipes');
     return collectionData(recipesRef, { idField: 'id' });
   }
   
   updateRecipe(recipeId: string, data: Partial<any>): Promise<void> {
-    const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
     return updateDoc(recipeRef, data);
   }
 
   deleteRecipe(recipeId: string): Promise<void> {
-    const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
     return deleteDoc(recipeRef);
   }
 
   async toggleRecipePublic(change: boolean, recipeId: string) {
-    const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
     await updateDoc(recipeRef, { isPublic: change });
 
   }
 
   async addRecipe(recipe: any): Promise<void> {
     try {
-      const recipeToAdd = collection(this.firestore, 'recipes'); 
+      const recipeToAdd = collection(this.firestore, '/users/test/recipes'); 
       await addDoc(recipeToAdd, recipe);
       console.log('Recipe added successfully!');
     } catch (error) {
@@ -46,7 +46,7 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
    */
   async getPublicRecipes(n: number): Promise<any[]> {
     try {
-      const recipesRef = collection(this.firestore, 'recipes');
+      const recipesRef = collection(this.firestore, 'recipe/');
       const publicRecipesQuery = query(
         recipesRef,
         where('isPublic', '==', true), // Filter for public recipes

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SignInModel } from '../shared/signInModel';
-import { constrainedMemory } from 'node:process';
+import { FirebasesigninsignupService } from '../firebasesigninsignup.service';
 
 @Component({
   selector: 'app-signin',
@@ -15,7 +15,7 @@ export class SigninComponent {
   private token: string;
   private authenticatedEmail: string;
   private authenticatedId: Object;
-  constructor(private http: HttpClient){}  
+  constructor(private http: HttpClient, private firebasesigninsignup: FirebasesigninsignupService){}  
 
 
   getToken(){
@@ -34,6 +34,8 @@ export class SigninComponent {
 
   onSubmit(email: string, password: string){
     const authUser: SignInModel = {email: email, password: password}
+
+    this.firebasesigninsignup.signinUser(email, password)
 
     // this.http.post<{userId: Object,email: string, token: string}>("http://localhost:3000/signin",authUser).subscribe(res => {
     //   this.authenticatedId = res.userId

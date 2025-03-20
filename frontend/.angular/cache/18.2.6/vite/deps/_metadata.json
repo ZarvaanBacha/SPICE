@@ -1,0 +1,97 @@
+{
+  "hash": "5578de35",
+  "configHash": "6eac46bf",
+  "lockfileHash": "24323c5d",
+  "browserHash": "e771ab62",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "4fb516c3",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "f857b7dc",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "d6492c56",
+      "needsInterop": false
+    },
+    "@angular/fire/app": {
+      "src": "../../../../../node_modules/@angular/fire/fesm2022/angular-fire-app.mjs",
+      "file": "@angular_fire_app.js",
+      "fileHash": "14e1c0de",
+      "needsInterop": false
+    },
+    "@angular/fire/firestore": {
+      "src": "../../../../../node_modules/@angular/fire/fesm2022/angular-fire-firestore.mjs",
+      "file": "@angular_fire_firestore.js",
+      "fileHash": "98af99a7",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "b65ba2ae",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "785934e0",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "f8de226a",
+      "needsInterop": false
+    },
+    "ngx-touch-keyboard": {
+      "src": "../../../../../node_modules/ngx-touch-keyboard/fesm2022/ngx-touch-keyboard.mjs",
+      "file": "ngx-touch-keyboard.js",
+      "fileHash": "d1ce9e61",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "39e29960",
+      "needsInterop": false
+    },
+    "socket.io-client": {
+      "src": "../../../../../node_modules/socket.io-client/build/esm/index.js",
+      "file": "socket__io-client.js",
+      "fileHash": "5912c15b",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-PUKL67PI": {
+      "file": "chunk-PUKL67PI.js"
+    },
+    "chunk-Z5CK5QWE": {
+      "file": "chunk-Z5CK5QWE.js"
+    },
+    "chunk-FO4WAP7J": {
+      "file": "chunk-FO4WAP7J.js"
+    },
+    "chunk-FUIOLA5V": {
+      "file": "chunk-FUIOLA5V.js"
+    },
+    "chunk-I3ADMK3F": {
+      "file": "chunk-I3ADMK3F.js"
+    },
+    "chunk-5A2N2EHL": {
+      "file": "chunk-5A2N2EHL.js"
+    },
+    "chunk-35ENWJA4": {
+      "file": "chunk-35ENWJA4.js"
+    }
+  }
+}
