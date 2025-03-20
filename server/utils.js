@@ -3,6 +3,8 @@ const { exec } = require('child_process');
 
 
 const pyDir = "C:/Users/ludov/Python/python.exe";
+const isTesting = true; //TODO: change to false for in-person tests
+
 
 const pythonScripts = {
   startup: '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/startup.py"',
@@ -234,7 +236,6 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) {
   
   emptyContainerJson = await createEmptyContainerData(db);
   
-  const isTesting = false; //TODO: change to false for in-person tests
   let containerData = {};
   if (isTesting) {
     containerData = { //temp data for testing
@@ -287,7 +288,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) {
       throw error; // Re-throw the error to handle it in the calling function
     }
   }
-  //console.log(JSON.stringify(containerData));
+  console.log(`container data received after booting up device: ${JSON.stringify(containerData)}`);
 
   // process data and update the containers collection (spiceQuantity, location, isLow)
   for (const key in containerData) {
@@ -353,47 +354,58 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
 
   dispensingData = await createDispensingData(db, spices); // create dispensing data json for python script
   let containerData = {}; // container data received from python script
+  if (isTesting) {
+    containerData = { //temp data for testing
+      "container_1": { spiceQuantity: 90, location: 1 },
+      "container_2": { spiceQuantity: 90, location: 2 },
+      "container_3": { spiceQuantity: 90, location: 3 },
+      "container_4": { spiceQuantity: 90, location: 4 },
+      "container_5": { spiceQuantity: 90, location: 5 },
+      "container_6": { spiceQuantity: 90, location: 6 },
+      "container_7": { spiceQuantity: 0, location: 7 },
+      "container_8": { spiceQuantity: 0, location: 8 },
+    };
+  } else {
+    try {
+      console.log('Executing dispense script...');
 
-  try {
-    console.log('Executing dispense script...');
+      // Wrap the exec call in a Promise
+      containerData = await new Promise((resolve, reject) => {
+        
+        const scriptDir = pythonScripts.dispense;
+        const command = `${pyDir} ${scriptDir}`;
 
-    // Wrap the exec call in a Promise
-    containerData = await new Promise((resolve, reject) => {
-      
-      const scriptDir = pythonScripts.dispense;
-      const command = `${pyDir} ${scriptDir}`;
+        const child = exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return reject(error);
+          }
+          if (stderr) {
+            console.error(`Python script error: ${stderr}`);
+            return reject(new Error(stderr));
+          }
 
-      const child = exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing Python script: ${error.message}`);
-          return reject(error);
-        }
-        if (stderr) {
-          console.error(`Python script error: ${stderr}`);
-          return reject(new Error(stderr));
-        }
+          try {
+            const parsedData = JSON.parse(stdout);
+            resolve(parsedData); // Resolve the promise with the parsed data
+          } catch (parseError) {
+            console.error(`Error parsing Python script output: ${parseError.message}`);
+            reject(parseError);
+          }
+        });
 
-        try {
-          const parsedData = JSON.parse(stdout);
-          resolve(parsedData); // Resolve the promise with the parsed data
-        } catch (parseError) {
-          console.error(`Error parsing Python script output: ${parseError.message}`);
-          reject(parseError);
-        }
+        // Send the JSON input to the Python script via stdin
+        child.stdin.write(JSON.stringify(dispensingData));
+        child.stdin.end();
       });
 
-      // Send the JSON input to the Python script via stdin
-      child.stdin.write(JSON.stringify(dispensingData));
-      child.stdin.end();
-    });
-
-    console.log('Python script execution completed.');
-  } catch (error) {
-    console.error('Failed to execute Python script or parse its output:', error);
-    throw error; // Re-throw the error to handle it in the calling function
+      console.log('Python script execution completed.');
+    } catch (error) {
+      console.error('Failed to execute Python script or parse its output:', error);
+      throw error; // Re-throw the error to handle it in the calling function
+    }
   }
-  //console.log(JSON.stringify(containerData));
-
+  console.log(`container data received after dispensing: ${JSON.stringify(containerData)}`);
 
   // process data and update the containers collection (spiceQuantity, location, isLow)
   for (const key in containerData) { //key is the QrCodeId
@@ -473,40 +485,42 @@ async function createDispensingData(db, spices) {
 async function moveToRefill(db, containerId) {
   moveContainerJson = await createMovingData(db, containerId);
   //console.log(JSON.stringify(moveContainerJson));
+  console.log(`moving this container to refill position: container_${containerId}`);
 
-  try {
-    console.log('Executing move-to script...');
+  if (!isTesting) {
+    try {
+      console.log('Executing move-to script...');
 
-    // Wrap the exec call in a Promise
-    await new Promise((resolve, reject) => {
-      const scriptDir = pythonScripts.moveToRefill;
-      const command = `${pyDir} ${scriptDir}`;
+      // Wrap the exec call in a Promise
+      await new Promise((resolve, reject) => {
+        const scriptDir = pythonScripts.moveToRefill;
+        const command = `${pyDir} ${scriptDir}`;
 
-      const child = exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing Python script: ${error.message}`);
-          return reject(error);
-        }
-        if (stderr) {
-          console.error(`Python script error: ${stderr}`);
-          return reject(new Error(stderr));
-        }
+        const child = exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return reject(error);
+          }
+          if (stderr) {
+            console.error(`Python script error: ${stderr}`);
+            return reject(new Error(stderr));
+          }
 
-        // If no errors, resolve the promise
-        resolve();
+          // If no errors, resolve the promise
+          resolve();
+        });
+
+        // Send the JSON input to the Python script via stdin
+        child.stdin.write(JSON.stringify(moveContainerJson));
+        child.stdin.end();
       });
 
-      // Send the JSON input to the Python script via stdin
-      child.stdin.write(JSON.stringify(moveContainerJson));
-      child.stdin.end();
-    });
-
-    console.log('Python script execution completed.');
-  } catch (error) {
-    console.error('Failed to execute Python script or parse its output:', error);
-    throw error; // Re-throw the error to handle it in the calling function
+      console.log('Python script execution completed.');
+    } catch (error) {
+      console.error('Failed to execute Python script or parse its output:', error);
+      throw error; // Re-throw the error to handle it in the calling function
+    }
   }
-
   return;
 }
 
@@ -540,50 +554,53 @@ async function getCurrSpiceQuantity(db, containerId) {
   moveContainerJson = await createMovingData(db, containerId);
   
   let currSpiceQuantity = null;
+  if (isTesting) {
+    currSpiceQuantity = 100;
+  } else {
+    try {
+      console.log('Executing getCurrSpiceQuantity script...');
 
-  try {
-    console.log('Executing getCurrSpiceQuantity script...');
+      // Wrap the exec call in a Promise
+      currSpiceQuantity = await new Promise((resolve, reject) => {
+        
+        const scriptDir = pythonScripts.getCurrSpiceQuantity;
+        const command = `${pyDir} ${scriptDir}`;
 
-    // Wrap the exec call in a Promise
-    currSpiceQuantity = await new Promise((resolve, reject) => {
-      
-      const scriptDir = pythonScripts.getCurrSpiceQuantity;
-      const command = `${pyDir} ${scriptDir}`;
-
-      const child = exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing Python script: ${error.message}`);
-          return reject(error);
-        }
-        if (stderr) {
-          console.error(`Python script error: ${stderr}`);
-          return reject(new Error(stderr));
-        }
-
-        try {
-          // Parse the integer output from stdout
-          const parsedData = parseInt(stdout.trim(), 10);
-          if (isNaN(parsedData)) {
-            throw new Error(`Invalid integer output: ${stdout}`);
+        const child = exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return reject(error);
           }
-          resolve(parsedData); // Resolve the promise with the parsed integer
-        } catch (parseError) {
-          console.error(`Error parsing Python script output: ${parseError.message}`);
-          reject(parseError);
-        }
+          if (stderr) {
+            console.error(`Python script error: ${stderr}`);
+            return reject(new Error(stderr));
+          }
+
+          try {
+            // Parse the integer output from stdout
+            const parsedData = parseInt(stdout.trim(), 10);
+            if (isNaN(parsedData)) {
+              throw new Error(`Invalid integer output: ${stdout}`);
+            }
+            resolve(parsedData); // Resolve the promise with the parsed integer
+          } catch (parseError) {
+            console.error(`Error parsing Python script output: ${parseError.message}`);
+            reject(parseError);
+          }
+        });
+
+        // Send the JSON input to the Python script via stdin
+        child.stdin.write(JSON.stringify(moveContainerJson));
+        child.stdin.end();
       });
 
-      // Send the JSON input to the Python script via stdin
-      child.stdin.write(JSON.stringify(moveContainerJson));
-      child.stdin.end();
-    });
-
-    console.log('Python script execution completed.');
-  } catch (error) {
-    console.error('Failed to execute Python script or parse its output:', error);
-    throw error; // Re-throw the error to handle it in the calling function
+      console.log('Python script execution completed.');
+    } catch (error) {
+      console.error('Failed to execute Python script or parse its output:', error);
+      throw error; // Re-throw the error to handle it in the calling function
+    }
   }
-  //console.log(currSpiceQuantity);
+  console.log(`spice quantity read: ${currSpiceQuantity}`);
 
   return currSpiceQuantity;
 }

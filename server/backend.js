@@ -199,7 +199,7 @@ app.post('/refillSpices', async (req, res) => {
     const { spices, userResponse } = req.body; // Extract spicesToRefill and userResponse from the request body
 
     for (const container of spices) {
-      console.log(`Processing container ${container.containerNumber} for spice "${container.spiceName}"`);
+      //console.log(`Processing container ${container.containerNumber} for spice "${container.spiceName}"`);
 
       if (userResponse === undefined) {
         // 1. Move the container to the refill position
