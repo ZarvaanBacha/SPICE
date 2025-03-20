@@ -5,7 +5,7 @@
         <label for="recipeName">Recipe Name:</label>  
         <input type="text" id="recipeName" name="recipeName" formControlName="recipeName" class="form-control">  
       </p>  
-      <table class="table table-bordered" formArrayName="spices">  
+      <table class="table table-bordered" formArrayName="spices" *ngIf="spiceOptions?.length > 0">  
         <tr>  
           <th colspan="2">Add Spices:</th>  
           <th width="150px"><button type="button" (click)="addSpice()" class="btn btn-primary">Add More</button></th>  

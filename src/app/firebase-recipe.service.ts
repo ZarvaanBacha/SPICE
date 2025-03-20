@@ -120,7 +120,7 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
   async addDeviceToDatabase(productID: string): Promise<void> {
     try {
       // Get a reference to the 'deviceInfo' document in the 'device' subcollection
-      const userId = 'test@spice.com'; // Replace with the actual user ID
+      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
       const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
   
       // Update the 'productID' field in the 'deviceInfo' document
@@ -134,7 +134,7 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async getDeviceInfo(): Promise<any> {
     try {
-      const userId = 'test@spice.com'; // Replace with the actual user ID
+      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
   
       // References to the required documents
       const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
