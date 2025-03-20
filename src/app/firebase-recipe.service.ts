@@ -148,7 +148,7 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async getSpiceOptions() {
     try {
-      const userId = 'test@spice.com'; // Replace with the actual user ID
+      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
   
       // References to the required documents
       const spiceLogRef = doc(this.firestore, `users/${userId}/device/spiceLog`);

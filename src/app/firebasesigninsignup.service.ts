@@ -18,7 +18,10 @@ export class FirebasesigninsignupService {
     const deviceRef = doc(this.firestore, `users/${email}/device/deviceInfo`)
     await setDoc(deviceRef, {productID: null})
 
-    //NEED TO IMPLEMENT CONTAINERS, ask ludo for container function!!!
+    // TODO: create spiceLog doc in deviceInfo
+    // TODO: create notificationLog doc in deviceInfo
+    
+    //TODO: NEED TO IMPLEMENT CONTAINERS, ask ludo for container function!!!
     // const containersRef = doc(this.firestore, `users/${email}/containers/`)
 
 
