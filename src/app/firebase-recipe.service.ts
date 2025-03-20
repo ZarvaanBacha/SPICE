@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDocs, getDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, timer, from } from 'rxjs';
+import { UserAuthenticationService } from './user-authentication.service';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseRecipeService { //TODO: fix this service to work for user-specific recipes
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private authUser: UserAuthenticationService) {
+    console.log(this.authUser.getUser())
+  }
 
   getRecipes(): Observable<any[]> {
-    const recipesRef = collection(this.firestore, 'users/test/recipes');
+    timer(2000)
+    const recipesRef = collection(this.firestore, `users/${this.authUser.getUser().userId}/recipes`);
     return collectionData(recipesRef, { idField: 'id' });
   }
   
@@ -31,7 +36,8 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async addRecipe(recipe: any): Promise<void> {
     try {
-      const recipeToAdd = collection(this.firestore, '/users/test/recipes'); 
+
+      const recipeToAdd = collection(this.firestore, `/users/${this.authUser.getUser().userId}/recipes`); 
       await addDoc(recipeToAdd, recipe);
       console.log('Recipe added successfully!');
     } catch (error) {
