@@ -42,24 +42,46 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
   /**
    * Retrieves the first `n` public recipes from all users.
    * @param n The number of public recipes to retrieve.
+   * @param m The maximum number of public recipes to retrieve per user.
    * @returns A Promise that resolves to an array of public recipes.
    */
-  async getPublicRecipes(n: number): Promise<any[]> {
+  async getPublicRecipes(n: number, m: number): Promise<any[]> {
     try {
-      const recipesRef = collection(this.firestore, 'recipe/');
-      const publicRecipesQuery = query(
-        recipesRef,
-        where('isPublic', '==', true), // Filter for public recipes
-        limit(n) // Limit the number of results to `n`
-      );
-
-      const querySnapshot = await getDocs(publicRecipesQuery);
-      const publicRecipes = querySnapshot.docs.map((doc) => ({ //change the fields collected here:
-        recipeName: doc.data()['recipeName'],
-        spices: doc.data()['spices'],
-        //TODO-minor: possibly add a counter to how many times the recipe was added by other users
-      }));
-
+      const usersRef = collection(this.firestore, 'users'); // Reference to the users collection
+      const usersSnapshot = await getDocs(usersRef); // Get all user documents
+  
+      const publicRecipes: any[] = [];
+  
+      // Iterate through each user document
+      for (const userDoc of usersSnapshot.docs) {
+        const userId = userDoc.id; // Get the user document ID
+        const userName = userDoc.data()['name'];
+        const recipesRef = collection(this.firestore, `users/${userId}/recipes`); // Reference to the user's recipes collection
+  
+        // Query public recipes in the user's recipes collection
+        const publicRecipesQuery = query(
+          recipesRef,
+          where('isPublic', '==', true), // Filter for public recipes
+          limit(m) // Limit the number of results to remaining slots
+        );
+  
+        const recipesSnapshot = await getDocs(publicRecipesQuery);
+  
+        // Add public recipes to the result array, including the userId
+        recipesSnapshot.docs.forEach((doc) => {
+          publicRecipes.push({
+            userName: userName, // Include the username
+            recipeName: doc.data()['recipeName'], // Recipe name
+            spices: doc.data()['spices'], // Recipe spices
+          });
+        });
+  
+        // Stop if we've reached the desired number of public recipes
+        if (publicRecipes.length >= n) {
+          break;
+        }
+      }
+  
       return publicRecipes;
     } catch (error) {
       console.error('Error fetching public recipes:', error);
