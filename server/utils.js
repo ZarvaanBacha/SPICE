@@ -2,6 +2,15 @@ const { getDatabase } = require("firebase-admin/database");
 const { exec } = require('child_process');
 
 
+const pyDir = "C:/Users/ludov/Python/python.exe";
+
+const pythonScripts = {
+  startup: '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/startup.py"',
+  dispense: '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/dispense.py"',
+  moveToRefill: '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/moveToRefill.py"',
+  getCurrSpiceQuantity: '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/getCurrSpiceQuantity.py"',
+}
+
 async function getUserReferenceByDeviceId(db, deviceId) {
   try {
     // Fetch all documents in the 'users' collection
@@ -74,14 +83,21 @@ async function getNotificationLog(db) {
     }
   }
 
-// Example function to log recipe details
-function logRecipeDetails(recipe) {
-  const { recipeName, spices } = recipe;
-  console.log(`Dispensing recipe: ${recipeName}`);
-  console.log(`Spices: ${JSON.stringify(spices)}`);
+async function addContainerToNotifLog(db, containerDoc, FieldValue) {
 
-  spices.forEach(spice => {
-    console.log(`Spice Name: ${spice.spiceName}, Measurement: ${spice.spiceMeasurement}`);
+  const notifLogRef = db.collection('device').doc('notificationLog');
+  
+  await notifLogRef.update({
+    log: FieldValue.arrayUnion(containerDoc), // Append containerDoc to the log array
+  });
+}
+
+async function removeContainerToNotifLog(db, containerDoc, FieldValue) {
+  
+  const notifLogRef = db.collection('device').doc('notificationLog');
+  
+  await notifLogRef.update({
+    log: FieldValue.arrayRemove(containerDoc), // remove containerDoc from the log array
   });
 }
 
@@ -237,8 +253,8 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: lo
 
       // Wrap the exec call in a Promise
       containerData = await new Promise((resolve, reject) => {
-        const pyDir = "C:/Users/ludov/Python/python.exe";
-        const scriptDir = '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/startup.py"';
+
+        const scriptDir = pythonScripts.startup;
         const command = `${pyDir} ${scriptDir}`;
 
         const child = exec(command, (error, stdout, stderr) => {
@@ -314,24 +330,6 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: lo
   }
 }
 
-async function addContainerToNotifLog(db, containerDoc, FieldValue) {
-  
-  const notifLogRef = db.collection('device').doc('notificationLog');
-  
-  await notifLogRef.update({
-    log: FieldValue.arrayUnion(containerDoc), // Append containerDoc to the log array
-  });
-}
-
-async function removeContainerToNotifLog(db, containerDoc, FieldValue) {
-  
-  const notifLogRef = db.collection('device').doc('notificationLog');
-  
-  await notifLogRef.update({
-    log: FieldValue.arrayRemove(containerDoc), // remove containerDoc from the log array
-  });
-}
-
 async function createEmptyContainerData(db) {
   // Fetch all documents from the containers collection
   const containersSnapshot = await db.collection('containers').get();
@@ -361,8 +359,8 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
 
     // Wrap the exec call in a Promise
     containerData = await new Promise((resolve, reject) => {
-      const pyDir = "C:/Users/ludov/Python/python.exe";
-      const scriptDir = '"C:/Users/ludov/Desktop/2025 WINTER/CEG4913/python-test-scripts/dispense.py"';
+      
+      const scriptDir = pythonScripts.dispense;
       const command = `${pyDir} ${scriptDir}`;
 
       const child = exec(command, (error, stdout, stderr) => {
@@ -472,9 +470,126 @@ async function createDispensingData(db, spices) {
   return spice_data;
 }
 
+async function moveToRefill(db, containerId) {
+  moveContainerJson = await createMovingData(db, containerId);
+  //console.log(JSON.stringify(moveContainerJson)); //TODO-minor: remove, for testing only
+
+  try {
+    console.log('Executing move-to script...');
+
+    // Wrap the exec call in a Promise
+    await new Promise((resolve, reject) => {
+      const scriptDir = pythonScripts.moveToRefill;
+      const command = `${pyDir} ${scriptDir}`;
+
+      const child = exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing Python script: ${error.message}`);
+          return reject(error);
+        }
+        if (stderr) {
+          console.error(`Python script error: ${stderr}`);
+          return reject(new Error(stderr));
+        }
+
+        // If no errors, resolve the promise
+        resolve();
+      });
+
+      // Send the JSON input to the Python script via stdin
+      child.stdin.write(JSON.stringify(moveContainerJson));
+      child.stdin.end();
+    });
+
+    console.log('Python script execution completed.');
+  } catch (error) {
+    console.error('Failed to execute Python script or parse its output:', error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+
+  return;
+}
+
+async function createMovingData(db, containerId) {
+  // Fetch all documents from the containers collection
+  const containersSnapshot = await db.collection('containers').get();
+
+  let move_data = {};
+
+  // Iterate over each container document and add to spice_data
+  containersSnapshot.forEach((doc) => {
+    let key = doc.data().containerId; //TODO: change to QrCodeId
+    let location = doc.data().location;
+    let currContainerId = doc.data().containerId;
+    let toMove = false;
+
+    if (currContainerId == `container_${containerId}`) { // If the spice is the one to be moved, set it.
+      toMove = true;
+    }
+
+    move_data[key] = { // create json entry for current container
+      location: location,
+      toMove: toMove
+    };
+  });
+
+  return move_data;
+}
+
+async function getCurrSpiceQuantity(db, containerId) {
+  moveContainerJson = await createMovingData(db, containerId);
+  
+  let currSpiceQuantity = null;
+
+  try {
+    console.log('Executing getCurrSpiceQuantity script...');
+
+    // Wrap the exec call in a Promise
+    currSpiceQuantity = await new Promise((resolve, reject) => {
+      
+      const scriptDir = pythonScripts.getCurrSpiceQuantity;
+      const command = `${pyDir} ${scriptDir}`;
+
+      const child = exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing Python script: ${error.message}`);
+          return reject(error);
+        }
+        if (stderr) {
+          console.error(`Python script error: ${stderr}`);
+          return reject(new Error(stderr));
+        }
+
+        try {
+          // Parse the integer output from stdout
+          const parsedData = parseInt(stdout.trim(), 10);
+          if (isNaN(parsedData)) {
+            throw new Error(`Invalid integer output: ${stdout}`);
+          }
+          resolve(parsedData); // Resolve the promise with the parsed integer
+        } catch (parseError) {
+          console.error(`Error parsing Python script output: ${parseError.message}`);
+          reject(parseError);
+        }
+      });
+
+      // Send the JSON input to the Python script via stdin
+      child.stdin.write(JSON.stringify(moveContainerJson));
+      child.stdin.end();
+    });
+
+    console.log('Python script execution completed.');
+  } catch (error) {
+    console.error('Failed to execute Python script or parse its output:', error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+  console.log(currSpiceQuantity); //TODO-minor: remove, for testing only
+
+  return currSpiceQuantity;
+}
+
 module.exports = {
   getNotificationLog,
-  logRecipeDetails,
   isContainerInNotificationLog,
   updateRecipeAnalytics,
   updateContainerAnalytics,
@@ -485,4 +600,6 @@ module.exports = {
   removeContainerToNotifLog,
   callDispenseScript,
   getUserReferenceByDeviceId,
+  moveToRefill,
+  getCurrSpiceQuantity,
 };

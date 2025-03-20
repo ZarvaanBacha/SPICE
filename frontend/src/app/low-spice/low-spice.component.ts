@@ -15,6 +15,7 @@ export class LowSpiceComponent implements OnInit{
 
   lowSpiceContainers: SpiceContainer[] = [];
   spicesToRefill: SpicesToRefill = { spices: []}; //passed from the dispensing page
+  loading: boolean = false; // Tracks whether a request is in progress
 
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient) {}
 
@@ -31,6 +32,8 @@ export class LowSpiceComponent implements OnInit{
       const fromDispense = this.route.snapshot.data['fromDispense'] || this.route.snapshot.queryParams['fromDispense'];
   
       if (fromDispense) {
+        this.loading = true; // Disable buttons while processing
+        
         // Call refillLowSpiceContainers only after lowSpiceContainers is populated
         this.refillLowSpiceContainers(this.spicesToRefill, fromDispense);
       }

@@ -8,7 +8,7 @@
             <span class="percentage" [ngClass]="{'critical': container.spiceQuantity < 10}">
               {{container.spiceQuantity}}% left
             </span>
-            <button class="refill-button" (click)="refillSingleLowSpiceContainer(container)">Refill</button> <!-- TODO: make refill button class?-->
+            <button class="refill-button" [disabled]="loading" (click)="refillSingleLowSpiceContainer(container)">Refill</button> <!-- TODO: style refill button (disabled and normal)-->
           </li>
         </ul>
       </ng-container>

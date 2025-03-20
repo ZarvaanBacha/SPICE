@@ -15,6 +15,8 @@ const {
   removeContainerToNotifLog,
   callDispenseScript,
   getUserReferenceByDeviceId,
+  moveToRefill,
+  getCurrSpiceQuantity,
 } = require('./utils'); // Import functions from utils.js
 
 const app = express();
@@ -97,7 +99,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       
       //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
-        updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
+        //updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
       }
       updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
       
@@ -206,7 +208,9 @@ app.post('/refillSpices', async (req, res) => {
       if (userResponse === undefined) {
         // 1. Move the container to the refill position
         console.log(`Moving container ${container.containerNumber} to the refill position.`);
-        // TODO: Call a Python script or hardware API to physically move the container
+
+        // calls the moveToRefill function which moves the container identified by containerNumber to the refill position
+        await moveToRefill(db, container.containerNumber);
 
         // 2. Send a response to the frontend to prompt the user
         return res.status(200).json({
@@ -215,12 +219,11 @@ app.post('/refillSpices', async (req, res) => {
         });
       } else if (userResponse === 'done') {
         // 3. Get the current spice quantity (e.g., from a Python script or sensor)
-        console.log(`Getting current spice quantity for container ${container.containerNumber}.`);
-        const currentSpiceQuantity = 100; // Placeholder value; replace with actual logic
+        const currentSpiceQuantity = await getCurrSpiceQuantity(db, container.containerNumber);
 
         // 4. Check if the current spice quantity is above the threshold
         if (currentSpiceQuantity > threshold) {
-          console.log(`Spice quantity for container ${container.containerNumber} is sufficient (${currentSpiceQuantity}%).`);
+          //console.log(`Spice quantity for container ${container.containerNumber} is sufficient (${currentSpiceQuantity}%).`);
 
           // 5. Update the spice quantity in the database
           await userRef.collection('containers').doc(`container_${container.containerNumber}`).update({
@@ -233,10 +236,10 @@ app.post('/refillSpices', async (req, res) => {
           const logEntryRef = userRef.collection('containers').doc(`container_${container.containerNumber}`);
           removeContainerToNotifLog(userRef, logEntryRef, admin.firestore.FieldValue);
 
-          console.log(`Container ${container.containerNumber} successfully refilled and removed from the notification log.`);
+          //console.log(`Container ${container.containerNumber} successfully refilled and removed from the notification log.`);
         } else {
           // 4.1. If not, prompt the user to refill again
-          console.log(`Spice quantity for container ${container.containerNumber} is still below the threshold.`);
+          //console.log(`Spice quantity for container ${container.containerNumber} is still below the threshold.`);
           return res.status(400).json({
             message: `Spice quantity for container ${container.containerNumber} is insufficient. Please refill again.`,
           });
