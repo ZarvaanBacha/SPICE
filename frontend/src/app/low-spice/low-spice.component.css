@@ -8,9 +8,9 @@
     background: linear-gradient(to bottom right, #66bb6a, #81c784, #a5d6a7);
     height: 100vh;
     width: 100vw;
-  }
-  
-  .container {
+}
+
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,22 +25,22 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     text-align: center;
     min-height: 300px; /* Added to ensure there's always space for content */
-  }
-  
-  h2 {
+}
+
+h2 {
     margin-top: 0;
     font-size: 24px;
     color: #333333;
     margin-bottom: 20px;
-  }
-  
-  ul {
+}
+
+ul {
     list-style-type: none;
     padding: 0;
     width: 100%;
-  }
-  
-  li {
+}
+
+li {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,14 +49,35 @@
     padding: 15px;
     border-radius: 8px;
     font-size: 16px;
-  }
-  
-  .quantity {
+}
+
+.quantity {
     font-weight: bold;
     color: #e53935;
-  }
-  
-  .back-button {
+}
+
+.refill-button {
+    background-color: #46B34B; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.refill-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.refill-button:disabled {
+    background-color: #d3d3d3; /* Grey background when disabled */
+    color: #a9a9a9; /* Grey text when disabled */
+    cursor: not-allowed; /* Change cursor to indicate the button is disabled */
+    opacity: 0.6; /* Make the button appear faded */
+}
+
+.back-button {
     background-color: #2a6a2d;
     color: #ffffff;
     border: none;
@@ -66,10 +87,9 @@
     font-size: 18px;
     margin-top: 20px;
     width: 100%;
-  }
-  
-  .back-button:hover {
+}
+
+.back-button:hover {
     background-color: #45a049;
-  }
-  
-  
+}
+
