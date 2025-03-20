@@ -28,7 +28,9 @@
               {{ spice.get('spiceName')?.value }}: {{ spice.get('spiceMeasurement')?.value }}
             </div>
             <div *ngIf="recipe.editing">
-              <input formControlName="spiceName" placeholder="Spice Name" />
+              <select formControlName="spiceName" class="form-control">
+                <option *ngFor="let spice of spiceOptions" [value]="spice">{{ spice }}</option>
+              </select>
               <select formControlName="spiceMeasurement" class="form-control">
                 <option *ngFor="let amount of spiceMeasurements">{{ amount }}</option>
               </select>

@@ -20,5 +20,5 @@ export class SignupComponent {
     this.firebasesigninsignup.signupUser(name, email, password)
 
 
-  }
+  } //TODO: either make the user login on submit, or make a toast to tell user it was successful and to now login.
 }

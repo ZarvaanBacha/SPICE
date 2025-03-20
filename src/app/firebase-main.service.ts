@@ -10,12 +10,12 @@ export class FirebaseMainService {
   constructor(private firestore: Firestore) {}
 
   getProductID(userId: string): Observable<any> {
-    const deviceRef = doc(this.firestore, `users/test/device/deviceInfo`);
+    const deviceRef = doc(this.firestore, `users/test/device/deviceInfo`); //TODO: change test to userEmail
     return docData(deviceRef);
   }
 
   async setProductID(productID: string | null) {
-    const deviceRef = doc(this.firestore, `users/test/device/deviceInfo`);
+    const deviceRef = doc(this.firestore, `users/test/device/deviceInfo`); //TODO: change test to userEmail
     return setDoc(deviceRef, { productID }, { merge: true });
   }
 }

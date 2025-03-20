@@ -16,7 +16,7 @@ export class FindRecipesComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      this.publicRecipes = await this.firebaseRecipeService.getPublicRecipes(20);
+      this.publicRecipes = await this.firebaseRecipeService.getPublicRecipes(20, 2);
     } catch (error) {
       console.error('Error fetching public recipes:', error);
     }
