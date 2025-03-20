@@ -1,12 +1,67 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDoc, setDoc } from '@angular/fire/firestore';
+import { UserAuthenticationService } from './user-authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebasesigninsignupService {
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private userAuth: UserAuthenticationService) {}
+
+  private async getSpicesFromDatabase(email: string): Promise<string[]> {
+    const spiceLogRef = doc(this.firestore, `users/${email}/device/spiceLog`);
+    const spiceSnap = await getDoc(spiceLogRef);
+
+    if (spiceSnap.exists()) {
+      const spiceData = spiceSnap.data();
+      return Object.values(spiceData) as string[];
+    } else {
+      console.error('No spice log found in Firestore!');
+      return [];
+    }
+  }
+
+  async autofillContainers(email: string): Promise<void> {
+    try {
+      const spices = await this.getSpicesFromDatabase(email);
+
+      if (spices.length === 0) {
+        console.error('No spices found. Cannot autofill containers.');
+        return;
+      }
+
+      for (let i = 0; i < 8; i++) {
+        const containerId = `container_${i + 1}`;
+        const spiceName = spices[i % spices.length]; 
+        const spiceQuantity = i
+        const timesUsed = i
+        const totalQuantityUsed = i
+        const isLow = spiceQuantity < 40;
+        const lastRefilled = new Date().toISOString();
+        const usageHistory = [new Date().toISOString(), new Date().toISOString()];
+
+        const containerData = {
+          containerId,
+          spiceName,
+          spiceQuantity,
+          isLow,
+          location: i + 1,
+          timesUsed,
+          totalQuantityUsed,
+          lastRefilled,
+          usageHistory
+        };
+
+        const containerRef = doc(this.firestore, `users/${email}/containers/${containerId}`);
+        await setDoc(containerRef, containerData);
+      }
+
+      console.log('Containers successfully added using spices from Firestore!');
+    } catch (error) {
+      console.error('Error autofilling containers:', error);
+    }
+  }
 
   async signupUser(name: string, email: string, password: string) {
     const userToAdd = {name: name, email: email, password: password}
@@ -15,17 +70,23 @@ export class FirebasesigninsignupService {
     await setDoc(credentialsRef, userToAdd)
 
 
-    const deviceRef = doc(this.firestore, `users/${email}/device/deviceInfo`)
-    await setDoc(deviceRef, {productID: null})
+    const deviceRefInfo = doc(this.firestore, `users/${email}/device/deviceInfo`)
+    await setDoc(deviceRefInfo, {productID: null})
 
-    //NEED TO IMPLEMENT CONTAINERS, ask ludo for container function!!!
-    // const containersRef = doc(this.firestore, `users/${email}/containers/`)
+    const spices = {
+      1: 'Pepper',
+      2: 'Salt',
+      3: 'Paprika',
+      4: 'Cumin',
+      5: 'Cinnamon',
+      6: 'Parsley',
+      7: 'Italian seasoning',
+      8: 'Oregano'
+    };
+    const deviceRefSpiceLog = doc(this.firestore, `users/${email}/device/spiceLog`)
+    await setDoc(deviceRefSpiceLog, spices)
 
-
-    //DO NOT NEED RECIPE HERE
-    // const recipeRef = doc(this.firestore, `users/${email}/recipes/null`)
-    // await setDoc(recipeRef, {initialized: true})
-
+    this.autofillContainers(email)
 
   }
 
@@ -34,10 +95,17 @@ export class FirebasesigninsignupService {
     const userSnap = await getDoc(userRef);
     
     if (userSnap.exists()) {
-      return userSnap.data(); // Returns document data
-    } else {
-      console.log("No such document!");
-      return null;
+      if (userSnap.data()['password']==password) {
+        console.log("Authentication Successful")
+        await this.userAuth.setUser(email)
+        
+      }
+      else {
+        console.log("Incorrect Password")
+      }
+    } 
+    else {
+        console.log("No such document!")
     }
   }
 

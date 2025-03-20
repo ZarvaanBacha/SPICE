@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SignInModel } from '../shared/signInModel';
+
 import { FirebasesigninsignupService } from '../firebasesigninsignup.service';
+import { UserAuthenticationService } from '../user-authentication.service';
+import { __assign } from 'tslib';
 
 @Component({
   selector: 'app-signin',
@@ -12,42 +13,17 @@ import { FirebasesigninsignupService } from '../firebasesigninsignup.service';
 })
 export class SigninComponent {
 
-  private token: string;
-  private authenticatedEmail: string;
-  private authenticatedId: Object;
-  constructor(private http: HttpClient, private firebasesigninsignup: FirebasesigninsignupService){}  
+  constructor(private firebasesigninsignup: FirebasesigninsignupService, private userauth: UserAuthenticationService){}  
 
-
-  getToken(){
-    return this.token;
+  onSubmit(email: string, password: string) {
+    this.firebasesigninsignup.signinUser(email, password).then(() => {
+      if(this.userauth.isLoggedIn()) {
+        location.assign("authenticated/home")
+      }
+      else {
+        console.log("Incorrect email or pass")
+      }
+    });
   }
 
-  getAuthenticatedEmail() {
-    return this.authenticatedEmail
-  }
-
-  getAuthenticatedId() {
-    return this.authenticatedId
-  }
-
- 
-
-  onSubmit(email: string, password: string){
-    const authUser: SignInModel = {email: email, password: password}
-
-    this.firebasesigninsignup.signinUser(email, password)
-
-    // this.http.post<{userId: Object,email: string, token: string}>("http://localhost:3000/signin",authUser).subscribe(res => {
-    //   this.authenticatedId = res.userId
-    //   this.authenticatedEmail = res.email
-    //   this.token = res.token
-    //   console.log(this.token)
-    //   // const httpHeaders: HttpHeaders = new HttpHeaders({
-    //   //   Authorization: 'Hi'
-    //   // });
-    //   // console.log(httpHeaders.get("Authorization"))
-    //   // this.http.post(url, body, { headers: httpHeaders });
-    // // })
-    location.assign("authenticated/home")
-  }
 }
