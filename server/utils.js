@@ -196,10 +196,10 @@ async function initialContainersCreation(db, userRef) {
       const spiceLogDoc = await userRef.collection('device').doc('spiceLog').get();
       const spiceName = spiceLogDoc.get(String(i)); // Get the spice name for the current container
       batch.set(containerDocRef, {
-          QrCodeId: "",
+          QrCodeId: i,
           spiceName: spiceName || "unknown",
           spiceQuantity: 76,
-          location: i, // TODO: change to actual location (depends on zarvaans python script)
+          location: i,
           containerId: `container_${i}`,
           timesUsed: 0,
           usageHistory: [],
@@ -230,7 +230,7 @@ async function testNotifLog(db, FieldValue) {
   }
 }
 
-async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: logic
+async function updateContainersOnStartUp(db, FieldValue, threshold) {
   
   emptyContainerJson = await createEmptyContainerData(db);
   
@@ -287,7 +287,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: lo
       throw error; // Re-throw the error to handle it in the calling function
     }
   }
-  //console.log(JSON.stringify(containerData)); //TODO-minor: remove, for testing only
+  //console.log(JSON.stringify(containerData));
 
   // process data and update the containers collection (spiceQuantity, location, isLow)
   for (const key in containerData) {
@@ -298,7 +298,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) { //TODO: lo
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')
-                                        .where('containerId', '==', QrCodeId) //TODO: change containerId to qrCodeId
+                                        .where('containerId', '==', QrCodeId) //TODO: change to QrCodeId
                                         .limit(1)
                                         .get();
 
@@ -392,7 +392,7 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
     console.error('Failed to execute Python script or parse its output:', error);
     throw error; // Re-throw the error to handle it in the calling function
   }
-  console.log(JSON.stringify(containerData)); //TODO-minor: remove, for testing only
+  //console.log(JSON.stringify(containerData));
 
 
   // process data and update the containers collection (spiceQuantity, location, isLow)
@@ -404,7 +404,7 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')
-                                        .where('containerId', '==', QrCodeId) //TODO: change containerId to qrCodeId
+                                        .where('containerId', '==', QrCodeId) //TODO: change to QrCodeId
                                         .limit(1)
                                         .get();
 
@@ -472,7 +472,7 @@ async function createDispensingData(db, spices) {
 
 async function moveToRefill(db, containerId) {
   moveContainerJson = await createMovingData(db, containerId);
-  //console.log(JSON.stringify(moveContainerJson)); //TODO-minor: remove, for testing only
+  //console.log(JSON.stringify(moveContainerJson));
 
   try {
     console.log('Executing move-to script...');
@@ -583,7 +583,7 @@ async function getCurrSpiceQuantity(db, containerId) {
     console.error('Failed to execute Python script or parse its output:', error);
     throw error; // Re-throw the error to handle it in the calling function
   }
-  console.log(currSpiceQuantity); //TODO-minor: remove, for testing only
+  //console.log(currSpiceQuantity);
 
   return currSpiceQuantity;
 }

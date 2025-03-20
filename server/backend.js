@@ -104,7 +104,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
       
 
-      res.json({ message: `Dispensing recipe: ${recipeName}`, spices }); //TODO: change the response
+      res.json({ message: `Dispensing recipe: ${recipeName}`, spices });
   } catch (error) {
       res.status(500).json({ error: error.message });
   }
