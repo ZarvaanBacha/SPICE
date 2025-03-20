@@ -18,7 +18,7 @@ import {
   ɵɵdefineDirective,
   ɵɵdefineInjectable,
   ɵɵdirectiveInject
-} from "./chunk-RKTFKERN.js";
+} from "./chunk-MDU44JTW.js";
 
 // node_modules/@kurkle/color/dist/color.esm.js
 function round(v) {
