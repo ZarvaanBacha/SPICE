@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
-
 import { FirebasesigninsignupService } from '../firebasesigninsignup.service';
-import { UserAuthenticationService } from '../user-authentication.service';
-import { __assign } from 'tslib';
 
 @Component({
   selector: 'app-signin',
@@ -13,17 +10,12 @@ import { __assign } from 'tslib';
 })
 export class SigninComponent {
 
-  constructor(private firebasesigninsignup: FirebasesigninsignupService, private userauth: UserAuthenticationService){}  
+  constructor(private firebasesigninsignup: FirebasesigninsignupService){}  
 
   onSubmit(email: string, password: string) {
-    this.firebasesigninsignup.signinUser(email, password).then(() => {
-      if(this.userauth.isLoggedIn()) {
-        location.assign("authenticated/home")
-      }
-      else {
-        console.log("Incorrect email or pass")
-      }
-    });
+    
+    this.firebasesigninsignup.signinUser(email, password)
+    
   }
-
+  
 }
