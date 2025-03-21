@@ -10,7 +10,6 @@ import { map, switchMap } from 'rxjs/operators';
 })
 
 export class FirebaseRecipeService {
-  private email;
   constructor(private firestore: Firestore, private http: HttpClient) {}
 
   getAuthEmail(): Observable<string> {
