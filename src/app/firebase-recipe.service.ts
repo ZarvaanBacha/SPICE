@@ -1,47 +1,94 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDocs, getDoc } from '@angular/fire/firestore';
-import { Observable, timer, from } from 'rxjs';
-import { UserAuthenticationService } from './user-authentication.service';
-import { switchMap } from 'rxjs/operators';
+import { Observable, timer, from } from 'rxjs'
+import { HttpClient } from '@angular/common/http';
+import { map, switchMap } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseRecipeService { //TODO: fix this service to work for user-specific recipes
-  constructor(private firestore: Firestore, private authUser: UserAuthenticationService) {
-    console.log(this.authUser.getUser())
-  }
 
+export class FirebaseRecipeService { //TODO: fix this service to work for user-specific recipes
+  private email;
+  constructor(private firestore: Firestore, private http: HttpClient) {}
+
+  getAuthEmail(): Observable<string> {
+    return this.http.get<{ email: string }>('http://localhost:3000/recipeService')
+      .pipe(map(res => res.email));
+  } 
+  
   getRecipes(): Observable<any[]> {
-    const recipesRef = collection(this.firestore, `users/${this.authUser.getUser().userId}/recipes`);
-    return collectionData(recipesRef, { idField: 'id' });
+    return this.getAuthEmail().pipe(
+      switchMap(email => {
+        const recipesRef = collection(this.firestore, `users/${email}/recipes`);
+        return collectionData(recipesRef, { idField: 'id' });
+      })
+    );
   }
   
-  updateRecipe(recipeId: string, data: Partial<any>): Promise<void> {
-    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
-    return updateDoc(recipeRef, data);
+  updateRecipe(recipeId: string, data: Partial<any>): void {
+    this.getAuthEmail().pipe(
+      switchMap(email => {
+        const recipeRef = doc(this.firestore, `users/${email}/recipes/${recipeId}`);
+        return from(updateDoc(recipeRef, data));
+      })
+    ).subscribe({
+      next: () => {
+        console.log('Recipe updated successfully!');
+      },
+      error: (err) => {
+        console.error('Error updating recipe:', err);
+      }
+    });
   }
 
-  deleteRecipe(recipeId: string): Promise<void> {
-    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
-    return deleteDoc(recipeRef);
+  deleteRecipe(recipeId: string): void {
+    this.getAuthEmail().pipe(
+      switchMap(email => {
+        const recipeRef = doc(this.firestore, `users/${email}/recipes/${recipeId}`);
+        return from(deleteDoc(recipeRef));
+      })
+    ).subscribe({
+      next: () => {
+        console.log('Recipe deleted successfully!');
+      },
+      error: (err) => {
+        console.error('Error deleting recipe:', err);
+      }
+    });
   }
 
   async toggleRecipePublic(change: boolean, recipeId: string) {
-    const recipeRef = doc(this.firestore, `users/test/recipes/${recipeId}`);
-    await updateDoc(recipeRef, { isPublic: change });
+    this.getAuthEmail().pipe(
+      switchMap(email => {
+        const recipeRef = doc(this.firestore, `users/${email}/recipes/${recipeId}`);
+        return from(updateDoc(recipeRef, { isPublic: change }));
+      })
+    ).subscribe({
+      next: () => {
+        console.log('Recipe updated successfully!');
+      },
+      error: (err) => {
+        console.error('Error updating recipe:', err);
+      }
+    });
+}
 
-  }
-
-  async addRecipe(recipe: any): Promise<void> {
-    try {
-
-      const recipeToAdd = collection(this.firestore, `/users/${this.authUser.getUser().userId}/recipes`); 
-      await addDoc(recipeToAdd, recipe);
-      console.log('Recipe added successfully!');
-    } catch (error) {
-      console.error('Error adding recipe:', error);
-    }
+  async addRecipe(recipe: any): Promise<any> {
+    this.getAuthEmail().pipe(
+      switchMap(email => {
+        const recipeToAdd = collection(this.firestore, `users/${email}/recipes`);
+        return from(addDoc(recipeToAdd, recipe));
+      })
+    ).subscribe({
+      next: () => {
+        console.log('Recipe added successfully!');
+      },
+      error: (err) => {
+        console.error('Error adding recipe:', err);
+      }
+    });
   }
 
   /**
