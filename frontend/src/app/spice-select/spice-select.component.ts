@@ -5,27 +5,34 @@ import { SpiceButtonComponent } from '../spice-button/spice-button.component';
 import { FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-
+import { NgIf } from '@angular/common';
+import { ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-spice-select',
   standalone: true,
-  imports: [SpiceButtonComponent, CommonModule, FormsModule],
+  imports: [SpiceButtonComponent, CommonModule, FormsModule, NgIf],
   templateUrl: './spice-select.component.html',
   styleUrl: './spice-select.component.css'
 })
 export class SpiceSelectComponent implements OnInit {
   selectSpice: FormControl = new FormControl('');
-  
+  toastVisible: boolean = false;
   selectedSpice: SpiceContainer = { containerNumber: 0, spiceName: 'Choose a Spice', spiceQuantity: 0, isLow: false };
 
   spiceSelected: boolean = false;
   spiceList: SpiceContainer[] = []; // Initialize as an empty array
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {}
 
   ngOnInit() {
     console.log('SpiceSelectComponent initialized');
     this.fetchSpiceList(); // Fetch the spice list on initialization
+
+    this.route.queryParams.subscribe(params => {
+      if (params['toast'] === 'dispense-success') {
+        this.showToast();
+      }
+    });
   }
 
   fetchSpiceList() {
@@ -53,5 +60,14 @@ export class SpiceSelectComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+  showToast() {
+    
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
   }
 }

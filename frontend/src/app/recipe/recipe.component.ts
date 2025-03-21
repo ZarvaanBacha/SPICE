@@ -8,9 +8,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { KeyboardModuleModule } from '../keyboard-module/keyboard-module.module';
 import { FirebaseService } from '../firebase.service';
-
+import { NgIf } from '@angular/common';
+import { ActivatedRoute} from '@angular/router';
 
 @Component({
+  
   standalone: false,
   selector: 'app-recipe',
   templateUrl: './recipe.component.html',
@@ -26,6 +28,8 @@ export class RecipeComponent {
   showButton = false;
   selectedRecipeForDispense: Recipe | null = null; // Add this property
 
+  toastVisible: boolean = false;
+
   lowSpiceContainers: SpiceContainer[] = [];
  
   spiceOptions: string[] = []; // Initialize as an empty array
@@ -34,7 +38,7 @@ export class RecipeComponent {
     '1 teaspoon', '1 1/2 teaspoons', '1 tablespoon'
   ];
 
-  constructor(private recipeService: RecipeService, private router: Router, private http: HttpClient, private firebaseService: FirebaseService) {} // Inject Router
+  constructor(private route: ActivatedRoute,private recipeService: RecipeService, private router: Router, private http: HttpClient, private firebaseService: FirebaseService) {} // Inject Router
   
   
  
@@ -106,7 +110,7 @@ export class RecipeComponent {
           if (response) {
             console.log('Dispense output:', response);
     
-            this.router.navigate(['/recipes']); //TODO-minor: add a message for the user to indicate that dispensing is complete
+            this.router.navigate(['/recipes'], { queryParams: { toast: 'dispense-success' } }); //TODO-minor: add a message for the user to indicate that dispensing is complete
           } else {
             console.log('No response from backend.');
           }
@@ -152,6 +156,21 @@ export class RecipeComponent {
       console.log('Recipes:', this.recipes);
     })
 
+    this.route.queryParams.subscribe(params => {
+      if (params['toast'] === 'dispense-success') {
+        this.showToast();
+      }
+    });
+
+  }
+
+  showToast() {
+    
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
   }
 
   fetchSpiceOptions() {
