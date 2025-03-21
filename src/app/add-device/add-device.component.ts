@@ -20,7 +20,7 @@ export class AddDeviceComponent {
   onSubmit(productID: string) {
     this.firebaseRecipeService.addDeviceToDatabase(productID)
       .then(() => {
-        console.log('Device added successfully.');
+        console.log('Device added successfully.'); //TODO: change this to appear as a toast.
       })
       .catch((err) => {
         console.error('Error adding device:', err);

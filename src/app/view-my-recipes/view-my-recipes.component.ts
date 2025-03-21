@@ -81,6 +81,7 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
   }
 
   // TODO: fix the view-my-recipes. when edit is clicked, the spice measurements are all 1/8 teaspoon.
+  //TODO: deal with empty spices (either empty name, empty measurement, or both)
   saveRecipe(recipe: any) {
     
     this.recipeForms[recipe.id].value.isPublic = recipe.isPublic;

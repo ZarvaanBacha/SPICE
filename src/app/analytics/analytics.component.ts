@@ -37,7 +37,7 @@ export class AnalyticsComponent implements OnInit{
   sorted:any[][] = this.spiceTotalQuantity.map(
     (indices => a => indices.map(i => a[i]))
     ([...this.spiceTotalQuantity[0].keys()].sort((a, b) => this.spiceTotalQuantity[0][a] - this.spiceTotalQuantity[0][b]))
-);
+  );
 
   fillPercentageArray:number[] = this.setFillPercentageArr(this.sorted[0]);
   fillLabelArray:string[] = this.sorted[1];

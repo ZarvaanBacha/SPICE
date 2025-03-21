@@ -50,6 +50,7 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
    * @param m The maximum number of public recipes to retrieve per user.
    * @returns A Promise that resolves to an array of public recipes.
    */
+  //TODO : add a check to remove the searching user's own public recipes! 
   async getPublicRecipes(n: number, m: number): Promise<any[]> {
     try {
       const usersRef = collection(this.firestore, 'users'); // Reference to the users collection
