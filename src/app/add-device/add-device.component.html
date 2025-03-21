@@ -8,4 +8,23 @@
         </div>
     </div>
 </div>
-<!--TODO: add a toast pop up depending on whether or not the device was added successfully-->
+
+<!-- <div class="container"> -->
+    <div class="form-container">
+        <!-- Show loading message while fetching data -->
+
+        <!-- Show "Enter Product ID" screen if productID is null -->
+        <div *ngIf=" productID === null">
+            <h1>Add Device</h1>
+            <label for="productID">Product ID:</label>
+            <input type="search" id="productID" name="productID" placeholder="Enter Product ID" #productID required>
+            <button class="btn-primary" type="submit" (click)="onSubmit(productID.value)">Add Device</button>
+        </div>
+
+        <!-- Show device information if productID exists
+        <div *ngIf="productID !== null">
+            <h1>Device Info</h1>
+            <p><strong>Product ID:</strong> {{ productID }}</p>
+             <button class="btn-secondary" (click)="resetDevice()">Reset Device</button> -->
+    </div>
+
