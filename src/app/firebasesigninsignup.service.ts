@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDoc, setDoc } from '@angular/fire/firestore';
-import { UserAuthenticationService } from './user-authentication.service';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebasesigninsignupService {
 
-  constructor(private firestore: Firestore, private userAuth: UserAuthenticationService) {}
+  constructor(private firestore: Firestore, private http: HttpClient) {}
 
   private async getSpicesFromDatabase(email: string): Promise<string[]> {
     const spiceLogRef = doc(this.firestore, `users/${email}/device/spiceLog`);
@@ -90,6 +90,16 @@ export class FirebasesigninsignupService {
 
   }
 
+  private authToken: string | null = null;
+
+  setAuthToken(token: string) {
+    this.authToken = token;
+  }
+
+  getAuthToken(): string | null {
+    return this.authToken;
+  }
+
   async signinUser(email: string, password: string) {
     const userRef = doc(this.firestore, `users/${email}`);
     const userSnap = await getDoc(userRef);
@@ -97,8 +107,14 @@ export class FirebasesigninsignupService {
     if (userSnap.exists()) {
       if (userSnap.data()['password']==password) {
         console.log("Authentication Successful")
-        await this.userAuth.setUser(email)
-        
+        this.http.post("http://localhost:3000/login", { email }).subscribe(
+          response => {
+            console.log('Server response:', response);
+          },
+          error => {
+            console.error('Error connecting to server:', error);
+          })
+        location.assign("authenticated/home")
       }
       else {
         console.log("Incorrect Password")
