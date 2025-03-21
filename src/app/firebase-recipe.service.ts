@@ -13,7 +13,6 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
   }
 
   getRecipes(): Observable<any[]> {
-    timer(2000)
     const recipesRef = collection(this.firestore, `users/${this.authUser.getUser().userId}/recipes`);
     return collectionData(recipesRef, { idField: 'id' });
   }
