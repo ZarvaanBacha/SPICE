@@ -52,7 +52,7 @@ export class RecipesComponent {
     this.spices().removeAt(i);  
   }  
      
-  async onSubmit() {     
+  async onSubmit() {  //TODO: toast to tell user recipe was added    
     if (!this.productForm.value.recipeName || this.productForm.value.spices.length === 0) {
       alert('Please enter a recipe name and at least one spice.');
       return;

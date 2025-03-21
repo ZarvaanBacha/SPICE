@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseMainService {
+export class FirebaseMainService { //TODO: remove completely? its not used anywhere.
 
   constructor(private firestore: Firestore) {}
 

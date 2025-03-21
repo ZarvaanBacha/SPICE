@@ -25,21 +25,6 @@ export class AddDeviceComponent {
       .catch((err) => {
         console.error('Error adding device:', err);
       });
-
-
-
-  // onSubmit(productID: string){
-  //   this.Firebasemain.setProductID(productID)
-  // }
-
-  // resetDevice() {
-  //   this.Firebasemain.setProductID(this.userId, null)
-  //     .then(() => {
-  //       console.log('Device reset successfully');
-  //       this.productID = null;
-  //     })
-  //     .catch(error => console.error('Error resetting device:', error));
-  // }
   }
 
 }

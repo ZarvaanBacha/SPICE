@@ -10,7 +10,7 @@ import { NgFor, NgIf } from '@angular/common';
   templateUrl: './view-my-recipes.component.html',
   styleUrls: ['./view-my-recipes.component.css']
 })
-export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on, disable all other edit buttons. its buggy when users click 2 edit buttons.
+export class ViewMyRecipesComponent implements OnInit { //TODO: if editing is on, disable all other edit buttons. its buggy when users click 2 edit buttons.
   recipes: any[] = [];
   recipeForms: { [key: string]: FormGroup } = {};
   isPublic: boolean;

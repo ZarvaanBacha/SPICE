@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, updateDoc, collection, collectionData, deleteDoc, addDoc, query, where, limit, getDocs, getDoc } from '@angular/fire/firestore';
-import { Observable, timer, from } from 'rxjs'
+import { Observable, timer, from , firstValueFrom} from 'rxjs'
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { map, switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 
-export class FirebaseRecipeService { //TODO: fix this service to work for user-specific recipes
+export class FirebaseRecipeService {
   private email;
   constructor(private firestore: Firestore, private http: HttpClient) {}
 
@@ -97,7 +97,6 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
    * @param m The maximum number of public recipes to retrieve per user.
    * @returns A Promise that resolves to an array of public recipes.
    */
-  //TODO : add a check to remove the searching user's own public recipes! 
   async getPublicRecipes(n: number, m: number): Promise<any[]> {
     try {
       const usersRef = collection(this.firestore, 'users'); // Reference to the users collection
@@ -109,8 +108,15 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
       for (const userDoc of usersSnapshot.docs) {
         const userId = userDoc.id; // Get the user document ID
         const userName = userDoc.data()['name'];
+
+        // check if userDoc refers to the user currently searching
+        const email = await firstValueFrom(this.getAuthEmail());
+        if (email == userDoc.id) {
+          continue; // skip this user
+        }
+
         const recipesRef = collection(this.firestore, `users/${userId}/recipes`); // Reference to the user's recipes collection
-  
+
         // Query public recipes in the user's recipes collection
         const publicRecipesQuery = query(
           recipesRef,
@@ -172,12 +178,15 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async addDeviceToDatabase(productID: string): Promise<void> {
     try {
+      // Convert the Observable to a Promise and await the email
+      const email = await firstValueFrom(this.getAuthEmail());
+
       // Get a reference to the 'deviceInfo' document in the 'device' subcollection
-      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
-      const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
+      const deviceInfoRef = doc(this.firestore, `users/${email}/device/deviceInfo`);
   
       // Update the 'productID' field in the 'deviceInfo' document
       await updateDoc(deviceInfoRef, { productID: productID });
+  
       console.log(`Product ID ${productID} successfully added to the database.`);
     } catch (error) {
       console.error('Error adding product ID to the database:', error);
@@ -187,12 +196,13 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async getDeviceInfo(): Promise<any> {
     try {
-      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
+      // Convert the Observable to a Promise and await the email
+      const email = await firstValueFrom(this.getAuthEmail());
   
       // References to the required documents
-      const deviceInfoRef = doc(this.firestore, `users/${userId}/device/deviceInfo`);
-      const spiceLogRef = doc(this.firestore, `users/${userId}/device/spiceLog`);
-      const notificationLogRef = doc(this.firestore, `users/${userId}/device/notificationLog`);
+      const deviceInfoRef = doc(this.firestore, `users/${email}/device/deviceInfo`);
+      const spiceLogRef = doc(this.firestore, `users/${email}/device/spiceLog`);
+      const notificationLogRef = doc(this.firestore, `users/${email}/device/notificationLog`);
   
       // Fetch the deviceInfo document
       const deviceInfoSnap = await getDoc(deviceInfoRef);
@@ -223,10 +233,11 @@ export class FirebaseRecipeService { //TODO: fix this service to work for user-s
 
   async getSpiceOptions() {
     try {
-      const userId = 'test@spice.com'; // TODO: Replace with the actual user ID
-  
+      // Convert the Observable to a Promise and await the email
+      const email = await firstValueFrom(this.getAuthEmail());  
+
       // References to the required documents
-      const spiceLogRef = doc(this.firestore, `users/${userId}/device/spiceLog`);
+      const spiceLogRef = doc(this.firestore, `users/${email}/device/spiceLog`);
       
       // Fetch the spiceLog document
       const spiceLogSnap = await getDoc(spiceLogRef);

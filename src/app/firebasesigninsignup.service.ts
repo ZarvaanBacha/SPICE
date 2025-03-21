@@ -64,15 +64,17 @@ export class FirebasesigninsignupService {
   }
 
   async signupUser(name: string, email: string, password: string) {
-    const userToAdd = {name: name, email: email, password: password}
+    
+    // create user document
+    const userToAdd = {name: name, email: email, password: password};
+    const credentialsRef = doc(this.firestore, `users/${email}`);
+    await setDoc(credentialsRef, userToAdd);
 
-    const credentialsRef = doc(this.firestore, `users/${email}`)
-    await setDoc(credentialsRef, userToAdd)
+    // create deviceInfo document
+    const deviceRefInfo = doc(this.firestore, `users/${email}/device/deviceInfo`);
+    await setDoc(deviceRefInfo, {productID: null});
 
-
-    const deviceRefInfo = doc(this.firestore, `users/${email}/device/deviceInfo`)
-    await setDoc(deviceRefInfo, {productID: null})
-
+    // create spiceLog document
     const spices = {
       1: 'Pepper',
       2: 'Salt',
@@ -83,11 +85,15 @@ export class FirebasesigninsignupService {
       7: 'Italian seasoning',
       8: 'Oregano'
     };
-    const deviceRefSpiceLog = doc(this.firestore, `users/${email}/device/spiceLog`)
-    await setDoc(deviceRefSpiceLog, spices)
 
-    this.autofillContainers(email)
+    const deviceRefSpiceLog = doc(this.firestore, `users/${email}/device/spiceLog`);
+    await setDoc(deviceRefSpiceLog, spices);
 
+    // create notificationLog document
+    const deviceRefNotificationLog = doc(this.firestore, `users/${email}/device/notificationLog`);
+    await setDoc(deviceRefNotificationLog, {log: []});
+
+    this.autofillContainers(email);
   }
 
   private authToken: string | null = null;
@@ -121,7 +127,7 @@ export class FirebasesigninsignupService {
       }
     } 
     else {
-        console.log("No such document!")
+        console.log("No such document!") //TODO: toast to tell user that the email is not registered
     }
   }
 
