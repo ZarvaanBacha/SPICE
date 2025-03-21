@@ -96,14 +96,11 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
     console.log('Updated Recipe:', updatedRecipe);
 
 
-    this.firebaseRecipeService.updateRecipe(recipe.id, updatedRecipe)
-      .then(() => {
-        recipe.recipeName = updatedRecipe.recipeName;
-        recipe.spices = updatedRecipe.spices;
-        recipe.editing = false;
-        recipe.isPublic = updatedRecipe.isPublic;
-      })
-      .catch(error => console.error('Error updating recipe:', error));
+    this.firebaseRecipeService.updateRecipe(recipe.id, updatedRecipe);
+    recipe.recipeName = updatedRecipe.recipeName;
+    recipe.spices = updatedRecipe.spices;
+    recipe.editing = false;
+    recipe.isPublic = updatedRecipe.isPublic;
   }
 
   addSpice(recipeId: string) {
