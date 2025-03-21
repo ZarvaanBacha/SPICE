@@ -6,7 +6,7 @@ import { OnInit } from '@angular/core';
 
 import { ChartData, ChartType } from 'chart.js';
 
-import * as dataAnalytics from '../../../public/analytics.json';//Right now is an import convert to Firebase service request
+import * as dataAnalytics from '../../../public/analytics.json';//TODO: Right now is an import convert to Firebase service request
 
 import { Inject, PLATFORM_ID } from "@angular/core";//Used to resolve SSR issues with <canvas>
 import { isPlatformBrowser } from "@angular/common";//Used to resolve SSR issues with <canvas>

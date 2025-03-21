@@ -32,16 +32,18 @@ export class FirebasesigninsignupService {
       }
 
       for (let i = 0; i < 8; i++) {
+        const qrCodeId = i+1;
         const containerId = `container_${i + 1}`;
         const spiceName = spices[i % spices.length]; 
-        const spiceQuantity = i
-        const timesUsed = i
-        const totalQuantityUsed = i
-        const isLow = spiceQuantity < 40;
+        const spiceQuantity = 100;
+        const timesUsed = 0;
+        const totalQuantityUsed = 0;
+        const isLow = false;
         const lastRefilled = new Date().toISOString();
-        const usageHistory = [new Date().toISOString(), new Date().toISOString()];
+        const usageHistory = [];
 
         const containerData = {
+          qrCodeId,
           containerId,
           spiceName,
           spiceQuantity,
