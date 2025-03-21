@@ -80,7 +80,8 @@ export class RecipesComponent {
     };
   
     await this.firebaseRecipeService.addRecipe(newRecipe);
-    console.log('Recipe added:', newRecipe);
+
+    // console.log('Recipe added:', newRecipe);
   
     this.productForm.reset();
   }
