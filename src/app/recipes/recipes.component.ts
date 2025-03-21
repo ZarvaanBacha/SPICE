@@ -1,12 +1,13 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule} from "@angular/forms"
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, FormsModule} from "@angular/forms"
 import { FirebaseRecipeService } from '../firebase-recipe.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-recipes',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, FormsModule, NgFor, NgIf],
   templateUrl: './recipes.component.html',
   styleUrls: ['./recipes.component.css']
 })
@@ -14,8 +15,15 @@ export class RecipesComponent {
   productForm: FormGroup;  
   spiceOptions: string[] = [];
   
+  // AI Recipe Suggestion Variables
+  aiRecipeDescription: string = '';
+  maxAiDescriptionLength = 30; // Set the character limit for AI recipe suggestion
+  aiRemainingCharacters = this.maxAiDescriptionLength;
 
-  constructor(private fb:FormBuilder, private firebaseRecipeService: FirebaseRecipeService) {  
+  // Store AI recipe suggestions
+  aiRecipeSuggestions: any[] = [];
+
+  constructor(private fb:FormBuilder, private firebaseRecipeService: FirebaseRecipeService, private http: HttpClient) {  
      
     this.productForm = this.fb.group({  
       recipeName: '',  
@@ -122,4 +130,38 @@ export class RecipesComponent {
   
     return Math.round(totalTeaspoons / 0.125); // Convert to 1/8th teaspoons
   }
+
+  // Update remaining characters for AI recipe suggestion
+  updateAiRemainingCharacters() {
+    this.aiRemainingCharacters = this.maxAiDescriptionLength - (this.aiRecipeDescription?.length || 0);
+  }
+
+  // Handle AI Recipe Suggestion Submission
+  submitAiRecipe() {
+    if (this.aiRecipeDescription.trim().length === 0) {
+      alert('Please enter a description for your AI recipe suggestion.');
+      return;
+    }
+
+    const quantitySuggestion = 3; // query 3 suggestions from the model
+    const payload = { userInput: this.aiRecipeDescription, quantitySuggestion: quantitySuggestion };
+
+    this.http.post("http://localhost:3000/getModelSuggestions", payload).subscribe(
+      (response: any) => {
+        console.log('Server response:', response);
+
+        // Store the suggestions in the component
+        this.aiRecipeSuggestions = response.suggestions || [];
+      },
+      error => {
+        console.error('Error connecting to server:', error);
+      }
+    );
+
+    // Reset the text box and remaining characters
+    this.aiRecipeDescription = '';
+    this.aiRemainingCharacters = this.maxAiDescriptionLength;
+  }
+
+  //TODO: add function to process AI suggestions, then add them to db recipes 
 }

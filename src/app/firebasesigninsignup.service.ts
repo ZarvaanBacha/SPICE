@@ -121,7 +121,7 @@ export class FirebasesigninsignupService {
           },
           error => {
             console.error('Error connecting to server:', error);
-          })
+          });
         location.assign("authenticated/home")
       }
       else {

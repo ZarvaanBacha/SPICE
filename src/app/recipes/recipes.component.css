@@ -195,3 +195,45 @@ button:focus {
   }
 } 
 
+/* AI RECIPE SUGGESTION STUFF */
+
+.form-control {
+  width: 100%;
+  height: 64px;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.suggestion-container {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+/* Ensure columns are responsive */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.col {
+  flex: 1 1 calc(33.333% - 20px); /* 3 columns with spacing */
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .col {
+    flex: 1 1 calc(50% - 20px); /* 2 columns on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .col {
+    flex: 1 1 100%; /* 1 column on very small screens */
+  }
+}

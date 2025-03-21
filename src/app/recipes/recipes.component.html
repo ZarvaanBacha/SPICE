@@ -42,4 +42,37 @@
     <br/>  
 </div>
 
-<!-- TODO: ai generated recipes. ask ludo about it -->
+<div class="container">  
+  <h1> AI Recipe Suggestion </h1>  
+  <form>
+    <p>
+      <label for="aiRecipeInput" style="font-size: 16px;">Describe your recipe idea:</label>
+      <textarea
+        id="aiRecipeInput"
+        name="aiRecipeInput"
+        [(ngModel)]="aiRecipeDescription"
+        class="form-control"
+        [maxLength]="maxAiDescriptionLength"
+        (input)="updateAiRemainingCharacters()"
+      ></textarea>
+      <small>{{ aiRemainingCharacters }}/{{ maxAiDescriptionLength }} characters left</small>
+    </p>
+    <button type="button" class="btn btn-primary" (click)="submitAiRecipe()">Submit AI Recipe</button>
+  </form>
+</div>
+
+<!-- Display AI Recipe Suggestions -->
+<!-- TODO: style this similarly to other recipe displays -->
+<!-- TODO: there should be an "add recipe" button to each suggestion container. make sure its properly added (pass the function the suggestion)-->
+<div class="row" *ngIf="aiRecipeSuggestions.length > 0">
+  <div class="col" *ngFor="let suggestion of aiRecipeSuggestions">
+    <div class="suggestion-container">
+      <h3>{{ suggestion.recipeName }}</h3>
+      <ul>
+        <li *ngFor="let spice of suggestion.spices">
+          {{ spice.spiceName }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
