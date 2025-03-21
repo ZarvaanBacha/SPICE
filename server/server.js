@@ -6,8 +6,6 @@ const app = express();
 const PORT = 3000;
 let email = '';
 
-const pyDir = "C:/Users/ludov/Python/python.exe"; //TODO set as path to python.exe
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({origin: "http://localhost:4200"}));
@@ -43,6 +41,7 @@ app.post("/getModelSuggestions", (req, res) => {
 
   // Path to the Python script
   const pythonScriptPath = "ml-model/model-predict.py";
+  const pyDir = "C:/Users/ludov/Python/python.exe"; //TODO set as path to python.exe
 
   // Command to execute the Python script with arguments
   const command = `${pyDir} ${pythonScriptPath} "${userInput}" ${quantitySuggestion}`;
@@ -56,13 +55,13 @@ app.post("/getModelSuggestions", (req, res) => {
 
     if (stderr) {
       console.error(`Python script error: ${stderr}`);
-      //return res.status(500).json({ error: "Error in Python script execution." });
+      //return res.status(500).json({ error: "Error in Python script execution." }); // no need to return. the python script throws errors when unknown classes are found (words it hasn't seen in training)
     }
 
     try {
       // Parse the JSON output from the Python script
       const suggestions = JSON.parse(stdout);
-      console.log("Python script output:", suggestions);
+      //console.log("Python script output:", suggestions);
 
       // Transform the suggestions into the desired JSON structure
       const transformedSuggestions = suggestions.map((suggestion) => {
