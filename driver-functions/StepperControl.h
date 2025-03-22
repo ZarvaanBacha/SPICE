@@ -9,6 +9,7 @@ public:
     void moveStepper(int direction, int steps, int aggression, int microstepMode);
     void disableMotor();
     void setMicrostepping(int microstepMode);
+    void lockMotor();  // New: lock the motor (hold position)
 
 private:
     int _stepPin;
