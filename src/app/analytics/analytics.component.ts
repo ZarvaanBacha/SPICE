@@ -148,7 +148,7 @@ export class AnalyticsComponent implements OnInit{
   public radarChartType: ChartType = 'radar';
 
   //Angular functions
-  constructor(private firebaseReicpeService: FirebaseRecipeService, @Inject(PLATFORM_ID) private platformId: unknown){}
+  constructor(private firebaseRecipeService: FirebaseRecipeService, @Inject(PLATFORM_ID) private platformId: unknown){}
   ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);  
     //test code
@@ -163,6 +163,8 @@ export class AnalyticsComponent implements OnInit{
     // console.log(this.fillPercentageArray);
     // console.log(this.fillPercentageArray[this.fillPercentageArray.length - 1]);
     // console.log(this.sorted);
+
+    this.fetchAndLogAnalytics();
   }
   //setup methods
   setFillPercentage(num:number, largest:number){//Function to determine fillPercentage
@@ -201,4 +203,16 @@ export class AnalyticsComponent implements OnInit{
     }
   }
   
+  /**
+   * Fetches analytics data from Firebase and output to the console.
+   */
+  async fetchAndLogAnalytics(): Promise<void> {
+    try {
+      const analyticsData = await this.firebaseRecipeService.getAnalytics();
+      console.log('Analytics Data:', analyticsData);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+    }
+  }
+
 }

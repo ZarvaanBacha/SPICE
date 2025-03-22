@@ -78,7 +78,16 @@ export class FirebaseRecipeService {
     this.getAuthEmail().pipe(
       switchMap(email => {
         const recipeToAdd = collection(this.firestore, `users/${email}/recipes`);
-        return from(addDoc(recipeToAdd, recipe));
+
+        // to add custom fields to recipes
+        const recipeWithCustomFields = {
+          ...recipe,
+          timesUsed: 0, // Initialize timesUsed to 0
+          usageHistory: [], // Initialize usageHistory as an empty array
+          isPublic: false, // Initialize isPublic to false
+        };
+
+        return from(addDoc(recipeToAdd, recipeWithCustomFields));
       })
     ).subscribe({
       next: () => {
@@ -149,8 +158,10 @@ export class FirebaseRecipeService {
 
   async getAnalytics() {
     try {
+      const email = await firstValueFrom(this.getAuthEmail());
+
       // Fetch all recipes from the database
-      const recipesRef = collection(this.firestore, 'recipes');
+      const recipesRef = collection(this.firestore, `users/${email}/recipes`);
       const recipesSnapshot = await getDocs(recipesRef);
       const recipes = recipesSnapshot.docs.map(doc => ({
         id: doc.id, // Include the document ID
@@ -158,7 +169,7 @@ export class FirebaseRecipeService {
       }));
   
       // Fetch all spice containers from the database
-      const containersRef = collection(this.firestore, 'containers');
+      const containersRef = collection(this.firestore, `users/${email}/containers`);
       const containersSnapshot = await getDocs(containersRef);
       const containers = containersSnapshot.docs.map(doc => ({
         id: doc.id, // Include the document ID

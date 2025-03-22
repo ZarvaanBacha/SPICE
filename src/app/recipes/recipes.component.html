@@ -62,8 +62,9 @@
 </div>
 
 <!-- Display AI Recipe Suggestions -->
-<!-- TODO: style this similarly to other recipe displays -->
+<!-- TODO: style this similarly to other recipe displays (should include spice quantities) -->
 <!-- TODO: there should be an "add recipe" button to each suggestion container. make sure its properly added (pass the function the suggestion)-->
+ <!--TODO: it could take a while to get suggestions... add a loading message or anim. -->
 <div class="row" *ngIf="aiRecipeSuggestions.length > 0">
   <div class="col" *ngFor="let suggestion of aiRecipeSuggestions">
     <div class="suggestion-container">
