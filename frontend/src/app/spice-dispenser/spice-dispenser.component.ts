@@ -61,7 +61,7 @@ export class SpiceDispenserComponent implements OnDestroy, OnInit {
         if (response) {
           console.log('Dispense output:', response);
   
-          this.router.navigate(['/spice-select'], { queryParams: { toast: 'dispense-success' } }); //TODO-minor: add a message for the user to indicate that dispensing is complete
+          this.router.navigate(['/spice-select'], { queryParams: { toast: 'dispense-success' } });
         } else {
           console.log('No response from backend.');
         }
