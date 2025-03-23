@@ -3,17 +3,24 @@ import numpy as np
 from pyzbar.pyzbar import decode, ZBarSymbol
 
 class QRAlignment:
-    def __init__(self, start_point=(172, 396), end_point=(332, 564), tolerance=10):
+    def __init__(self, start_point=(152, 323), end_point=(376, 609), tolerance=5):
         self.start_point = start_point
         self.end_point = end_point
         self.tolerance = tolerance
 
     def detect_qr_code(self, frame):
+        """
+        Detect a QR code using pyzbar.
+        :param frame: Input frame from a camera or image file.
+        :return: List of bounding boxes [(x, y, w, h, qr_id), ...] or an empty list if none found.
+        """
         decoded_objects = decode(frame, symbols=[ZBarSymbol.QRCODE])
         bboxes = []
         for obj in decoded_objects:
             x, y, w, h = obj.rect
-            bboxes.append((x, y, w, h))
+            qr_id = obj.data.decode("utf-8")  # Get the QR code data (assuming it's a string)
+            print(f"Detected QR code ID: {qr_id} at ({x}, {y}, {w}, {h})")
+            bboxes.append((x, y, w, h, qr_id))
         return bboxes
 
     def center_of_bbox(self, bbox):
@@ -38,10 +45,20 @@ class QRAlignment:
             return "move_left", abs(distance)
 
     def compute_alignment(self, frame):
+        """
+        Compute the alignment direction based on the input frame.
+        :param frame: Input frame from a camera or image file.
+        :return: (Alignment direction, distance from center, qr_id).
+        """
         qr_bboxes = self.detect_qr_code(frame)
         if qr_bboxes:
-            x, y, w, h = qr_bboxes[0]
+            x, y, w, h, qr_id = qr_bboxes[0]  # Unpack the QR code ID from the tuple
+            print(f"Detected QR code ID: {qr_id} at coordinates ({x}, {y})")
             cX, cY = self.center_of_bbox((x, y, w, h))
             direction, distance = self.decide_movement(cX)
-            return direction, distance
-        return "no_qr_detected", 0
+            return direction, distance, qr_id
+
+        print("No QR code detected.")
+        return "no_qr_detected", 0, None
+
+
