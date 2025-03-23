@@ -1,42 +1,17 @@
 {
     "1": {
-        "spiceQuantityInEighthTsp": 20,
-        "location": 5,
-        "spiceQuantity": 50
-    },
-    "2": {
-        "spiceQuantityInEighthTsp": 10,
-        "location": 6,
-        "spiceQuantity": 30
-    },
-    "3": {
-        "spiceQuantityInEighthTsp": 5,
+        "spiceQuantityInEighthTsp": 2,
         "location": 7,
-        "spiceQuantity": 10
-    },
-    "4": {
-        "spiceQuantityInEighthTsp": 0,
-        "location": 8,
-        "spiceQuantity": 0
-    },
-    "5": {
-        "spiceQuantityInEighthTsp": 24,
-        "location": 1,
-        "spiceQuantity": 50
+        "spiceQuantity": 2
     },
     "6": {
-        "spiceQuantityInEighthTsp": 16,
-        "location": 2,
-        "spiceQuantity": 30
-    },
-    "7": {
-        "spiceQuantityInEighthTsp": 32,
+        "spiceQuantityInEighthTsp": 4,
         "location": 3,
-        "spiceQuantity": 10
+        "spiceQuantity": 3
     },
     "8": {
-        "spiceQuantityInEighthTsp": 0,
-        "location": 4,
-        "spiceQuantity": 0
+        "spiceQuantityInEighthTsp": 6,
+        "location": 1,
+        "spiceQuantity": 4
     }
 }

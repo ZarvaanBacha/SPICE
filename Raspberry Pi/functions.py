@@ -43,17 +43,4 @@ def printJSON(file_name):
     except Exception as e:
         print(f"Error reading JSON file '{file_name}': {e}")
 
-def parse_dispense_list(file_name="dispense_list.json"):
-    """
-    Load the dispense list from a JSON file.
-    :param file_name: The name of the file containing the list of containers to dispense.
-    :return: A dictionary of containers to dispense from.
-    """
-    try:
-        with open(file_name, "r") as infile:
-            data = json.load(infile)
-            print(f"Loaded dispense list: {json.dumps(data, indent=4)}")
-            return data
-    except Exception as e:
-        print(f"Error reading dispense list file '{file_name}': {e}")
-        return {}
+

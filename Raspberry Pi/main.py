@@ -1,5 +1,5 @@
 from qr_alignment import QRAlignment
-from functions import index, load_qr_data, save_qr_data, printJSON, parse_dispense_list
+from functions import index, load_qr_data, save_qr_data, printJSON
 import cv2
 import time
 import serial
@@ -23,6 +23,7 @@ qr_alignment = QRAlignment(tolerance=20)
 
 # Load empty JSON data
 qr_data = load_qr_data("empty_qr_data.json")
+dispense_data = load_qr_data("dispense_list.json")
 
 # Live feed toggle
 show_live_feed = False
@@ -80,6 +81,13 @@ def handle_move_command(command):
     else:
         print("Invalid move command format. Use 'move(int, int)'.")
 
+def moveToRefill(destination):
+    global PLATE_POSITION
+    # Construct the move command using the current PLATE_POSITION and the destination parameter
+    command = f"move({PLATE_POSITION}, {destination})"
+    # Use the existing handle_move_command to execute the command
+    handle_move_command(command)
+
 def get_current_position():
     global PLATE_POSITION
     print(f"Current plate position: {PLATE_POSITION}")
@@ -127,6 +135,7 @@ def centreContainer():
 def initialize():
     global PLATE_POSITION
     print("Starting initialization, searching for QR lock")
+    send_serial_command("slider: ccw, 25, 25")
     while True:
         if latest_frame is None:
             print("Waiting for a frame...")
@@ -170,12 +179,28 @@ def initialize():
     print("Position scanning complete.")
     print("Final JSON data:")
     printJSON("filled_qr_data.json")
+ 
+
+def dispenseRoutine(count):
+    send_serial_command(f"lock")  # Lock Plate
+    time.sleep(1)
+    send_serial_command(f"slider: cw, 20, 25")  # Bring Slider into position
+    for x in range(count):
+        time.sleep(0.8)
+        send_serial_command(f"dispenser: ccw, 150, 15")  # Dispense one increment
+        time.sleep(2)
+    time.sleep(1)
+    send_serial_command(f"stop")  # Release plate
+    time.sleep(1)
+    send_serial_command(f"slider: ccw, 50, 25")  # Bring Slider back to rest
+
+
 
 def dispense():
     global PLATE_POSITION
     print("Starting dispensing process...")
 
-    for qr_id, data in qr_data.items():
+    for qr_id, data in dispense_data.items():
         target_position = data.get("location")
         quantity = data.get("spiceQuantityInEighthTsp", 0)
 
@@ -185,10 +210,11 @@ def dispense():
             if target_position != PLATE_POSITION:
                 handle_move_command(f"move({PLATE_POSITION}, {target_position})")
                 PLATE_POSITION = target_position
-                time.sleep(1)
+                time.sleep(1.8)
+                centreContainer()
 
             print(f"Dispensing from position {target_position}. Quantity: {quantity} eighth teaspoons")
-            send_serial_command(f"dispense({target_position}, {quantity})")
+            dispenseRoutine(int(quantity))
             time.sleep(1)
 
     print("Dispensing process complete.")
@@ -216,6 +242,16 @@ while True:
         get_current_position()
     elif command.startswith("move("):
         handle_move_command(command)
+        
+    elif command.startswith("movetorefill("):
+        # Parse moveToRefill command; expect format like "moveToRefill(1)"
+        refill_match = re.match(r"movetorefill\((\d+)\)", command)
+        if refill_match:
+            destination = int(refill_match.group(1))
+            moveToRefill(destination)
+        else:
+            print("Invalid moveToRefill command format. Use 'moveToRefill(destination)'.")
+            
     elif command == "center":
         centreContainer()
     elif command == "initialize":
