@@ -28,7 +28,7 @@ def index(qr_json, detected_qr_id, current_position):
 def save_qr_data(qr_json, file_name="updated_qr_data.json"):
     with open(file_name, "w") as outfile:
         json.dump(qr_json, outfile, indent=4)
-    print(f"QR data saved to {file_name}")
+   # print(f"QR data saved to {file_name}")
 
 def load_qr_data(file_name="empty_qr_data.json"):
     with open(file_name, "r") as infile:

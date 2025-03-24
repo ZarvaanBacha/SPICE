@@ -3,7 +3,7 @@ import numpy as np
 from pyzbar.pyzbar import decode, ZBarSymbol
 
 class QRAlignment:
-    def __init__(self, start_point=(152, 323), end_point=(376, 609), tolerance=5):
+    def __init__(self, start_point=(68, 82), end_point=(424, 324), tolerance=5):
         self.start_point = start_point
         self.end_point = end_point
         self.tolerance = tolerance
@@ -19,7 +19,7 @@ class QRAlignment:
         for obj in decoded_objects:
             x, y, w, h = obj.rect
             qr_id = obj.data.decode("utf-8")  # Get the QR code data (assuming it's a string)
-            print(f"Detected QR code ID: {qr_id} at ({x}, {y}, {w}, {h})")
+            #print(f"Detected QR code ID: {qr_id} at ({x}, {y}, {w}, {h})")
             bboxes.append((x, y, w, h, qr_id))
         return bboxes
 
@@ -53,12 +53,12 @@ class QRAlignment:
         qr_bboxes = self.detect_qr_code(frame)
         if qr_bboxes:
             x, y, w, h, qr_id = qr_bboxes[0]  # Unpack the QR code ID from the tuple
-            print(f"Detected QR code ID: {qr_id} at coordinates ({x}, {y})")
+            #print(f"Detected QR code ID: {qr_id} at coordinates ({x}, {y})")
             cX, cY = self.center_of_bbox((x, y, w, h))
             direction, distance = self.decide_movement(cX)
             return direction, distance, qr_id
 
-        print("No QR code detected.")
+        #print("No QR code detected.")
         return "no_qr_detected", 0, None
 
 
