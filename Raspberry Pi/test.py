@@ -46,12 +46,12 @@ def run_tests():
     # Run the dispense test case
     # print("Running test case for dispense() function...")
     # The second parameter is the starting plate position.
-    # dispense(dispense_data, 8)
+    dispense(dispense_data, 8)
     # print("Dispense test case complete.\n")
     
     # Uncomment the following lines to test the initialize function as well.
     # print("Running test case for initialize() function...")
-    initialize(initial_qr_data)
+    # initialize(initial_qr_data)
     # print("Initialize test case complete.\n")
     
     # Uncomment the following lines to test moveToRefill if desired.

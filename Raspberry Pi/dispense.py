@@ -97,6 +97,8 @@ def dispense(dispense_data, starting_position=1):
                     measured_level = 0
             # Update the JSON with the measured spice level
             data["spiceQuantity"] = measured_level
+            
+    send_serial_command("slider: ccw, 25, 25")  # Return slider to rest
 
     # Release the camera after dispensing is complete
     camera.release_camera()

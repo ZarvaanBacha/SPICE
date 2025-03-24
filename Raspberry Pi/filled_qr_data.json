@@ -1,0 +1,34 @@
+{
+    "1": {
+        "spiceQuantity": 1,
+        "location": 3
+    },
+    "2": {
+        "spiceQuantity": 2,
+        "location": 6
+    },
+    "3": {
+        "spiceQuantity": 3,
+        "location": 5
+    },
+    "4": {
+        "spiceQuantity": 4,
+        "location": 1
+    },
+    "5": {
+        "spiceQuantity": 5,
+        "location": 2
+    },
+    "6": {
+        "spiceQuantity": 6,
+        "location": 4
+    },
+    "7": {
+        "spiceQuantity": 7,
+        "location": 7
+    },
+    "8": {
+        "spiceQuantity": 8,
+        "location": 8
+    }
+}
