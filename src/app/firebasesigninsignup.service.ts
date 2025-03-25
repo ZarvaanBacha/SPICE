@@ -121,7 +121,7 @@ export class FirebasesigninsignupService {
           },
           error => {
             console.error('Error connecting to server:', error);
-          });
+          })
         location.assign("authenticated/home")
       }
       else {
@@ -129,7 +129,7 @@ export class FirebasesigninsignupService {
       }
     } 
     else {
-        console.log("No such document!") //TODO: toast to tell user that the email is not registered
+        console.log("No such document!") //TODO-minor: toast to tell user that the email is not registered
     }
   }
 

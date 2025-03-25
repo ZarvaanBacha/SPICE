@@ -16,15 +16,29 @@ import { FirebaseMainService } from '../firebase-main.service';
 export class AddDeviceComponent {
 
   constructor(private firebaseRecipeService: FirebaseRecipeService){}
+  toastVisible: boolean = false;
+  toastText: string = "An error occured.";
 
   onSubmit(productID: string) {
     this.firebaseRecipeService.addDeviceToDatabase(productID)
       .then(() => {
-        console.log('Device added successfully.'); //TODO: change this to appear as a toast.
+        console.log('Device added successfully.');
+        this.showToast('Device added successfully.');
       })
       .catch((err) => {
         console.error('Error adding device:', err);
+        this.showToast('Device was not added.');
       });
+  }
+
+  showToast(toastText: string) {
+    
+    this.toastText = toastText;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
   }
 
 }

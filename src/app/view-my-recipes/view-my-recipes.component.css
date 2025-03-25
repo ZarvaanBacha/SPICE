@@ -22,8 +22,8 @@ h1 {
 }
 
 .scrollable-container {
-  width: 90%;
-  max-width: 600px;
+  width: fit-content;
+  max-width: 1000px;
   margin: 0 auto;
   background: #ffffff;
   border: none;
@@ -32,6 +32,7 @@ h1 {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-height: 70vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .scrollable-container ul {
@@ -111,4 +112,115 @@ h1 {
 
 input[type="checkbox"] {
   appearance: checkbox !important;
+}
+/* Recipe container styling */
+.recipe-cont {
+  justify-content: space-between; /* Space between recipe name and actions */
+  align-items: center; /* Vertically align items */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Recipe header styling */
+.recipe-header {
+  flex: 1; /* Take up available space */
+  display: flex;
+  justify-content: space-between; /* Space between recipe name and actions */
+  align-items: center;
+}
+
+/* Recipe actions styling */
+.recipe-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Add spacing between buttons */
+}
+
+/* Toggle switch container */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+/* Hide the default checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.toggle-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+/* The circle inside the slider */
+.toggle-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* When the checkbox is checked */
+.toggle-switch input:checked + .slider {
+  background-color: #68a368; /* Green for ON */
+}
+
+/* Move the circle when checked */
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Add a shadow for better visibility */
+.toggle-switch .slider {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Default message styling */
+.no-recipes-message {
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.no-recipes-message p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.no-recipes-message .btn-primary {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.no-recipes-message .btn-primary:hover {
+  background-color: #0056b3;
 }

@@ -6,6 +6,11 @@
             <input type="search" id="productID" name="productID" placeholder="Enter Product ID" #productID required>
             <button class="btn-primary"type="submit" (click)="onSubmit(productID.value)">Add Device</button>
         </div>
+
+        
+        <div *ngIf="toastVisible" class="toast">
+            {{this.toastText}}
+        </div>
     </div>
 </div>
 

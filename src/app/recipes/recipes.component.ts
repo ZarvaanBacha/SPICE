@@ -23,6 +23,9 @@ export class RecipesComponent {
   // Store AI recipe suggestions
   aiRecipeSuggestions: any[] = [];
 
+  toastVisible: boolean = false;
+  toastText: string = "An error occured.";
+
   constructor(private fb:FormBuilder, private firebaseRecipeService: FirebaseRecipeService, private http: HttpClient) {  
      
     this.productForm = this.fb.group({  
@@ -60,7 +63,7 @@ export class RecipesComponent {
     this.spices().removeAt(i);  
   }  
      
-  async onSubmit() {  //TODO: toast to tell user recipe was added    
+  async onSubmit() {
     if (!this.productForm.value.recipeName || this.productForm.value.spices.length === 0) {
       alert('Please enter a recipe name and at least one spice.');
       return;
@@ -90,7 +93,8 @@ export class RecipesComponent {
     await this.firebaseRecipeService.addRecipe(newRecipe);
 
     // console.log('Recipe added:', newRecipe);
-  
+    this.showToast(`${this.productForm.value.recipeName} saved successfully.`);
+    
     this.productForm.reset();
   }
 
@@ -164,4 +168,14 @@ export class RecipesComponent {
   }
 
   //TODO: add function to process AI suggestions, then add them to db recipes 
+
+  showToast(toastText: string) {
+      
+      this.toastText = toastText;
+      this.toastVisible = true;
+  
+      setTimeout(() => {
+        this.toastVisible = false;
+      }, 3000);
+    }
 }

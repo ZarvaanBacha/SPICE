@@ -1,25 +1,26 @@
-<h1>Recipes</h1> <!-- TODO: looks weird when user has no recipes. add a message like "you currently have no recipes. start creating them here: [button to create recipe page]"-->
-<div class="scrollable-container">
+<div class="scrollable-container"> <!-- TODO: looks weird when user has no recipes. add a message like "you currently have no recipes. start creating them here: [button to create recipe page]"-->
   <ul>
-    <li *ngFor="let recipe of recipes">
+    <li *ngFor="let recipe of recipes" class="recipe-cont">
       <form [formGroup]="recipeForms[recipe.id]">
+        <!-- Recipe Name Row -->
         <div class="recipe-header">
           <strong *ngIf="!recipe.editing">{{ recipe.recipeName }}</strong>
           <input *ngIf="recipe.editing" formControlName="recipeName" placeholder="Edit recipe name" />
+        </div>
 
-          <div class="recipe-actions">
-            <button class="btn btn-edit" *ngIf="!recipe.editing" (click)="editRecipe(recipe)">Edit</button>
-            <button class="btn btn-save" *ngIf="recipe.editing" (click)="saveRecipe(recipe)">Save</button>
-            <button class="btn btn-delete" (click)="deleteRecipe(recipe.id)">Delete</button>
-            <label class="toggle-switch">
-              <input 
-                type="checkbox" 
-                [checked]="recipe.isPublic"
-                (change)="toggle(recipe.id)"
-                />
-              <span class="slider"></span>
-            </label>
-          </div>
+        <!-- Actions Row -->
+        <div class="recipe-actions">
+          <button class="btn btn-edit" *ngIf="!recipe.editing" (click)="editRecipe(recipe)">Edit</button>
+          <button class="btn btn-save" *ngIf="recipe.editing" (click)="saveRecipe(recipe)">Save</button>
+          <button class="btn btn-delete" (click)="deleteRecipe(recipe.id)">Delete</button>
+          <label class="toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="recipe.isPublic"
+              (change)="toggle(recipe.id)"
+            />
+            <span class="slider"></span>
+          </label>
         </div>
 
         <ul formArrayName="spices">
@@ -42,9 +43,10 @@
         <div *ngIf="recipe.editing">
           <button class="btn btn-add" (click)="addSpice(recipe.id)">Add Spice</button>
         </div>
+
       </form>
     </li>
   </ul>
 </div>
 
-<!-- TODO: fix the styling -->
+<!-- TODO: fix the styling (edit, delete, and toggle) -->

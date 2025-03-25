@@ -11,7 +11,10 @@
         <button (click)="saveRecipe(recipe)">Save Recipe</button>
       </li>
     </ul>
-  </div>
+
+    <div *ngIf="toastVisible" class="toast">
+      {{this.toastText}}
+    </div>
+</div>
 
   <!-- TODO: add usernames to the public recipes displayed -->
-  <!-- TODO: add a toast to indicate when a public recipe is saved -->

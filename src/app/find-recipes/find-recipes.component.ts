@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { NgFor, AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-find-recipes',
   standalone: true,
-  imports: [NgFor, AsyncPipe],
+  imports: [NgFor, AsyncPipe, NgIf],
   templateUrl: './find-recipes.component.html',
   styleUrls: ['./find-recipes.component.css']
 })
 export class FindRecipesComponent implements OnInit {
   publicRecipes: any[] = [];
+
+  toastVisible: boolean = false;
+  toastText: string = "An error occured.";
 
   constructor(private firebaseRecipeService: FirebaseRecipeService) {}
 
@@ -31,6 +34,17 @@ export class FindRecipesComponent implements OnInit {
     };
 
     await this.firebaseRecipeService.addRecipe(newRecipe);
-    console.log('Recipe added:', newRecipe);
+    //console.log('Recipe added:', newRecipe);
+    this.showToast(`${recipe.recipeName} saved successfully.`);
+  }
+
+  showToast(toastText: string) {
+    
+    this.toastText = toastText;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
   }
 }
