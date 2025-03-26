@@ -7,7 +7,7 @@
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" #email required>
+            <input type="email" id="email" name="email" #email required [class.input-error]="emailErrorFlag">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
@@ -18,4 +18,8 @@
     </form>
     <a href="signin" class="signin-link">Already have an account? Sign in</a>
     <img src="\shaker_parts.png" alt="">
+</div>
+
+<div *ngIf="toastVisible" class="toast">
+    {{this.toastText}}
 </div>

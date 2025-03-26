@@ -66,7 +66,7 @@ export class FirebasesigninsignupService {
   }
 
   async signupUser(name: string, email: string, password: string) {
-    
+
     // create user document
     const userToAdd = {name: name, email: email, password: password};
     const credentialsRef = doc(this.firestore, `users/${email}`);
@@ -108,7 +108,7 @@ export class FirebasesigninsignupService {
     return this.authToken;
   }
 
-  async signinUser(email: string, password: string) {
+  async signinUser(email: string, password: string): Promise<string> {
     const userRef = doc(this.firestore, `users/${email}`);
     const userSnap = await getDoc(userRef);
     
@@ -118,18 +118,35 @@ export class FirebasesigninsignupService {
         this.http.post("http://localhost:3000/login", { email }).subscribe(
           response => {
             console.log('Server response:', response);
+            return("Successful sign in.");
           },
           error => {
             console.error('Error connecting to server:', error);
+            return("An error occured. Please try again.");
           })
         location.assign("authenticated/home")
+        return("hmmm");
       }
       else {
         console.log("Incorrect Password")
+        return("Incorrect password. Please try again.");
       }
     } 
     else {
-        console.log("No such document!") //TODO-minor: toast to tell user that the email is not registered
+        console.log("No such document!");
+        return("The email address you entered is not associated to an account."); 
+    }
+  }
+
+  async isEmailAlreadyUsed(email: string): Promise<boolean> {
+    try {
+      const userRef = doc(this.firestore, `users/${email}`);
+      const userSnap = await getDoc(userRef);
+      //console.log(userSnap.exists());
+      return userSnap.exists(); // Returns true if the document exists
+    } catch (error) {
+      console.error('Error checking if email is already used:', error);
+      throw error;
     }
   }
 

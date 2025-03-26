@@ -118,3 +118,31 @@ img{
   width: 190px;
   margin-top: 50px;
 }
+
+/* Toast Styling */
+.toast {
+  position: fixed;
+  bottom: 20px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  background-color: #333; 
+  color: #fff; 
+  padding: 10px 20px;
+  border-radius: 5px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000; 
+  font-size: 16px; 
+  text-align: center; 
+  animation: fadeInOut 3s ease-in-out; 
+}
+
+/* Highlight inputs with errors */
+.input-error {
+  border: 2px solid #e74c3c !important;
+  background-color: #fce4e4 !important;
+}
+
+.input-error:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+}

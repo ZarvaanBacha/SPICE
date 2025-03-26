@@ -2,7 +2,7 @@
     <h1>Find Recipes</h1>
     <ul>
       <li *ngFor="let recipe of publicRecipes">
-        <strong>{{ recipe.recipeName }}</strong>
+        <h3>{{ recipe.recipeName }} by {{recipe.userName}}</h3>
         <ul>
           <li *ngFor="let spice of recipe.spices">
             {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
