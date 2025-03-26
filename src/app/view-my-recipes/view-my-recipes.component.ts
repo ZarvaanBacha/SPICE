@@ -2,18 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { NgFor, NgIf } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-view-my-recipes',
   standalone: true,
-  imports:[ReactiveFormsModule, NgIf, NgFor],
+  imports:[ReactiveFormsModule, NgIf, NgFor, RouterLink],
   templateUrl: './view-my-recipes.component.html',
   styleUrls: ['./view-my-recipes.component.css']
 })
-export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on, disable all other edit buttons. its buggy when users click 2 edit buttons.
+export class ViewMyRecipesComponent implements OnInit {
   recipes: any[] = [];
   recipeForms: { [key: string]: FormGroup } = {};
   isPublic: boolean;
+  editing: boolean = false;
 
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
@@ -23,7 +25,7 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
 
   spiceOptions: string[] = [];
 
-  constructor(private fb: FormBuilder, private firebaseRecipeService: FirebaseRecipeService) {}
+  constructor(private fb: FormBuilder, private firebaseRecipeService: FirebaseRecipeService, private router: Router) {}
 
   ngOnInit() {
     this.firebaseRecipeService.getRecipes().subscribe((recipes) => {
@@ -66,6 +68,7 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
         .then(() => console.log('Recipe public state updated successfully'))
         .catch(error => console.error('Error updating recipe public state:', error));
     }
+    this.saveRecipe(recipe);
   }
 
   getSpices(recipeId: string) {
@@ -74,10 +77,12 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
 
   editRecipe(recipe: any) {
     recipe.editing = true;
+    this.editing = true;
   }
 
   deleteRecipe(recipeId: string) {
     this.firebaseRecipeService.deleteRecipe(recipeId);
+    this.editing = false;
   }
 
   // TODO: fix the view-my-recipes. when edit is clicked, the spice measurements are all 1/8 teaspoon.
@@ -101,6 +106,7 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
     recipe.spices = updatedRecipe.spices;
     recipe.editing = false;
     recipe.isPublic = updatedRecipe.isPublic;
+    this.editing = false;
   }
 
   addSpice(recipeId: string) {
@@ -150,5 +156,9 @@ export class ViewMyRecipesComponent implements OnInit { //TODO:if editing is on,
     }
   
     return Math.round(totalTeaspoons / 0.125); // Convert to 1/8th teaspoons
+  }
+
+  goToRecipes(): void {
+    this.router.navigate(['/authenticated/recipes']); // Redirect to the "Create Recipe" page
   }
 }
