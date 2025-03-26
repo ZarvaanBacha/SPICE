@@ -22,6 +22,7 @@ export class RecipesComponent {
 
   // Store AI recipe suggestions
   aiRecipeSuggestions: any[] = [];
+  waitingOnResponse: boolean = false;
 
   toastVisible: boolean = false;
   toastText: string = "An error occured.";
@@ -149,15 +150,27 @@ export class RecipesComponent {
 
     const quantitySuggestion = 3; // query 3 suggestions from the model
     const payload = { userInput: this.aiRecipeDescription, quantitySuggestion: quantitySuggestion };
+    
+    this.waitingOnResponse = true;
 
     this.http.post("http://localhost:3000/getModelSuggestions", payload).subscribe(
       (response: any) => {
-        console.log('Server response:', response);
+        //console.log('Server response:', response);
 
-        // Store the suggestions in the component
-        this.aiRecipeSuggestions = response.suggestions || [];
+        this.waitingOnResponse = false;
+
+        // Process the suggestions and map spices
+        this.aiRecipeSuggestions = (response.suggestions || []).map((suggestion: any) => ({
+          recipeName: suggestion.recipeName,
+          spices: suggestion.spices.map((spice: any) => ({
+            spiceName: spice.spiceName,
+            spiceMeasurement: this.convertFromEighthTeaspoons(spice.spiceQuantity),
+            spiceQuantityInEighthTsp: spice.spiceQuantity,
+          })),
+        }));
       },
       error => {
+        this.waitingOnResponse = false;
         console.error('Error connecting to server:', error);
       }
     );
@@ -167,15 +180,63 @@ export class RecipesComponent {
     this.aiRemainingCharacters = this.maxAiDescriptionLength;
   }
 
-  //TODO: add function to process AI suggestions, then add them to db recipes 
-
   showToast(toastText: string) {
       
-      this.toastText = toastText;
-      this.toastVisible = true;
+    this.toastText = toastText;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
+  }
+
+  async addAiRecipe(suggestion: any) {
   
-      setTimeout(() => {
-        this.toastVisible = false;
-      }, 3000);
+    await this.firebaseRecipeService.addRecipe(suggestion);
+
+    // console.log('Recipe added:', newRecipe);
+    this.showToast(`${suggestion.recipeName} saved successfully.`);
+    this.aiRecipeSuggestions = []; // reset suggestion
+  }
+
+  convertFromEighthTeaspoons(eighthTeaspoons: number): string {
+    const teaspoons = eighthTeaspoons * 0.125; // Convert to teaspoons
+    const tablespoons = Math.floor(teaspoons / 3); // 1 tbsp = 3 tsp
+    let remainingTeaspoons = teaspoons % 3; // Remaining teaspoons after extracting tbsp
+
+    let result = [];
+
+    if (tablespoons > 0) {
+        result.push(`${tablespoons} tablespoon`);
     }
+
+    if (remainingTeaspoons > 0) {
+        const wholeTeaspoons = Math.floor(remainingTeaspoons);
+        const fraction = remainingTeaspoons - wholeTeaspoons;
+
+        let fractionStr = "";
+        if (fraction === 0.125) fractionStr = "1/8";
+        else if (fraction === 0.25) fractionStr = "1/4";
+        else if (fraction === 0.375) fractionStr = "3/8";
+        else if (fraction === 0.5) fractionStr = "1/2";
+        else if (fraction === 0.625) fractionStr = "5/8";
+        else if (fraction === 0.75) fractionStr = "3/4";
+        else if (fraction === 0.875) fractionStr = "7/8";
+
+        let teaspoonStr = "";
+
+        if (wholeTeaspoons > 0) {
+            teaspoonStr += `${wholeTeaspoons}`;
+        }
+
+        if (fractionStr) {
+            teaspoonStr += (wholeTeaspoons > 0 ? " and " : "") + fractionStr;
+        }
+
+        teaspoonStr += " teaspoon";
+        result.push(teaspoonStr);
+    }
+
+    return result.join(" ");
+  }
 }

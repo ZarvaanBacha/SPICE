@@ -58,22 +58,34 @@
       <small>{{ aiRemainingCharacters }}/{{ maxAiDescriptionLength }} characters left</small>
     </p>
     <button type="button" class="btn btn-primary" (click)="submitAiRecipe()">Submit AI Recipe</button>
+    
+    <div *ngIf="waitingOnResponse" class="loading-container">
+      <div class="spinner"></div>
+      <p>Waiting on AI response...</p>
+    </div>
   </form>
 </div>
 
 <!-- Display AI Recipe Suggestions -->
-<!-- TODO: style this similarly to other recipe displays (should include spice quantities) -->
-<!-- TODO: there should be an "add recipe" button to each suggestion container. make sure its properly added (pass the function the suggestion)-->
- <!--TODO: it could take a while to get suggestions... add a loading message or anim. -->
-<div class="row" *ngIf="aiRecipeSuggestions.length > 0">
+ <div class="row" *ngIf="aiRecipeSuggestions.length > 0">
   <div class="col" *ngFor="let suggestion of aiRecipeSuggestions">
-    <div class="suggestion-container">
-      <h3>{{ suggestion.recipeName }}</h3>
-      <ul>
+    <div class="recipe-cont">
+      <!-- Recipe Name -->
+      <div class="recipe-header">
+        <strong>{{ suggestion.recipeName }}</strong>
+      </div>
+
+      <!-- Spices List -->
+      <ul class="spices-list">
         <li *ngFor="let spice of suggestion.spices">
-          {{ spice.spiceName }}
+          <div>
+            {{ spice.spiceName }}: {{ spice.spiceMeasurement }}
+          </div>
         </li>
       </ul>
+
+      <!-- Add suggestion Button -->
+      <button class="btn btn-primary" (click)="addAiRecipe(suggestion)">Add Recipe</button>
     </div>
   </div>
 </div>
