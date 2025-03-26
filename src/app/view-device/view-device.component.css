@@ -1,0 +1,154 @@
+/* General container styling */
+.container {
+    font-family: Arial, sans-serif;
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table styling */
+  .spice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .spice-table th,
+  .spice-table td {
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  .spice-table th {
+    background-color: #68a368;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .spice-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .spice-table tr:hover {
+    background-color: #eaf5ea;
+  }
+  
+  .spice-table td {
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  /* Toast Styling */
+.toast {
+    position: fixed;
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    background-color: #333; 
+    color: #fff; 
+    padding: 10px 20px;
+    border-radius: 5px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000; 
+    font-size: 16px; 
+    text-align: center; 
+    animation: fadeInOut 3s ease-in-out; 
+  }
+
+/* Remove Device Button Styling */
+.btn-danger {
+    background-color: #dc3545; 
+    color: white;
+    font-size: 1rem;
+    font-weight: bold; 
+    padding: 10px 20px; 
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  
+  /* Hover effect */
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px); 
+  }
+  
+  /* Active effect */
+  .btn-danger:active {
+    background-color: #bd2130; 
+    transform: translateY(0); 
+  }
+  
+  /* Focus effect */
+  .btn-danger:focus {
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5); 
+  }
+
+/* Styling for Product ID and Spice Log titles */
+.device-info-title {
+    font-size: 1.5rem;
+    font-weight: bold; 
+    color: #2c5a2c; 
+    margin-bottom: 10px; 
+    text-align: left; 
+  }
+  
+  .device-info-subtitle {
+    font-size: 1.2rem; 
+    font-weight: 600; 
+    color: #4a754a; 
+    margin-top: 20px; 
+    margin-bottom: 10px; 
+    text-align: left;
+  }
+
+  /* Highlight rows with low spice quantities */
+.low-quantity {
+    background-color: #fff3cd !important;
+    color: #856404;
+}
+
+    /* Warning message styling */
+.alert {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+/* Primary button styling */
+.btn-primary {
+    background-color: #68a368; 
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  
+  .btn-primary:hover {
+    background-color: #558855;
+    transform: translateY(-2px); 
+  }
+  
+  .btn-primary:active {
+    background-color: #4a754a; 
+    transform: translateY(0); 
+  }

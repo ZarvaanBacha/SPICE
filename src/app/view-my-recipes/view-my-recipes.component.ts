@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { NgFor, NgIf } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-my-recipes',
   standalone: true,
-  imports:[ReactiveFormsModule, NgIf, NgFor, RouterLink],
+  imports:[ReactiveFormsModule, NgIf, NgFor],
   templateUrl: './view-my-recipes.component.html',
   styleUrls: ['./view-my-recipes.component.css']
 })

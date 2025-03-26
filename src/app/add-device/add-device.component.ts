@@ -20,6 +20,11 @@ export class AddDeviceComponent {
   toastText: string = "An error occured.";
 
   onSubmit(productID: string) {
+    if (productID == "") {
+      this.showToast("An error occured.");
+      return;
+    }
+
     this.firebaseRecipeService.addDeviceToDatabase(productID)
       .then(() => {
         console.log('Device added successfully.');

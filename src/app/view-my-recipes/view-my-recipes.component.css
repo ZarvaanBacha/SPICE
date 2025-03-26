@@ -128,7 +128,7 @@ input[type="checkbox"] {
 .recipe-header {
   flex: 1; 
   display: flex;
-  justify-content: space-between; /
+  justify-content: space-between;
   align-items: center;
 }
 

@@ -1,11 +1,43 @@
 <div class="container">
-    <h1>Device Info</h1>
-    <div *ngIf="deviceInfo">
-      <strong>Product ID:</strong> {{ deviceInfo.productID }}<br>
-      <strong>Spice Log:</strong>
-      <pre>{{ deviceInfo.spiceLog | json }}</pre> <!--TODO: make this pretty -->
+  <h1 class="device-info-title">Device Info</h1>
+  <div *ngIf="deviceInfo.productID">
+    <p class="device-info-subtitle"><strong>Product ID:</strong> {{ deviceInfo.productID }}</p>
+    <p class="device-info-subtitle"><strong>Spice Log:</strong></p>
+    <table class="spice-table">
+      <thead>
+        <tr>
+          <th>Spice Name</th>
+          <th>Quantity</th>
+          <th>Last Refilled</th>
+          <th>Times Used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr 
+          *ngFor="let spice of spiceContainerAnalytics"
+          [class.low-quantity]="spice.spiceQuantity <= lowSpiceThreshold"
+        >
+          <td>{{ spice.spiceName }}</td>
+          <td>{{ spice.spiceQuantity }} %</td>
+          <td>{{ spice.lastRefilled ? (spice.lastRefilled | date: 'medium') : 'N/A' }}</td>
+          <td>{{ spice.timesUsed }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Warning message for low spice quantities -->
+    <div *ngIf="hasLowSpices()" class="alert alert-warning">
+      <strong>Warning:</strong> Some spices are running low. Please refill them soon!
     </div>
-    <div *ngIf="!deviceInfo">
-      <p>No device info found.</p>
-    </div>
+
+    <button class="btn btn-danger" (click)="removeDevice()">Remove Device</button>
   </div>
+  <div *ngIf="!deviceInfo.productID">
+    <p>No device found. Add your device here: </p>
+    <button class="btn btn-primary" (click)="goToAddDevice()">Add Device</button>
+  </div>
+
+  <div *ngIf="toastVisible" class="toast">
+    {{this.toastText}}
+  </div>
+</div>

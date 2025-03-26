@@ -204,6 +204,24 @@ export class FirebaseRecipeService {
     }
   }
 
+  async removeDeviceToDatabase(productID: string): Promise<void> {
+    try {
+      // Convert the Observable to a Promise and await the email
+      const email = await firstValueFrom(this.getAuthEmail());
+
+      // Get a reference to the 'deviceInfo' document in the 'device' subcollection
+      const deviceInfoRef = doc(this.firestore, `users/${email}/device/deviceInfo`);
+  
+      // Update the 'productID' field in the 'deviceInfo' document
+      await updateDoc(deviceInfoRef, { productID: null });
+  
+      console.log(`Product ID ${productID} successfully removed from the database.`);
+    } catch (error) {
+      console.error('Error removing product ID from the database:', error);
+      throw error;
+    }
+  }
+
   async getDeviceInfo(): Promise<any> {
     try {
       // Convert the Observable to a Promise and await the email
