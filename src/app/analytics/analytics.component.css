@@ -1,11 +1,11 @@
 .pepperBox {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Default: 4 columns */
-    grid-gap: 20px; /* 20px space between items */
-    width: 80%; /* Adjust the width of the container */
-    max-width: 960px; /* Prevent container from becoming too wide */
-    margin: 0 auto; /* Center the grid horizontally */
-    padding-top: 50px; /* Optional: add some top margin if needed */
+    grid-gap: 20px; 
+    width: 80%; 
+    max-width: 960px; 
+    margin: 0 auto; 
+    padding-top: 50px; 
   }
 
   .pepperBox > svg {
@@ -14,7 +14,7 @@
   @media (max-width: 490px) {
     .pepperBox {
       grid-template-columns: repeat(2, 1fr); /* Collapse to 2 columns */
-      width: 95%; /* Optionally adjust the width for small screens */
+      width: 95%; 
     }
     .recipeChart{
         width: 90vw;   
@@ -26,8 +26,8 @@
   .chartBox{
     display: flex;
     flex-direction: column; /* Stack items in a column */
-    align-items: center; /* Center items horizontally */
-    justify-content: center; /* Center items vertically, if needed */
+    align-items: center;
+    justify-content: center; 
   }
  .recipeChart{
     width: 50vw;   
@@ -38,9 +38,9 @@
   .container{
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
-    flex-direction: column; /* Stack items in a column */
-    align-items: center; /* Center items horizontally */
-    justify-content: center; /* Center items vertically, if needed */
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
     text-align: center;
   }
   h2{
@@ -51,7 +51,6 @@
   }
  /* -------- */
 /* Card styling */
-/* General reset for margins and padding */
   /* Card container setup */
   .card-container {
     display: flex;
@@ -62,12 +61,15 @@
     max-width: 900px; /* Max width for the card container */
     padding: 20px;
   }
-  
-  /* Card styling */
+  @media (min-width: 768px) {
+    .card-container {
+      flex-direction: row; 
+    }
+  }
   .card {
     background-color: #fff;
-    width: 280px; /* Width of the card */
-    height: 350px; /* Height of the card */
+    width: 280px; 
+    height: 350px; 
     border: 2px solid grey;
     border-radius: 15px;
     padding: 20px;
@@ -75,8 +77,6 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
-  /* Number "1" positioning in the top-left corner */
   .number1 {
     position: absolute;
     top: 10px;
@@ -157,7 +157,6 @@
     color: #2c3e50;
   }
   
-  /* Hover effect to enhance floating look */
   .card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 6px 10px rgba(0, 0, 0, 0.12);

@@ -1,5 +1,4 @@
- <!--TODO: change layout to be more compact (ex.: top 3 recipes can be side by side instead of all vertical)-->
- <div class="container">
+<div class="container">
     @if(isBrowser){
     <h2>Recipe Usage</h2> 
         <div class="chartBox">
@@ -22,6 +21,7 @@
             </div>
         </div>
     }
+    @if (gotData){
     <h2>Total Spice Used</h2>
     <div class="pepperBox">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
@@ -46,7 +46,7 @@
             </g> 
         </g> 
         <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[7]}}</text>
-        <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][7] + " tspn"}}</text>
+        <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[7] + " tspn"}}</text>
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -70,7 +70,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[6]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][6] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[6] + " tspn"}}</text>    
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -94,7 +94,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[5]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][5] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[5] + " tspn"}}</text>    
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -118,7 +118,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[4]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][4] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[4] + " tspn"}}</text>    
         </svg> 
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -142,7 +142,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[3]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][3] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[3] + " tspn"}}</text>    
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -166,7 +166,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[2]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][2] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[2] + " tspn"}}</text>    
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -190,7 +190,7 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[1]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][1] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[1] + " tspn"}}</text>    
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 396.338 396.338" xml:space="preserve" width="150px" height="150px" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -214,59 +214,66 @@
                 </g> 
             </g> 
             <text x="10" y="40" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillLabelArray[0]}}</text>
-            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{spiceTotalQuantity[0][0] + " tspn"}}</text>    
+            <text x="135" y="150" font-size="40" font-family = "Arial, Helvetica, sans-serif">{{fillSpiceQuantityArray[0] + " tspn"}}</text>    
         </svg>
     </div>
     <h2>Most Used Recipes</h2>
     <!-- Recipe Cards -->
+ 
     <div class="card-container">
         <div class="card">
           <div class="number1">1</div>
-          <h2 class="recipe-name">{{this.recipeAnalytics[this.recipeAnalytics.length - 1].recipeName}}</h2>
+          <h2 class="recipe-name">{{this.recipeSortedArray[1][this.recipeSortedArray[1].length - 1]}}</h2>
           <div class="spices">
             <h3>Recipe</h3>
             <ul>
-                @for (spice of this.recipeAnalytics[this.recipeAnalytics.length - 1].spices; track this.recipeAnalytics[this.recipeAnalytics.length - 1].spices.spiceName ) {
+                @for (spice of this.recipeSortedArray[3][this.recipeSortedArray[3].length - 1]; track $index ) {
                     <li><strong>{{spice.spiceName}}: </strong>{{spice.spiceMeasurement}}</li>
+                } @empty {
+                    <li>Not Enough Recipes</li>
                 }
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeAnalytics[this.recipeAnalytics.length - 1].usageHistory[this.recipeAnalytics[this.recipeAnalytics.length - 1].usageHistory.length - 1]}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 1][0].toDate()}}</div>
           </div>
         </div>
         
         <div class="card">
           <div class="number2">2</div>
-          <h2 class="recipe-name">{{this.recipeAnalytics[this.recipeAnalytics.length - 2].recipeName}}</h2>
+          <h2 class="recipe-name">{{this.recipeSortedArray[1][this.recipeSortedArray[1].length - 2]}}</h2>
           <div class="spices">
             <h3>Recipe</h3>
             <ul>
-                @for (spice of this.recipeAnalytics[this.recipeAnalytics.length - 2].spices; track this.recipeAnalytics[this.recipeAnalytics.length - 2].spices.spiceName ) {
+                @for (spice of this.recipeSortedArray[3][this.recipeSortedArray[3].length - 2]; track $index ) {
                     <li><strong>{{spice.spiceName}}: </strong>{{spice.spiceMeasurement}}</li>
+                } @empty {
+                    <li>Not Enough Recipes</li>
                 }
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeAnalytics[this.recipeAnalytics.length - 2].usageHistory[this.recipeAnalytics[this.recipeAnalytics.length - 2].usageHistory.length - 1]}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 2][0].toDate()}}</div>
           </div>
         </div>
       
         <div class="card">
           <div class="number3">3</div>
-          <h2 class="recipe-name">{{this.recipeAnalytics[this.recipeAnalytics.length - 3].recipeName}}</h2>
+          <h2 class="recipe-name">{{this.recipeSortedArray[1][this.recipeSortedArray[1].length - 3]}}</h2>
           <div class="spices">
             <h3>Recipe</h3>
             <ul>
-                @for (spice of this.recipeAnalytics[this.recipeAnalytics.length - 3].spices; track this.recipeAnalytics[this.recipeAnalytics.length - 3].spices.spiceName ) {
+                @for (spice of this.recipeSortedArray[3][this.recipeSortedArray[3].length - 3]; track $index ) {
                     <li><strong>{{spice.spiceName}}: </strong>{{spice.spiceMeasurement}}</li>
+                } @empty {
+                    <li>Not Enough Recipes</li>
                 }
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeAnalytics[this.recipeAnalytics.length - 3].usageHistory[this.recipeAnalytics[this.recipeAnalytics.length - 3].usageHistory.length - 1]}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 3][0].toDate()}}</div>
           </div>
         </div>
-      </div>
-      
+    </div>
+}
 </div>

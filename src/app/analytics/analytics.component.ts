@@ -3,10 +3,12 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration,ChartOptions } from 'chart.js';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
 
 import { ChartData, ChartType } from 'chart.js';
 
-import * as dataAnalytics from '../../../public/analytics.json';//TODO: Right now is an import convert to Firebase service request
+
 
 import { Inject, PLATFORM_ID } from "@angular/core";//Used to resolve SSR issues with <canvas>
 import { isPlatformBrowser } from "@angular/common";//Used to resolve SSR issues with <canvas>
@@ -20,170 +22,205 @@ import { isPlatformBrowser } from "@angular/common";//Used to resolve SSR issues
 })
 export class AnalyticsComponent implements OnInit{
   
+  
   isBrowser: boolean;//ssr fix
-  
-  recipeAnalytics:any = dataAnalytics.recipeAnalytics.sort(this.compareTimesUsed);//Entry point for recipe portion of analytics
-  spiceContainerAnalytics:any = dataAnalytics.spiceContainerAnalytics.sort(this.compareTimesUsed);//Entry point for spice containers portion of analytics
-  
-  recipeLabels:string[] = this.recipeAnalytics.map(item => item.recipeName);
-  recipeData:number[] = this.recipeAnalytics.map(item => item.timesUsed);
+  gotData: boolean = false;
 
-  spiceLabels:string[] = this.spiceContainerAnalytics.map(item => item.spiceName);
-  spiceData:number[] = this.spiceContainerAnalytics.map(item => item.timesUsed);
-
-  spiceQuantity:number[] = this.spiceContainerAnalytics.map(item => item.totalQuantityUsed);
-  spiceTotalQuantity:number[][] = [this.spiceContainerAnalytics.map(item => item.totalQuantityUsed), this.spiceContainerAnalytics.map(item => item.spiceName)];
+  dataAnalytics:any = {}; //Entry point for analytics
+  recipeAnalytics:any = {};//Entry point for recipe portion of analytics
+  spiceContainerAnalytics:any = {};//Entry point for spice containers portion of analytics
   
-  sorted:any[][] = this.spiceTotalQuantity.map(
-    (indices => a => indices.map(i => a[i]))
-    ([...this.spiceTotalQuantity[0].keys()].sort((a, b) => this.spiceTotalQuantity[0][a] - this.spiceTotalQuantity[0][b]))
-  );
+  recipeLabels:string[] = [];
+  recipeData:number[] = [];
 
-  fillPercentageArray:number[] = this.setFillPercentageArr(this.sorted[0]);
-  fillLabelArray:string[] = this.sorted[1];
+  spiceLabels:string[] = [];
+  spiceData:number[] = [];
+
+  
+  //Sorting arrays
+  spiceTotalQuantity:number[][] = [[]];
+  recipeUsage:any[][] = [[]];
+  spiceSortedArray:any[][] = [[]];
+  recipeSortedArray:any[][] = [[]];
+  //Total Spice used arrays
+  fillPercentageArray:number[] = [];
+  fillLabelArray:string[] = [];
+  fillSpiceQuantityArray:number[] = [];
   //charts
   //recipe chart
-  public recipeChartData: ChartConfiguration<'radar'>['data'] = {
-    
-    labels: this.recipeLabels,
-    datasets: [{
-      data: this.recipeData,
-      fill: true,
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgb(255, 99, 132)',
-      pointBackgroundColor: 'rgb(255, 99, 132)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgb(255, 99, 132)',
-      spanGaps: true
-    }
-  ]
-
-  };
-  public recipeChartOptions: ChartOptions<'radar'> = {
-    elements:{
-      line:{
-         borderWidth:5
-        }
-    },
-    responsive: true,
-    maintainAspectRatio: true,
-    scales: {
-      r:{
-        angleLines:{
-          color: 'black'
-        },
-        grid: {
-          color: 'gray'
-        },
-        ticks:{
-          font: {
-            size: 12
-          }
-        }
-      }
-    },
-    plugins:{
-      title:{
-        display:false,
-        align: 'center',
-        position: 'top',
-        text : "Most Used Spices",
-        font:{
-          size: 36,
-          family: "Arial', sans-serif"
-        }
-      },
-      legend:{
-        display:false
-      }
-    }
-
-  };
-  public recipeChartLegend = false;
-
-   //spice Chart
-  public radarChartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    maintainAspectRatio: true,
-    scales:{
-      r:{
-        angleLines:{
-          color: 'black'
-        },
-        grid: {
-          color: 'gray'
-        },
-        ticks:{
-          font: {
-            size: 12
-          }
-        }
-      }
-    },
-    plugins:{
-      title:{
-        display:false,
-        align: 'center',
-        position: 'top',
-        text : "Most Used Recipes",
-        font:{
-          size: 36,
-          family: "Arial', sans-serif"
-        }
-      },
-      legend:{
-        display:false
-      }
-    }
-  };
-  public radarChartLabels: string[] = this.spiceLabels;
-
-  public radarChartData: ChartData<'radar'> = {
-    labels: this.radarChartLabels,
-    datasets: [
-      { data: this.spiceData }
-    ]
-  };
-  public radarChartType: ChartType = 'radar';
+  public recipeChartData: ChartConfiguration<'radar'>['data'];
+  public recipeChartOptions: ChartOptions<'radar'>;
+  public recipeChartLegend;
+  //spice Chart
+  public radarChartOptions: ChartConfiguration['options'];
+  public radarChartLabels: string[];
+  public radarChartData: ChartData<'radar'>;
+  public radarChartType: ChartType;
 
   //Angular functions
-  constructor(private firebaseRecipeService: FirebaseRecipeService, @Inject(PLATFORM_ID) private platformId: unknown){}
-  ngOnInit(): void {
-    this.isBrowser = isPlatformBrowser(this.platformId);  
-    //test code
-    //console.log(this.recipeAnalytics);
-    // console.log(this.spiceContainerAnalytics);
-    // console.log(this.recipeLabels);
-    // console.log(this.recipeData);
-    // console.log(this.spiceLabels);
-    // console.log(this.spiceData);
-    //console.log(this.spiceTotalQuantity[0][0]);
-    // console.log(this.sorted);
-    // console.log(this.fillPercentageArray);
-    // console.log(this.fillPercentageArray[this.fillPercentageArray.length - 1]);
-    // console.log(this.sorted);
+  constructor(private firebaseReicpeService: FirebaseRecipeService, @Inject(PLATFORM_ID) private platformId: unknown){}
+  
+  async ngOnInit()  {
+    this.isBrowser = isPlatformBrowser(this.platformId);//SSR fix  
+    try {
+      //Fetching
+      this.dataAnalytics = await this.firebaseReicpeService.getAnalytics();
+      this.gotData = true;
+      this.recipeAnalytics = this.dataAnalytics.recipeAnalytics.sort();//Entry point for recipe portion of analytics
+      this.spiceContainerAnalytics = this.dataAnalytics.spiceContainerAnalytics.sort();//Entry point for spice containers portion of analytics
+      //Chart Arrays
+      this.recipeLabels= this.recipeAnalytics.map(item => item.recipeName);
+      this.recipeData = this.recipeAnalytics.map(item => item.timesUsed);
+  
+      this.spiceLabels = this.spiceContainerAnalytics.map(item => item.spiceName);
+      this.spiceData = this.spiceContainerAnalytics.map(item => item.timesUsed);
+  
+      
+      //sorting Arrays
+      this.spiceTotalQuantity = [this.spiceContainerAnalytics.map(item => item.totalQuantityUsed), this.spiceContainerAnalytics.map(item => item.spiceName), this.spiceContainerAnalytics.map(item => item.totalQuantityUsed)];
+      this.recipeUsage = [this.recipeAnalytics.map(item => item.timesUsed), this.recipeAnalytics.map(item => item.recipeName), this.recipeAnalytics.map(item => item.usageHistory), this.recipeAnalytics.map(item => item.spices)];
+      
+      //sorting Algorithms
+      this.spiceSortedArray = this.spiceTotalQuantity.map(//Sorts all the arrays stored in spiceSortedArray by spiceTotalQuantity
+        (indices => a => indices.map(i => a[i]))
+        ([...this.spiceTotalQuantity[0].keys()].sort((a, b) => this.spiceTotalQuantity[0][a] - this.spiceTotalQuantity[0][b]))
+      );
+      
+      this.recipeSortedArray = this.recipeUsage.map(//Sorts all the arrays stored in recipeSortedArray by timesUsed
+        (indices => a => indices.map(i => a[i]))
+        ([...this.recipeUsage[0].keys()].sort((a, b) => this.recipeUsage[0][a] - this.recipeUsage[0][b]))
+      );
+  
+      this.fillSpiceQuantityArray = this.spiceSortedArray[2];
+      this.fillPercentageArray = this.setFillPercentageArr(this.spiceSortedArray[0]);
+      this.fillLabelArray  = this.spiceSortedArray[1];
+      //recipe chart
+      this.recipeChartData = {
+      
+        labels: this.recipeLabels,
+        datasets: [{
+          data: this.recipeData,
+          fill: true,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgb(255, 99, 132)',
+          pointBackgroundColor: 'rgb(255, 99, 132)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgb(255, 99, 132)',
+          spanGaps: true
+        }
+      ]
+  
+      };
+      this.recipeChartOptions = {
+        elements:{
+          line:{
+            borderWidth:5
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          r:{
+            angleLines:{
+              color: 'black'
+            },
+            grid: {
+              color: 'gray'
+            },
+            ticks:{
+              font: {
+                size: 12
+              }
+            }
+          }
+        },
+        plugins:{
+          title:{
+            display:false,
+            align: 'center',
+            position: 'top',
+            text : "Most Used Spices",
+            font:{
+              size: 36,
+              family: "Arial', sans-serif"
+            }
+          },
+          legend:{
+            display:false
+          }
+        }
+  
+      };
+      this.recipeChartLegend = false;
+      //spice Chart
+      this.radarChartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales:{
+          r:{
+            angleLines:{
+              color: 'black'
+            },
+            grid: {
+              color: 'gray'
+            },
+            ticks:{
+              font: {
+                size: 12
+              }
+            }
+          }
+        },
+        plugins:{
+          title:{
+            display:false,
+            align: 'center',
+            position: 'top',
+            text : "Most Used Recipes",
+            font:{
+              size: 36,
+              family: "Arial', sans-serif"
+            }
+          },
+          legend:{
+            display:false
+          }
+        }
+      };
+      this.radarChartLabels = this.spiceLabels;
+  
+      this.radarChartData = {
+        labels: this.radarChartLabels,
+        datasets: [
+          { data: this.spiceData }
+        ]
+      };
+      this.radarChartType = 'radar';
+      console.log(this.recipeSortedArray[1].at(-2));
 
-    this.fetchAndLogAnalytics();
+    } catch (error) {
+      console.error('Error fetching analytics', error);
+    }
   }
   //setup methods
   setFillPercentage(num:number, largest:number){//Function to determine fillPercentage
     if(num/largest == 1){
       return 1;
-    } else if(num/largest < 1 && num/largest >= 0.9) {
+    } else if(Math.round(((num/largest)*100))/100 < 1 && Math.round(((num/largest)*100))/100  >= 0.9) {
       return 0.6;
-    } else if(num/largest <= 0.89 && num/largest >= 0.70) {
+    } else if(Math.round(((num/largest)*100))/100  <= 0.89 && Math.round(((num/largest)*100))/100  >= 0.70) {
       return 0.55;
-    } else if(num/largest <= 0.69 && num/largest >= 0.60) {
+    } else if(Math.round(((num/largest)*100))/100 <= 0.69 && Math.round(((num/largest)*100))/100  >= 0.60) {
       return 0.45;
-    } else if(num/largest <= 0.59 && num/largest >= 0.50) {
+    } else if(Math.round(((num/largest)*100))/100  <= 0.59 && Math.round(((num/largest)*100))/100  >= 0.50) {
       return 0.36;
-    } else if(num/largest <= 0.49 && num/largest >= 0.40){
+    } else if(Math.round(((num/largest)*100))/100  <= 0.49 && Math.round(((num/largest)*100))/100  >= 0.40){
       return 0.32;
-    } else if(num/largest <= 0.39 && num/largest >= 0.30){
+    } else if(Math.round(((num/largest)*100))/100  <= 0.39 && Math.round(((num/largest)*100))/100  >= 0.30){
       return 0.30;
     } else{
-      return num/largest;
+      return Math.round(((num/largest)*100))/100 ;
     }
   }
    setFillPercentageArr(fillArr:number[]):number[]{//Wrapper function that converts an array of spiceQuantities into an array of fill quantities
@@ -208,7 +245,7 @@ export class AnalyticsComponent implements OnInit{
    */
   async fetchAndLogAnalytics(): Promise<void> {
     try {
-      const analyticsData = await this.firebaseRecipeService.getAnalytics();
+      const analyticsData = await this.firebaseReicpeService.getAnalytics();
       console.log('Analytics Data:', analyticsData);
     } catch (error) {
       console.error('Error fetching analytics:', error);
