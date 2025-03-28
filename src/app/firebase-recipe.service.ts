@@ -289,4 +289,31 @@ export class FirebaseRecipeService {
       throw new Error('Failed to fetch spice options');
     }
   }
+
+  async GetLowSpice(threshold: number): Promise<boolean> {
+    try {
+      const email = await firstValueFrom(this.getAuthEmail());
+
+      
+      // get all spice levels from the database and check for low spices
+      const containersRef = collection(this.firestore, `users/${email}/containers`);
+      const containersSnapshot = await getDocs(containersRef);
+      
+      for (const containerDoc of containersSnapshot.docs) {
+        const containerData = containerDoc.data(); 
+        const spiceQuantity = containerData['spiceQuantity']; // get spiceQuantity
+
+        // return true as soon as a low spice is found
+        if (spiceQuantity < threshold) {
+          //console.log(containerData['spiceName']);
+          return true;
+        }
+      }
+    
+      return false;
+    } catch (error) { // in case of error, just return false. no notifs shown, no harm done. right?
+      console.error('Error fetching low spices:', error);
+      return false;
+    }
+  }
 }
