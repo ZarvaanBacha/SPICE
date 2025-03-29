@@ -20,8 +20,9 @@ export class ViewMyRecipesComponent implements OnInit {
   spiceMeasurements: string[] = [
     '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
     '1 teaspoon', '1 and 1/8 teaspoon', '1 and 1/4 teaspoon',
-    '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon'
-  ]; //TODO: add tablespoon measurements?
+    '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon',
+    '1 tablespoon', '1 and 1/2 tablespoon', '2 tablespoons', '2 and 1/2 tablespoons', '3 tablespoons'
+  ];
 
   spiceOptions: string[] = [];
 
@@ -78,6 +79,8 @@ export class ViewMyRecipesComponent implements OnInit {
   editRecipe(recipe: any) {
     recipe.editing = true;
     this.editing = true;
+
+    
   }
 
   deleteRecipe(recipeId: string) {

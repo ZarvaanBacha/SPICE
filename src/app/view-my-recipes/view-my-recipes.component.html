@@ -38,7 +38,9 @@
                   <option *ngFor="let spice of spiceOptions" [value]="spice">{{ spice }}</option>
                 </select>
                 <select formControlName="spiceMeasurement" class="form-control">
-                  <option *ngFor="let amount of spiceMeasurements">{{ amount }}</option>
+                  <option *ngFor="let amount of spiceMeasurements" [value]="amount">
+                    {{ amount }}
+                  </option>
                 </select>
                 <button class="btn btn-delete" (click)="removeSpice(recipe.id, i)">Remove</button>
               </div>
