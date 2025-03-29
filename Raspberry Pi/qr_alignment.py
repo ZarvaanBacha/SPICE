@@ -3,7 +3,7 @@ import numpy as np
 from pyzbar.pyzbar import decode, ZBarSymbol
 
 class QRAlignment:
-    def __init__(self, start_point=(115, 320), end_point=(328, 581), tolerance=30):
+    def __init__(self, start_point=(90, 312), end_point=(263, 487), tolerance=15):
         self.start_point = start_point
         self.end_point = end_point
         self.tolerance = tolerance

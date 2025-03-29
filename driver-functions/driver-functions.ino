@@ -22,7 +22,7 @@ Dispenser dispenser;  // Our new dispenser object
 
 String inputString = "";
 
-const int STEPS_PER_DEGREE = 130; // Steps for 1/8 rotation per degree
+const int STEPS_PER_DEGREE = 140; // Steps for 1/8 rotation per degree
 const int TOTAL_DEGREES = 360;
 const int TOTAL_STEPS = 1070;     // Total steps for a full rotation
 
