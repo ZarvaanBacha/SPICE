@@ -25,20 +25,17 @@ def handle_move_command(command):
         pass
 
 def dispenseRoutine(count):
-    """
-    Dispenses the spice in increments.
-    """
-    send_serial_command("lock")  # Lock plate
+    # send_serial_command(f"lock")  # Lock Plate
     time.sleep(1)
-    send_serial_command("slider: cw, 15, 25")  # Bring slider into position
-    for _ in range(count):
+    send_serial_command(f"slider: cw, 90, 70")  # Bring Slider into position
+    for x in range(count):
         time.sleep(0.8)
-        send_serial_command("dispenser: ccw, 150, 15")  # Dispense one increment
+        send_serial_command(f"dispenser: ccw, 150, 15")  # Dispense one increment
         time.sleep(2)
     time.sleep(1)
-    send_serial_command("stop")  # Release plate
+    send_serial_command(f"stop")  # Release plate
     time.sleep(1)
-    send_serial_command("slider: ccw, 25, 25")  # Return slider to rest
+    send_serial_command(f"slider: ccw, 90, 70")  # Bring Slider back to rest
 
 def dispense(dispense_data, starting_position=1):
     """
