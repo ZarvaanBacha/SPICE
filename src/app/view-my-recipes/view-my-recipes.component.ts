@@ -96,7 +96,9 @@ export class ViewMyRecipesComponent implements OnInit {
     const updatedRecipe = this.recipeForms[recipe.id].value;
 
     // Convert spice measurements to eighth teaspoons
-    updatedRecipe.spices = updatedRecipe.spices.map((spice: any) => ({
+    updatedRecipe.spices = updatedRecipe.spices
+    .filter((spice: any) => spice.spiceName && spice.spiceName.trim() !== '' && spice.spiceMeasurement && spice.spiceMeasurement.trim() !== '')
+    .map((spice: any) => ({
       ...spice,
       spiceQuantityInEighthTsp: this.convertToEighthTeaspoons(spice.spiceMeasurement),
     }));
