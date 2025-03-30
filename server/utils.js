@@ -299,7 +299,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) {
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')
-                                        .where('containerId', '==', QrCodeId) //TODO: change to QrCodeId
+                                        .where('qrCodeId', '==', QrCodeId) //TODO-minor: changed, was containerId
                                         .limit(1)
                                         .get();
 
@@ -339,7 +339,7 @@ async function createEmptyContainerData(db) {
 
   // Iterate over each container document and add to spice_data
   containersSnapshot.forEach((doc) => {
-      let key = doc.data().containerId; //TODO: change to QrCodeId
+      let key = doc.data().qrCodeId; //TODO-minor: changed, was containerId
       
       spice_data[key] = {
           spiceQuantity: 0,
@@ -416,7 +416,7 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')
-                                        .where('containerId', '==', QrCodeId) //TODO: change to QrCodeId
+                                        .where('qrCodeId', '==', QrCodeId) //TODO-minor: changed, was containerId
                                         .limit(1)
                                         .get();
 
@@ -455,7 +455,7 @@ async function createDispensingData(db, spices) {
 
   // Iterate over each container document and add to spice_data
   containersSnapshot.forEach((doc) => {
-    let key = doc.data().containerId; //TODO: cahnge to QrCodeId
+    let key = doc.data().qrCodeId; //TODO-minor: changed, was containerId
     let spiceName = doc.data().spiceName;
     let location = doc.data().location;
     let spiceQuantity = doc.data().spiceQuantity;
@@ -532,7 +532,7 @@ async function createMovingData(db, containerId) {
 
   // Iterate over each container document and add to spice_data
   containersSnapshot.forEach((doc) => {
-    let key = doc.data().containerId; //TODO: change to QrCodeId
+    let key = doc.data().qrCodeId; //TODO-minor: changed, was containerId
     let location = doc.data().location;
     let currContainerId = doc.data().containerId;
     let toMove = false;

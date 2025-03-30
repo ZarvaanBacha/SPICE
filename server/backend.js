@@ -29,14 +29,14 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); // CHANGE
+const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); //TODO: CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://spicedb-84047-default-rtdb.firebaseio.com'
 });
 const db = admin.firestore();
-const deviceId = "testsetst"; //TODO set the device id here
+const deviceId = "DEMO"; //TODO set the device id here
 let userRef;
 
 getUserReferenceByDeviceId(db, deviceId)
@@ -91,7 +91,7 @@ app.post("/dispenseRecipe", async (req, res) => {
       
       //console.log(`${FromSingleDispense}`)
       if (!FromSingleDispense) { // update the recipe analytics only if its a real recipe
-        //updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
+        updateRecipeAnalytics(userRef, id, admin.firestore.FieldValue); // Update the recipe analytics
       } //TODO: uncomment above line. used to cause error because users did not have a recipes collection.
       updateContainerAnalytics(userRef, spices, admin.firestore.FieldValue); // Update the container analytics
       
