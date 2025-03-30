@@ -235,7 +235,10 @@
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 1][0].toDate()}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 1][0].toDate().getDate()+ " " + 
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 1][0].toDate().toLocaleString('default', {month:'long'})+" "+
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 1][0].toDate().getFullYear()}}
+            </div>
           </div>
         </div>
         
@@ -253,7 +256,10 @@
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 2][0].toDate()}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 2][0].toDate().getDate()+ " " + 
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 2][0].toDate().toLocaleString('default', {month:'long'})+" "+
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 2][0].toDate().getFullYear()}}
+            </div>
           </div>
         </div>
       
@@ -271,7 +277,10 @@
             </ul>
           </div>
           <div class="usage-history">
-            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[2].length - 3][0].toDate()}}</div>
+            <div>{{"Last used On: " + this.recipeSortedArray[2][this.recipeSortedArray[3].length - 3][0].toDate().getDate()+ " " + 
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 3][0].toDate().toLocaleString('default', {month:'long'})+" "+
+                this.recipeSortedArray[2][this.recipeSortedArray[2].length - 3][0].toDate().getFullYear()}}
+            </div>
           </div>
         </div>
     </div>

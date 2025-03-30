@@ -152,3 +152,6 @@
     background-color: #4a754a; 
     transform: translateY(0); 
   }
+  .progressBar{
+    margin-right: 11px;
+  }
