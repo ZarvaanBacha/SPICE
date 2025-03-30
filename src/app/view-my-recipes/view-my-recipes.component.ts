@@ -18,7 +18,7 @@ export class ViewMyRecipesComponent implements OnInit {
   editing: boolean = false;
 
   spiceMeasurements: string[] = [
-    '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
+    '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon', '3/8 teaspoon',
     '1 teaspoon', '1 and 1/8 teaspoon', '1 and 1/4 teaspoon',
     '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon',
     '1 tablespoon', '1 and 1/2 tablespoon', '2 tablespoons', '2 and 1/2 tablespoons', '3 tablespoons'
