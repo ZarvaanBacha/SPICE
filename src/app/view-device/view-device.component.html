@@ -40,4 +40,8 @@
   <div *ngIf="toastVisible" class="toast">
     {{this.toastText}}
   </div>
+  @if(this.lowSpiceNotification.value){
+    <button class="btn btn-primary" (click)="clearNotification()">Clear Notification</button>
+  }
+  
 </div>

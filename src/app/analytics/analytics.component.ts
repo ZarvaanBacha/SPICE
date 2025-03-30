@@ -1,3 +1,6 @@
+/* 
+*TODO: Handle undefined fields. 
+*/
 import { Component } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration,ChartOptions } from 'chart.js';
@@ -16,7 +19,7 @@ import { isPlatformBrowser } from "@angular/common";//Used to resolve SSR issues
   selector: 'app-analytics',
   standalone: true,
   imports: [ BaseChartDirective],
-  providers: [FirebaseRecipeService],
+  providers: [],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.css'
 })
@@ -197,7 +200,6 @@ export class AnalyticsComponent implements OnInit{
         ]
       };
       this.radarChartType = 'radar';
-      console.log(this.recipeSortedArray[1].at(-2));
 
     } catch (error) {
       console.error('Error fetching analytics', error);
@@ -230,7 +232,7 @@ export class AnalyticsComponent implements OnInit{
     });
     return fillArr;
   }
-  compareTimesUsed(comparator:any,comparison:any){ //function used for sorting
+  compareTimesUsed(comparator:any,comparison:any):number{ //function used for sorting
     if(comparator.timesUsed > comparison.timesUsed){
       return 1;
     } else if(comparator.timesUsed < comparison.timesUsed){
