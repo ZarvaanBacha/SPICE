@@ -4,9 +4,13 @@ from functions import save_qr_data, printJSON  # load_qr_data not needed since w
 from serial_comm import send_serial_command
 from alignment import qr_alignment, centreContainer
 import camera  # Handles camera opening/closing and frame processing
+from spice_level_detection import get_spice_level, BoundBox
 
 # Global variable for current plate position
 PLATE_POSITION = 1
+
+# Define the bounding box for spice detection (adjust as needed)
+bbox = BoundBox(x1=82, y1=76, x2=437, y2=324)
 
 def handle_move_command(command):
     global PLATE_POSITION
@@ -17,7 +21,6 @@ def handle_move_command(command):
         PLATE_POSITION = int2
         formatted_command = f"move({int1}, {int2})"
         send_serial_command(formatted_command)
-        # Debug print disabled
         # print(f"Executed move command: {formatted_command}, New Plate Position: {PLATE_POSITION}")
     else:
         pass
@@ -84,12 +87,25 @@ def initialize(qr_data):
         if direction != "no_qr_detected":
             # Instead of using pos as the key, use the detected QR code (qr_id)
             key = str(qr_id)
+            
+            # Try to calculate spice level from the frame
+            try:
+                spice_level = get_spice_level(rotated_frame, bbox, reference_image_path="ref-bg.jpg")
+                # print(f"Spice level detected for QR {qr_id}: {spice_level}%")
+            except Exception as e:
+                # print(f"Spice level detection failed for QR {qr_id}: {e}")
+                spice_level = None
+
             if key in qr_data:
-                # Update the container with its physical location and an example spiceQuantity.
+                # Update the container with its physical location and spice quantity
                 qr_data[key]["location"] = pos
-                qr_data[key]["spiceQuantity"] = int(qr_id)  # (Adjust this if needed)
+                qr_data[key]["spiceQuantity"] = spice_level
             else:
-                qr_data[key] = {"location": pos, "spiceQuantity": int(qr_id)}
+                qr_data[key] = {
+                    "location": pos,
+                    "spiceQuantity": spice_level
+                }
+
             save_qr_data(qr_data, "filled_qr_data.json")
 
     # Debug prints disabled; only final JSON is printed.
