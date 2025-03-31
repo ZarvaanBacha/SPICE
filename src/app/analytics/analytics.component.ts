@@ -38,7 +38,7 @@ export class AnalyticsComponent implements OnInit{
 
   spiceLabels:string[] = [];
   spiceData:number[] = [];
-
+  usageTest:number = 0;
   
   //Sorting arrays
   spiceTotalQuantity:number[][] = [[]];
@@ -130,6 +130,7 @@ export class AnalyticsComponent implements OnInit{
       this.fillSpiceQuantityArray = this.spiceSortedArray[2];
       this.fillPercentageArray = this.setFillPercentageArr(this.spiceSortedArray[0]);
       this.fillLabelArray  = this.spiceSortedArray[1];
+      this.usageTest = this.spiceSortedArray[2].reduce((x,y)=>x+y);//test for usage
       //recipe chart
       this.recipeChartData = {
       
