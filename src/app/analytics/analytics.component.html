@@ -1,24 +1,27 @@
 <div class="container">
     @if(isBrowser){
-    <h2>Recipe Usage</h2> 
+    
         <div class="chartBox">
-            <div class="recipeChart">
-                <canvas
-                baseChart width="400" height="400"
-                [type]="'radar'"
-                [data]="recipeChartData"
-                [options]="recipeChartOptions">
-                </canvas>
-        </div>
-    <h2>Spice Usage</h2>    
-        <div class="spiceChart">
-                <canvas 
-                baseChart
-                [data]="radarChartData"
-                [options]="radarChartOptions"
-                [type]="radarChartType">
-                </canvas>
+                <h2 class="recipe-chart-title">Recipe Usage</h2> 
+                <div class="recipeChart">
+                    <canvas
+                    class="recipe-chart"
+                    baseChart
+                    [type]="'radar'"
+                    [data]="recipeChartData"
+                    [options]="recipeChartOptions">
+                    </canvas>
             </div>
+                <h2 class="spice-chart-title">Spice Usage</h2>
+                <div class="spiceChart">
+                    <canvas 
+                    class="spice-chart"
+                    baseChart
+                    [data]="radarChartData"
+                    [options]="radarChartOptions"
+                    [type]="radarChartType">
+                    </canvas>
+                </div>
         </div>
     }
     @if (gotData){
@@ -284,5 +287,13 @@
           </div>
         </div>
     </div>
+    <h2>Usage History</h2> 
+    <canvas
+    class="history-chart"
+    baseChart
+    [data]="lineChartData"
+    [options]="lineChartOptions"
+    [type]="lineChartType"
+  ></canvas>
 }
 </div>
