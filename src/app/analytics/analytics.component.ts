@@ -1,6 +1,3 @@
-/* 
-*TODO: Handle undefined fields. 
-*/
 import { Component } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration,ChartOptions } from 'chart.js';
