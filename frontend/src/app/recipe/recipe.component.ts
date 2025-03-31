@@ -91,9 +91,6 @@ export class RecipeComponent {
     this.firebaseService.deleteRecipe(String(recipe.id));
   }
 
-  shareRecipe(recipe: Recipe) {
-
-  }
 
   dispenseRecipe(recipe: Recipe) {
     // make the payload

@@ -7,15 +7,17 @@ import { Observable } from 'rxjs';
 })
 export class FirebaseService { //TODO: fix this service to work for user-specific recipes
   constructor(private firestore: Firestore) {}
+  userName: string = 'demo@spice.com';
+
 
   getRecipes(): Observable<any[]> {
-    const recipesRef = collection(this.firestore, 'recipes');
+    const recipesRef = collection(this.firestore, `users/${this.userName}/recipes`);
     return collectionData(recipesRef, { idField: 'id' });
   }
 
   async addRecipe(recipe: any) {
     try {
-      const recipesRef = collection(this.firestore, 'recipes');
+      const recipesRef = collection(this.firestore, `users/${this.userName}/recipes`);
 
       // to add custom fields to recipes
       const recipeWithCustomFields = {
@@ -34,8 +36,8 @@ export class FirebaseService { //TODO: fix this service to work for user-specifi
 
   async deleteRecipe(RecipeId: string) {
     try {
-      const recipeToDelete = doc(this.firestore, 'recipes',RecipeId)
-      await deleteDoc(recipeToDelete)
+      const recipeToDelete = doc(this.firestore, `users/${this.userName}/recipes`, RecipeId);
+      await deleteDoc(recipeToDelete);
     } catch (error) {
       console.error("Error deleting document:", error);
     }

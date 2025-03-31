@@ -50,7 +50,6 @@
         <strong>{{ recipe.recipeName }}</strong>
         <button (click)="editRecipe(recipe)">Edit</button>
         <button (click)="deleteRecipe(recipe)">Delete</button>
-        <button (click)="shareRecipe(recipe)">Share</button>
         <button (click)="dispenseRecipe(recipe)">Dispense</button>
         <div *ngIf="selectedRecipeForDispense === recipe">
           <p>The following spices require refill: {{ lowSpicesList }}</p>

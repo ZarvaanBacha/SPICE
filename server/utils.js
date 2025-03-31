@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 
 
 const pyDir = "C:/Users/ludov/Python/python.exe";
-const isTesting = true; //TODO: change to false for in-person tests
+const isTesting = false; //TODO: change to false for in-person tests
 
 
 const pythonScripts = {

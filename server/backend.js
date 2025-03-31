@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 
 // Initialize Firebase
-const serviceAccount = require("C:/Users/ludov/Desktop/uOttawa/Semesters/2024 FALL/CEG4912/firebase-admin-private-keys.json"); //TODO: CHANGE
+const serviceAccount = require("/Users/ludovicprovost/Desktop/CAPSTONE/SPICE/firebase-admin-private-keys.json"); //TODO: CHANGE
 const { log } = require('console');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -65,6 +65,12 @@ getUserReferenceByDeviceId(db, deviceId)
 // Root URL route
 app.get('/', (req, res) => {
   res.send('Welcome to the backend server!');
+});
+
+// hopefully this works.
+app.get("/getUserRef", async (req, res) => {
+  console.log(userRef);
+  res.send({userRef: serRef});
 });
 
 // API endpoint to dispense a recipe
