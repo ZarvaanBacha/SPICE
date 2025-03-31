@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # Expect the first argument to be the JSON file for instructions
     # and the second argument (optional) as the starting position.
     if len(sys.argv) < 2:
-        print("Usage: python dispense.py <instructions_file.json> [starting_position]")
+        #print("Usage: python dispense.py <instructions_file.json> [starting_position]")
         sys.exit(1)
     
     try:
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         with open(file_path, 'r') as f:
             dispense_data = json.load(f)
     except Exception as e:
-        print("Error loading JSON file:", e)
+        #print("Error loading JSON file:", e)
         sys.exit(1)
     
     if len(sys.argv) > 2:

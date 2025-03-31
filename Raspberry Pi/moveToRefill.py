@@ -24,6 +24,6 @@ if __name__ == "__main__":
         starting_position = int(sys.argv[1])
         destination = int(sys.argv[2])
     except Exception as e:
-        print("Error parsing input:", e)
+        #print("Error parsing input:", e)
         sys.exit(1)
     moveToRefill(starting_position, destination)

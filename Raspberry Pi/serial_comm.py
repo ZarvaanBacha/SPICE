@@ -23,4 +23,4 @@ def send_serial_command(command):
 def close_serial():
     if ser:
         ser.close()
-        print("Serial port closed.")
+        #print("Serial port closed.")

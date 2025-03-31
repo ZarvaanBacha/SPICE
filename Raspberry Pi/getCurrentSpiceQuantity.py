@@ -14,7 +14,7 @@ def getCurrentSpiceQuantity():
     # Retrieve the latest frame from the camera
     frame = camera.get_latest_frame()
     if frame is None:
-        print("No frame available for spice detection.")
+        #print("No frame available for spice detection.")
         return
 
     # Rotate the image 90 degrees clockwise

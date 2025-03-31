@@ -10,18 +10,18 @@ def index(qr_json, detected_qr_id, current_position):
     """
     spice_quantity = 100  # Placeholder value
 
-    print(f"Indexing QR code with ID: {detected_qr_id} at position {current_position}")
+    #print(f"Indexing QR code with ID: {detected_qr_id} at position {current_position}")
 
     detected_qr_id_str = str(detected_qr_id)
 
     if detected_qr_id_str not in qr_json:
-        print(f"Warning: QR code ID {detected_qr_id} not found in JSON. Skipping.")
+        #print(f"Warning: QR code ID {detected_qr_id} not found in JSON. Skipping.")
         return qr_json
 
     qr_json[detected_qr_id_str]["location"] = current_position
     qr_json[detected_qr_id_str]["spiceQuantity"] = spice_quantity
 
-    print(f"Recorded data for QR code {detected_qr_id} at position {current_position} with spice quantity {spice_quantity}")
+    #print(f"Recorded data for QR code {detected_qr_id} at position {current_position} with spice quantity {spice_quantity}")
 
     return qr_json
 

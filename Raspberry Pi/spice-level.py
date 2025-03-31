@@ -5,19 +5,19 @@ def main():
     # Open the webcam (default camera index 0)
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-        print("Error: Could not open the webcam.")
+        #print("Error: Could not open the webcam.")
         return
 
     # Define the bounding box for the region of interest (adjust coordinates as needed)
     bbox = BoundBox(x1=82, y1=76, x2=437, y2=324)
 
-    print("Press 'q' to exit.")
+    #print("Press 'q' to exit.")
 
     while True:
         # Read a frame from the camera
         ret, frame = cap.read()
         if not ret:
-            print("Error: Could not read a frame from the webcam.")
+            #print("Error: Could not read a frame from the webcam.")
             break
 
         # Rotate the frame 90 degrees clockwise
@@ -27,7 +27,7 @@ def main():
         try:
             spice_level = get_spice_level(rotated_frame, bbox, reference_image_path="ref-bg.jpg")
         except Exception as e:
-            print("Error during spice level calculation:", e)
+            #print("Error during spice level calculation:", e)
             break
 
         # Overlay the spice level text on the image
@@ -39,7 +39,7 @@ def main():
 
         # Wait for 1ms and check if the 'q' key is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            print("Exiting...")
+            #print("Exiting...")
             break
 
     # Release resources
