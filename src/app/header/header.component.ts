@@ -22,12 +22,14 @@ export class HeaderComponent implements OnInit{
   localSpiceNotif:BehaviorSubject<Boolean>; //Stores local low spice status
   viewDev: string = 'View Device'
 
-  constructor(private firebaseRecipeService: FirebaseRecipeService) {};
+  constructor(private firebaseRecipeService: FirebaseRecipeService, private localNotificationService: LocalNotificationService) {};
 
   async ngOnInit()  {
     try {
-      this.firebaseRecipeService.GetLowSpice(this.lowSpiceThreshold).then((lowSpiceFound) => {
+        this.firebaseRecipeService.GetLowSpice(this.lowSpiceThreshold).then((lowSpiceFound) => {
         this.lowSpiceNotif = lowSpiceFound;
+        this.localSpiceNotif = this.localNotificationService.lowSpiceNotification;
+        this.localNotificationService.setNotification(this.lowSpiceNotif);
         //console.log("this.lowSpiceNotif: ", this.lowSpiceNotif);
       })
     } catch (error) {
