@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { NgIf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { Router } from '@angular/router';
+import { LocalNotificationService } from '../local-notification.service';
 
 @Component({
   selector: 'app-view-device',
@@ -21,7 +22,9 @@ export class ViewDeviceComponent implements OnInit{
   toastVisible: boolean = false;
   toastText: string = "An error occured.";
 
-  constructor(private firebaseRecipeService: FirebaseRecipeService, private router: Router){}
+  lowSpiceNotification: BehaviorSubject<Boolean>;
+  
+  constructor(private firebaseRecipeService: FirebaseRecipeService, private router: Router, private localNotificationService: LocalNotificationService){}
 
   ngOnInit() {
     this.firebaseRecipeService.getDeviceInfo()
@@ -32,8 +35,9 @@ export class ViewDeviceComponent implements OnInit{
       .catch(error => {
         console.error('Error retrieving device info:', error);
       });
-
     this.fetchAndLogAnalytics();
+    this.lowSpiceNotification = this.localNotificationService.lowSpiceNotification;
+    console.log(this.localNotificationService.lowSpiceNotification);
   }
 
   /**
@@ -79,5 +83,15 @@ export class ViewDeviceComponent implements OnInit{
 
   goToAddDevice() {
     this.router.navigate(['/authenticated/addDevice']); // Redirect to the "add device" page
+  }
+  //Clears local notification, does not change database.
+  clearNotification(){
+    if(this.localNotificationService.lowSpiceNotification.value){
+      this.localNotificationService.setNotification(false);
+      this.lowSpiceNotification = this.localNotificationService.lowSpiceNotification;
+    }else {
+      this.localNotificationService.setNotification(true);
+      this.lowSpiceNotification = this.localNotificationService.lowSpiceNotification;
+    }
   }
 }

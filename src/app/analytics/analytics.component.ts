@@ -16,7 +16,7 @@ import { isPlatformBrowser } from "@angular/common";//Used to resolve SSR issues
   selector: 'app-analytics',
   standalone: true,
   imports: [ BaseChartDirective],
-  providers: [FirebaseRecipeService],
+  providers: [],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.css'
 })
@@ -35,13 +35,16 @@ export class AnalyticsComponent implements OnInit{
 
   spiceLabels:string[] = [];
   spiceData:number[] = [];
-
+  usageTest:number = 0;
   
   //Sorting arrays
   spiceTotalQuantity:number[][] = [[]];
   recipeUsage:any[][] = [[]];
   spiceSortedArray:any[][] = [[]];
   recipeSortedArray:any[][] = [[]];
+  historySortedArray:Date[] = [];
+  historyChartData:number[]=[];
+  historyChartLabels:string[]=[];
   //Total Spice used arrays
   fillPercentageArray:number[] = [];
   fillLabelArray:string[] = [];
@@ -56,7 +59,11 @@ export class AnalyticsComponent implements OnInit{
   public radarChartLabels: string[];
   public radarChartData: ChartData<'radar'>;
   public radarChartType: ChartType;
-
+  //History Chart
+  public lineChartData: ChartConfiguration<'line'>['data'];
+  public lineChartOptions: ChartConfiguration['options'];
+  public lineChartType: ChartType = 'line';
+  historyMonth:Map<Date,number>;
   //Angular functions
   constructor(private firebaseReicpeService: FirebaseRecipeService, @Inject(PLATFORM_ID) private platformId: unknown){}
   
@@ -74,8 +81,34 @@ export class AnalyticsComponent implements OnInit{
   
       this.spiceLabels = this.spiceContainerAnalytics.map(item => item.spiceName);
       this.spiceData = this.spiceContainerAnalytics.map(item => item.timesUsed);
-  
-      
+      //Usage history Array
+      this.historySortedArray = this.recipeAnalytics.map(item =>{
+        return item.usageHistory.map(date => new Date(date.toDate()));
+      });
+      this.historyMonth = this.genMonth();
+      // this.historyMonth.forEach((x,y) =>
+      // {
+      //   console.log("Value: " + y)
+      //   console.log("date: " + x)
+      // });
+      this.historySortedArray = this.historySortedArray.flat();
+      this.historySortedArray.sort((a:Date,b:Date)=> {
+        const aForm = new Date(a).toISOString().split('T')[0];
+        const bForm = new Date(b).toISOString().split('T')[0];
+        return aForm > bForm ? -1 : aForm < bForm ? 1 : 0;
+      });
+      this.setUsageHistory(this.historyMonth,this.historySortedArray);
+
+      // this.historyMonth.forEach((x,y) =>
+      //   {
+      //     console.log("Value: " + y)
+      //     console.log("date: " + x)
+      //   });
+      this.historyMonth.forEach((x,y) =>
+        {
+          this.historyChartData.push(x);
+          this.historyChartLabels.push(this.formatDate(y));
+      });
       //sorting Arrays
       this.spiceTotalQuantity = [this.spiceContainerAnalytics.map(item => item.totalQuantityUsed), this.spiceContainerAnalytics.map(item => item.spiceName), this.spiceContainerAnalytics.map(item => item.totalQuantityUsed)];
       this.recipeUsage = [this.recipeAnalytics.map(item => item.timesUsed), this.recipeAnalytics.map(item => item.recipeName), this.recipeAnalytics.map(item => item.usageHistory), this.recipeAnalytics.map(item => item.spices)];
@@ -94,6 +127,7 @@ export class AnalyticsComponent implements OnInit{
       this.fillSpiceQuantityArray = this.spiceSortedArray[2];
       this.fillPercentageArray = this.setFillPercentageArr(this.spiceSortedArray[0]);
       this.fillLabelArray  = this.spiceSortedArray[1];
+      this.usageTest = this.spiceSortedArray[2].reduce((x,y)=>x+y);//test for usage
       //recipe chart
       this.recipeChartData = {
       
@@ -197,8 +231,29 @@ export class AnalyticsComponent implements OnInit{
         ]
       };
       this.radarChartType = 'radar';
-      console.log(this.recipeSortedArray[1].at(-2));
-
+      //History Chart
+      this.lineChartData = {
+        datasets: [{data: this.historyChartData}],
+        labels : this.historyChartLabels,
+      };
+      this.lineChartOptions = {
+        maintainAspectRatio: true,
+        elements: {
+          line: {
+            tension: 0.3,
+          },
+        },
+        scales: {
+          y: {
+            position: 'left',
+            min: 0
+          }
+        },
+    
+        plugins: {
+          legend: { display: false },
+        },
+      };
     } catch (error) {
       console.error('Error fetching analytics', error);
     }
@@ -230,7 +285,7 @@ export class AnalyticsComponent implements OnInit{
     });
     return fillArr;
   }
-  compareTimesUsed(comparator:any,comparison:any){ //function used for sorting
+  compareTimesUsed(comparator:any,comparison:any):number{ //function used for sorting
     if(comparator.timesUsed > comparison.timesUsed){
       return 1;
     } else if(comparator.timesUsed < comparison.timesUsed){
@@ -238,6 +293,53 @@ export class AnalyticsComponent implements OnInit{
     }else {
       return 0; 
     }
+  }
+    /*
+  * Formats Date object into
+  * DD - Month (as String) - YYYY
+  * as a string
+  * 
+  */
+   formatDate(date: Date): string {
+      const day = String(new Date(date).getDate()).padStart(2, '0');
+      const month = String(new Date(date).toLocaleString('default', {month:'long'})).padStart(2, '0');
+      const year = String(new Date(date).getFullYear()); 
+    return `${day} ${month}`;
+  }
+  /*
+  * Generates a Map with dates as keys, and a number
+  * as value. Represents 30 days from the current
+  *day as returned by new Date()
+  * 
+  */
+   genMonth(): Map<Date,number> {
+    const dateMap = new Map<Date, number>();
+    const currentDate = new Date(); 
+    for (let i = 0; i < 30; i++) {
+      const dateCopy = new Date(currentDate); 
+      dateCopy.setDate(currentDate.getDate() - i); 
+      dateMap.set(dateCopy, 0);
+    }
+    return dateMap;
+  }
+  /*
+  * Takes in a Map with key value pairs and an array of Dates
+  *Compares the Map's dates with the arrays dates
+  * Increments the Value when the dates match in terms of
+  * Day-month-year
+  */
+  setUsageHistory(dateMap: Map<Date, number>, dateArray: Date[]) {
+    dateArray.forEach((arrayDate) => {
+      dateMap.forEach((value, key) => {
+        if (
+          arrayDate.getFullYear() === key.getFullYear() &&
+          arrayDate.getMonth() === key.getMonth() &&
+          arrayDate.getDate() === key.getDate()
+        ) {
+          dateMap.set(key, value + 1);
+        }
+      });
+    });
   }
   
   /**

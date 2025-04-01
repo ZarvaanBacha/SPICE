@@ -1,10 +1,10 @@
 <div class="bar">
-   <div class="logo"><img src="\logo.png" alt=""></div>
-   <a class="link" routerLink="home">Home</a>
-   <a class="link" routerLink="recipes">Create Recipe</a>
-   <a class="link" routerLink="find-recipes">Find Recipes</a>
-   <a class="link" routerLink="deviceView">View Device</a>
-   <a class="link" routerLink="addDevice">Add Device</a>
-   <a class="link" routerLink="analytics">Analytics</a>
-   <!-- TODO: add low spice notif -->
+   <nav>
+      <a class="link" routerLink="home"><img src="\logo.png" alt=""></a>
+      <a class="link" routerLink="recipes">Create Recipe</a>
+      <a class="link" routerLink="find-recipes">Find Recipes</a>
+      <a class="link" routerLink="deviceView">View Device<span class="red-circle" [style.display] = "(localSpiceNotif|async) ? 'block' : 'none'"></span></a>
+      <a class="link" routerLink="addDevice">Add Device</a>
+      <a class="link" routerLink="analytics">Analytics</a>
+   </nav>
 </div>

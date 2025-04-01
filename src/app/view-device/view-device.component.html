@@ -18,7 +18,38 @@
           [class.low-quantity]="spice.spiceQuantity <= lowSpiceThreshold"
         >
           <td>{{ spice.spiceName }}</td>
-          <td>{{ spice.spiceQuantity }} %</td>
+          <td>
+            <svg width="15" height="40" class="progressBar">
+              <defs>
+                <linearGradient [attr.id]="spice.id" x1="0" y1="1" x2="0" y2="0">
+                  <stop id="stop1" offset="0" stop-color="#68a368">
+                    <animate
+                    attributeName="offset"
+                    from="0"
+                    [attr.to] = "spice.spiceQuantity/100"
+                    dur="3s"
+                    fill="freeze"
+                    repeatCount="1"
+                    begin="1s"
+                  />
+                  </stop>
+                  <stop id="stop2" offset="0%" stop-color="lightblue">
+                      <animate
+                        attributeName="offset"
+                        from="0"
+                        [attr.to] = "spice.spiceQuantity/100"
+                        dur="3s"
+                        fill="freeze"
+                        repeatCount="1"
+                        begin="1s"
+                      />
+                  </stop>
+                </linearGradient>
+              </defs>
+              <rect id="my-shape" width="15" height="40" [attr.fill] = "'url(#' + spice.id + ')'"/>
+            </svg>
+            {{ "   " + spice.spiceQuantity }} %
+          </td>
           <td>{{ spice.lastRefilled ? (spice.lastRefilled | date: 'medium') : 'N/A' }}</td>
           <td>{{ spice.timesUsed }}</td>
         </tr>
@@ -40,4 +71,8 @@
   <div *ngIf="toastVisible" class="toast">
     {{this.toastText}}
   </div>
+  @if(this.lowSpiceNotification.value){
+    <button class="btn btn-primary" (click)="clearNotification()">Clear Notification</button>
+  }
+  
 </div>

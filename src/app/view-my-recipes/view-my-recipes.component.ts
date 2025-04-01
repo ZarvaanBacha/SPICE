@@ -18,10 +18,11 @@ export class ViewMyRecipesComponent implements OnInit {
   editing: boolean = false;
 
   spiceMeasurements: string[] = [
-    '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon',
+    '1/8 teaspoon', '1/4 teaspoon', '1/2 teaspoon', '3/4 teaspoon', '3/8 teaspoon', '7/8 teaspoon',
     '1 teaspoon', '1 and 1/8 teaspoon', '1 and 1/4 teaspoon',
-    '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon'
-  ]; //TODO: add tablespoon measurements?
+    '1 and 1/2 teaspoon', '1 and 3/4 teaspoon', '2 teaspoon',
+    '1 tablespoon', '1 and 1/2 tablespoon', '2 tablespoons', '2 and 1/2 tablespoons', '3 tablespoons'
+  ];
 
   spiceOptions: string[] = [];
 
@@ -78,6 +79,8 @@ export class ViewMyRecipesComponent implements OnInit {
   editRecipe(recipe: any) {
     recipe.editing = true;
     this.editing = true;
+
+    
   }
 
   deleteRecipe(recipeId: string) {
@@ -93,7 +96,9 @@ export class ViewMyRecipesComponent implements OnInit {
     const updatedRecipe = this.recipeForms[recipe.id].value;
 
     // Convert spice measurements to eighth teaspoons
-    updatedRecipe.spices = updatedRecipe.spices.map((spice: any) => ({
+    updatedRecipe.spices = updatedRecipe.spices
+    .filter((spice: any) => spice.spiceName && spice.spiceName.trim() !== '' && spice.spiceMeasurement && spice.spiceMeasurement.trim() !== '')
+    .map((spice: any) => ({
       ...spice,
       spiceQuantityInEighthTsp: this.convertToEighthTeaspoons(spice.spiceMeasurement),
     }));
