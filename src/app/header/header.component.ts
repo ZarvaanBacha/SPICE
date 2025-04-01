@@ -17,12 +17,18 @@ export class HeaderComponent implements OnInit{
   lowSpiceNotif: boolean = false;
   lowSpiceThreshold: number = 10; // %
 
-  constructor(private firebaseReicpeService: FirebaseRecipeService) {};
+  constructor(private firebaseRecipeService: FirebaseRecipeService) {};
 
   async ngOnInit()  {
-    this.firebaseReicpeService.GetLowSpice(this.lowSpiceThreshold).then((lowSpiceFound) => {
-      this.lowSpiceNotif = lowSpiceFound;
-      //console.log("this.lowSpiceNotif: ", this.lowSpiceNotif);
-    })
+    try {
+      this.firebaseRecipeService.GetLowSpice(this.lowSpiceThreshold).then((lowSpiceFound) => {
+        this.lowSpiceNotif = lowSpiceFound;
+        //console.log("this.lowSpiceNotif: ", this.lowSpiceNotif);
+      })
+    } catch (error) {
+      console.error('Error fetching low spices: ', error);
+      this.lowSpiceNotif = false; // Set to false if there's an error
+      throw error;
+    }
   }
 }
