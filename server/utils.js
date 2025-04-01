@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 
 
 const pyDir = "C:/Users/ludov/Python/python.exe";
-const isTesting = false; //TODO: change to false for in-person tests
+const isTesting = true; //TODO: change to false for in-person tests
 
 
 const pythonScripts = {
@@ -239,14 +239,14 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) {
   let containerData = {};
   if (isTesting) {
     containerData = { //temp data for testing
-      "container_1": { spiceQuantity: 50, location: 1 },
-      "container_2": { spiceQuantity: 30, location: 2 },
-      "container_3": { spiceQuantity: 10, location: 3 },
-      "container_4": { spiceQuantity: 0, location: 4 },
-      "container_5": { spiceQuantity: 50, location: 5 },
-      "container_6": { spiceQuantity: 30, location: 6 },
-      "container_7": { spiceQuantity: 10, location: 7 },
-      "container_8": { spiceQuantity: 0, location: 8 },
+      "1": { spiceQuantity: 0, location: 1 },
+      "2": { spiceQuantity: 30, location: 2 },
+      "3": { spiceQuantity: 63, location: 3 },
+      "4": { spiceQuantity: 86, location: 4 },
+      "5": { spiceQuantity: 98, location: 5 },
+      "6": { spiceQuantity: 5, location: 6 },
+      "7": { spiceQuantity: 100, location: 7 },
+      "8": { spiceQuantity: 49, location: 8 },
     };
   } else {
     try {
@@ -295,7 +295,7 @@ async function updateContainersOnStartUp(db, FieldValue, threshold) {
     if (containerData.hasOwnProperty(key)) {
       const spice = containerData[key];
 
-      const QrCodeId = key;
+      const QrCodeId = Number(key);
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')
@@ -356,14 +356,14 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
   let containerData = {}; // container data received from python script
   if (isTesting) {
     containerData = { //temp data for testing
-      "container_1": { spiceQuantity: 90, location: 1 },
-      "container_2": { spiceQuantity: 90, location: 2 },
-      "container_3": { spiceQuantity: 90, location: 3 },
-      "container_4": { spiceQuantity: 90, location: 4 },
-      "container_5": { spiceQuantity: 90, location: 5 },
-      "container_6": { spiceQuantity: 90, location: 6 },
-      "container_7": { spiceQuantity: 0, location: 7 },
-      "container_8": { spiceQuantity: 0, location: 8 },
+      "1": { spiceQuantity: 0, location: 1 },
+      "2": { spiceQuantity: 30, location: 2 },
+      "3": { spiceQuantity: 63, location: 3 },
+      "4": { spiceQuantity: 86, location: 4 },
+      "5": { spiceQuantity: 98, location: 5 },
+      "6": { spiceQuantity: 5, location: 6 },
+      "7": { spiceQuantity: 100, location: 7 },
+      "8": { spiceQuantity: 49, location: 8 },
     };
   } else {
     try {
@@ -412,7 +412,7 @@ async function callDispenseScript(db, FieldValue, spices, threshold) {
     if (containerData.hasOwnProperty(key)) {
       const spice = containerData[key];
 
-      const QrCodeId = key;
+      const QrCodeId = Number(key);
 
       // Fetch doc that matches QrCodeId
       const containerSnapshot = await db.collection('containers')

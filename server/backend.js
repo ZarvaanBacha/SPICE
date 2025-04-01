@@ -226,7 +226,7 @@ app.post('/refillSpices', async (req, res) => {
           // 5. Update the spice quantity in the database
           await userRef.collection('containers').doc(`container_${container.containerNumber}`).update({
             spiceQuantity: currentSpiceQuantity,
-            lastRefilled: new Date(),
+            lastRefilled: new Date().toISOString(),
             isLow: false,
           });
 
