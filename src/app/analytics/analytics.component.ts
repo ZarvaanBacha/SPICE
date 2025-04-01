@@ -4,7 +4,7 @@ import { ChartConfiguration,ChartOptions } from 'chart.js';
 import { FirebaseRecipeService } from '../firebase-recipe.service';
 import { OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Observable } from 'rxjs';
+import { min, Observable } from 'rxjs';
 
 import { ChartData, ChartType } from 'chart.js';
 
@@ -36,6 +36,7 @@ export class AnalyticsComponent implements OnInit{
   spiceLabels:string[] = [];
   spiceData:number[] = [];
   usageTest:number = 0;
+  dateArrayTest: boolean = false;
   
   //Sorting arrays
   spiceTotalQuantity:number[][] = [[]];
@@ -127,7 +128,9 @@ export class AnalyticsComponent implements OnInit{
       this.fillSpiceQuantityArray = this.spiceSortedArray[2];
       this.fillPercentageArray = this.setFillPercentageArr(this.spiceSortedArray[0]);
       this.fillLabelArray  = this.spiceSortedArray[1];
+      //Edge Tests
       this.usageTest = this.spiceSortedArray[2].reduce((x,y)=>x+y);//test for usage
+      this.dateArrayTest = this.recipeSortedArray[2].every(arr => arr.length !==0);
       //recipe chart
       this.recipeChartData = {
       
@@ -166,7 +169,8 @@ export class AnalyticsComponent implements OnInit{
               font: {
                 size: 12
               }
-            }
+            },
+            suggestedMin: 0
           }
         },
         plugins:{
@@ -203,8 +207,9 @@ export class AnalyticsComponent implements OnInit{
               font: {
                 size: 12
               }
-            }
-          }
+            },
+            suggestedMin: 0
+          },
         },
         plugins:{
           title:{

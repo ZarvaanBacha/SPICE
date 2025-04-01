@@ -2,7 +2,7 @@
     @if(isBrowser){
         
         <div class="chartBox">
-             @if(this.recipeData.length != 0){   
+             @if(this.recipeData.length !== 0){   
                 <h2 class="recipe-chart-title">Recipe Usage</h2> 
                 <div class="recipeChart">
                     <canvas
@@ -229,7 +229,7 @@
     
     <!-- Recipe Cards -->
     
-    @if(this.recipeSortedArray[1].length >0){
+    @if(this.recipeSortedArray[1].length > 0 && this.dateArrayTest){
         <h2>Most Used Recipes</h2>
         <div class="card-container">
             <div class="card">
@@ -252,7 +252,7 @@
                 </div>
             </div>
             </div>
-            
+            @if(this.recipeSortedArray[1].length >= 2){
             <div class="card">
             <div class="number2">2</div>
             <h2 class="recipe-name">{{this.recipeSortedArray[1][this.recipeSortedArray[1].length - 2]}}</h2>
@@ -273,7 +273,8 @@
                 </div>
             </div>
             </div>
-        
+            }
+            @if(this.recipeSortedArray[1].length >= 3){
             <div class="card">
             <div class="number3">3</div>
             <h2 class="recipe-name">{{this.recipeSortedArray[1][this.recipeSortedArray[1].length - 3]}}</h2>
@@ -294,6 +295,7 @@
                 </div>
             </div>
             </div>
+            }
         </div>
     }   
     <h2>Usage History</h2> 
